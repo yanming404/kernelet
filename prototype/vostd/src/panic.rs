@@ -26,3 +26,22 @@ fn panic_handler(info: &core::panic::PanicInfo) -> ! {
     }
     abort()
 }
+
+/// Abort if a protected deferred destructor escapes during panic handling.
+#[derive(Debug)]
+pub(crate) struct PanicGuard {
+    _private: (),
+}
+impl PanicGuard {
+    pub(crate) fn new() -> Self {
+        Self { _private: () }
+    }
+    pub(crate) fn forget(self) {
+        core::mem::forget(self);
+    }
+}
+impl Drop for PanicGuard {
+    fn drop(&mut self) {
+        abort()
+    }
+}

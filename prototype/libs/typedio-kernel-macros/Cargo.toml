@@ -1,0 +1,14 @@
+[package]
+name = "typedio-macros"
+version = "0.1.0"
+edition = "2021"
+publish = false
+license = "MPL-2.0"
+[workspace]
+[lib]
+proc-macro = true
+path = "../typedio-macros/src/lib.rs"
+[dependencies]
+syn = { version = "=2.0.52", features = ["full"] }
+quote = "=1.0.35"
+proc-macro2 = "=1.0.78"

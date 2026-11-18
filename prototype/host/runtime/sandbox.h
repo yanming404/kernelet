@@ -18,6 +18,8 @@ struct sandbox;
 /* How run_sandbox() sets the sandbox and its carriers up. */
 struct sandbox_opts {
 	const char *cgroup;		/* -c: join this group before KLET_CREATE */
+	int typedio_fds[8];
+	unsigned int nr_typedio_fds;
 	int pin;			/* -p: the carrier of virtual CPU i on processor i */
 	int cpu_lo, cpu_hi;		/* every carrier on processors [lo, hi]; hi < 0: no mask */
 	/*

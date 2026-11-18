@@ -50,5 +50,5 @@ pub(crate) fn call_timer_callback_functions() {
         for callback in callbacks.iter() {
             (callback)();
         }
-    }
+    };
 }

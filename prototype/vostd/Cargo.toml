@@ -18,3 +18,18 @@ path = "src/lib.rs"
 [dependencies]
 # The real macro crate from the Asterinas tree, unchanged (see ../libs).
 ostd-macros = { path = "../libs/ostd-macros" }
+
+typedio = { path = "../libs/typedio" }
+
+# Same no_std logging facade and publication primitive as Asterinas OSTD.
+log = "0.4"
+spin = "0.10"
+ostd-pod = { path = "../../../asterinas/ostd/libs/ostd-pod", default-features = false }
+bitvec = { version = "1", default-features = false, features = ["alloc", "atomic"] }
+smallvec = { version = "1", features = ["const_generics", "const_new", "union"] }
+
+[lints]
+workspace = true
+
+[features]
+asterinas = []

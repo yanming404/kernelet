@@ -3,11 +3,9 @@
 //! Synchronization primitives.
 //!
 //! The pieces the task layer and the injected scheduler need, ported from real
-//! OSTD. RCU, mutexes and the reader-writer locks are not here: nothing in this
-//! prototype uses them. What is here is what the kernels proper compiled
-//! against vOSTD call, plus two members of the same interface that none of them
-//! calls but a kernel written against OSTD would reasonably reach for, kept for
-//! completeness: `SpinLock::try_lock` and `WaitQueue::wake_one`.
+//! OSTD. Mutexes and read/write locks use its original algorithms with virtual
+//! IRQ/preemption guards and the real vOSTD scheduler wait queues. RCU support
+//! for the complete Asterinas dependency graph is handled separately.
 
 mod guard;
 mod spin;
@@ -19,3 +17,21 @@ pub use self::{
     spin::{SpinLock, SpinLockGuard},
     wait::{WaitQueue, Waiter, Waker},
 };
+
+mod mutex;
+mod rwarc;
+mod rwlock;
+mod rwmutex;
+pub use self::{
+    mutex::{Mutex, MutexGuard},
+    rwarc::{RoArc, RwArc},
+    rwlock::{RwLock, RwLockReadGuard, RwLockUpgradeableGuard, RwLockWriteGuard},
+    rwmutex::{RwMutex, RwMutexReadGuard, RwMutexUpgradeableGuard, RwMutexWriteGuard},
+};
+
+mod rcu;
+pub(crate) use self::rcu::finish_grace_period;
+pub use self::rcu::{non_null, Rcu, RcuDrop, RcuOption, RcuOptionReadGuard, RcuReadGuard};
+pub(crate) fn init() {
+    rcu::init();
+}

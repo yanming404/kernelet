@@ -468,9 +468,10 @@ int klet_sandbox_start(struct klet_inst *inst)
 	err = klet_image_start(inst);
 	if (err)
 		return err;
-	pages = alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO | __GFP_NOWARN, order);
-	if (!pages)
+	inst->grant_backing = klet_grant_alloc(order);
+	if (!inst->grant_backing)
 		return -ENOMEM;
+	pages = klet_grant_pages(inst->grant_backing);
 	inst->grant_pages = pages;
 	inst->grant_order = order;
 
@@ -502,7 +503,7 @@ int klet_sandbox_start(struct klet_inst *inst)
 /* With inst->lock held: whether the caller is the one to run the exit. */
 void klet_check_exited_locked(struct klet_inst *inst, bool *claim)
 {
-	if (inst->dying && !inst->exit_claimed &&
+	if (inst->dying && inst->typedio_detached && !inst->exit_claimed &&
 	    atomic_read(&inst->nr_carriers) == 0) {
 		inst->exit_claimed = true;
 		*claim = true;
@@ -544,6 +545,11 @@ void klet_end(struct klet_inst *inst, u32 how, s32 code, u32 reason)
 	spin_unlock(&inst->lock);
 
 	if (first_mark) {
+		klet_tio_detach_instance(inst);
+		spin_lock(&inst->lock);
+		inst->typedio_detached = true;
+		klet_check_exited_locked(inst, &claim);
+		spin_unlock(&inst->lock);
 		if (how == KLET_END_KILLED)
 			pr_info("kernelet: sandbox %d: %s, the sandbox is dying; %d carrier(s) left\n",
 				inst->slot, klet_reason_name(reason), left);
@@ -625,6 +631,8 @@ static void klet_fold_counters(struct klet_inst *inst)
 // Release remaining resources after exit and the last descriptor close.
 static long klet_sandbox_destroy(struct klet_inst *inst)
 {
+	struct klet_grant_backing *backing;
+	unsigned long flags;
 	unsigned int i;
 	long err = 0;
 
@@ -640,9 +648,6 @@ static long klet_sandbox_destroy(struct klet_inst *inst)
 	flush_work(&inst->out_work);
 	klet_out_free(&inst->console);
 	klet_out_free(&inst->log);
-	if (inst->grant_pages)
-		__free_pages(inst->grant_pages, inst->grant_order);
-	inst->grant_pages = NULL;
 	klet_image_stop(inst);
 	for (i = 0; i < inst->nr_vcpus; i++)
 		if (inst->vslot[i].exec_file) {
@@ -651,6 +656,14 @@ static long klet_sandbox_destroy(struct klet_inst *inst)
 		}
 	klet_fold_counters(inst);
 	klet_spaces_free(inst);
+	// Carriers have exited and tenant mappings are gone. Host leases can
+	// still retain the allocation independently of the soon-to-be-freed instance.
+	spin_lock_irqsave(&inst->lock, flags);
+	backing = inst->grant_backing;
+	inst->grant_backing = NULL;
+	inst->grant_pages = NULL;
+	spin_unlock_irqrestore(&inst->lock, flags);
+	klet_grant_put(backing);
 	kfree(inst->mem_stats);
 	inst->mem_stats = NULL;
 	cgroup_put(inst->cgrp);
@@ -752,7 +765,7 @@ static long klet_sandbox_ioctl(struct file *file, unsigned int cmd, unsigned lon
 	case KLET_GET_VCPU_EXEC_FD:
 		return klet_get_vcpu_exec_fd(inst, uarg);
 	case KLET_ATTACH_DEVICE:
-		return -EOPNOTSUPP;	// No devices in this prototype.
+		return klet_tio_attach(inst, uarg);
 	case KLET_SET_CONSOLE:
 		return klet_set_out(inst, &inst->console, uarg);
 	case KLET_SET_LOG:

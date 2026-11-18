@@ -4,9 +4,8 @@
 //!
 //! Three changes:
 //!
-//! 1. `crate::sync::finish_grace_period()` is gone, because vOSTD has no
-//!    general RCU (its one grace period, for tenant memory, is in
-//!    [`crate::mm::rcu`]).
+//! 1. General RCU reports quiescence at the same guard-free switch boundary
+//!    as OSTD. The tenant page-copy grace period remains in [`crate::mm::rcu`].
 //! 2. "Local IRQs" are this virtual CPU's virtual interrupts, so the guard that
 //!    `switch_to_task` forgets and `after_switching_to` releases is the vCPU's
 //!    mask depth. It is also, through the mirror, the host's preemption count,
@@ -53,6 +52,8 @@ pub(super) fn current_task() -> Option<NonNull<Task>> {
 #[track_caller]
 pub(super) fn switch_to_task(next_task: Arc<Task>) {
     super::atomic_mode::might_sleep();
+    // SAFETY: might_sleep proves no preemption guard/RCU reader is held.
+    unsafe { crate::sync::finish_grace_period() };
 
     let irq_guard = crate::irq::disable_local();
 

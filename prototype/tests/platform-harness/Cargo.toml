@@ -1,0 +1,18 @@
+[package]
+name = "kernelet-platform-harness"
+version = "0.1.0"
+edition = "2021"
+publish = false
+[workspace]
+[lib]
+doctest = false
+[dependencies]
+spin = "0.10"
+bitvec = { version="1", default-features=false, features=["alloc","atomic"] }
+smallvec = { version="1", features=["const_generics","const_new","union"] }
+ostd-pod = { path="../../../../asterinas/ostd/libs/ostd-pod", default-features=false }
+kernelet-registry = {path="../../libs/guest-registry"}
+inventory = "=0.3.24"
+typedio = {path="../../libs/typedio"}
+[lints.rust]
+unexpected_cfgs = {level="allow",check-cfg=['cfg(ktest)']}

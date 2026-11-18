@@ -29,18 +29,31 @@ use super::Paddr;
 
 /// Makes a structure usable as frame metadata.
 ///
-/// Real OSTD stores the metadata in a per-frame slot. vOSTD stores only the
-/// reference count: the only metadata the kernel propers here use is `()`.
-pub trait AnyFrameMeta: Send + Sync + 'static {}
-
-impl AnyFrameMeta for () {}
+/// Metadata is retained independently of handles until the last reference drops.
+///
+/// # Safety
+/// An on_drop implementation reading frame bytes must establish that those
+/// bytes may be read as untyped memory. Typed payloads cannot be exposed as VmIo.
+pub unsafe trait AnyFrameMeta: core::any::Any + Send + Sync {
+    fn on_drop(&mut self, _reader: &mut super::VmReader<super::Infallible>) {}
+    fn is_untyped(&self) -> bool {
+        false
+    }
+}
+// SAFETY: () carries no typed frame payload and does not inspect its bytes.
+unsafe impl AnyFrameMeta for () {
+    fn is_untyped(&self) -> bool {
+        true
+    }
+}
+#[path = "frame/meta.rs"]
+pub mod meta;
 
 /// How many times [`Frame::from_raw`] checked a frame's ownership, for the
 /// concurrency test.
 pub(crate) static OWNER_CHECKS: AtomicU64 = AtomicU64::new(0);
 
 /// A handle to a frame of the grant: one counted reference.
-#[derive(Debug)]
 pub struct Frame<M: AnyFrameMeta + ?Sized = ()> {
     paddr: Paddr,
     _marker: PhantomData<M>,
@@ -57,14 +70,13 @@ impl<M: AnyFrameMeta + ?Sized> Frame<M> {
     pub(crate) fn from_raw(paddr: Paddr) -> Self {
         OWNER_CHECKS.fetch_add(1, Ordering::Relaxed);
         allocator::note_from_raw(paddr, core::panic::Location::caller());
-        let refs = allocator::refcount(paddr)
-            .unwrap_or_else(|| {
-                let (base, n) = allocator::bounds();
-                panic!(
-                    "Frame::from_raw({:#x}): not a frame of the grant [{:#x}, +{} frames)",
-                    paddr, base, n
-                )
-            });
+        let refs = allocator::refcount(paddr).unwrap_or_else(|| {
+            let (base, n) = allocator::bounds();
+            panic!(
+                "Frame::from_raw({:#x}): not a frame of the grant [{:#x}, +{} frames)",
+                paddr, base, n
+            )
+        });
         assert!(
             refs > 0,
             "Frame::from_raw({:#x}): a stale frame, already given back",
@@ -113,6 +125,33 @@ impl<M: AnyFrameMeta + ?Sized> PartialEq for Frame<M> {
 }
 
 impl<M: AnyFrameMeta + ?Sized> Eq for Frame<M> {}
+
+// SAFETY: an owned pointer is one counted frame reference, encoded by its
+// 64-byte-aligned private metadata slot. RCU retains it until readers quiesce;
+// converting to/from it never transfers a Rust allocation or exposes page bytes.
+unsafe impl<M: AnyFrameMeta + ?Sized> crate::sync::non_null::NonNullPtr for Frame<M> {
+    type Target = PhantomData<Self>;
+    type Ref<'a>
+        = FrameRef<'a, M>
+    where
+        Self: 'a;
+    const ALIGN_BITS: u32 = 6;
+    fn into_raw(self) -> core::ptr::NonNull<Self::Target> {
+        let pointer = meta::identity(self.paddr).cast();
+        core::mem::forget(self);
+        pointer
+    }
+    unsafe fn from_raw(pointer: core::ptr::NonNull<Self::Target>) -> Self {
+        Frame::from_raw(meta::from_identity(pointer.cast()))
+    }
+    unsafe fn raw_as_ref<'a>(pointer: core::ptr::NonNull<Self::Target>) -> Self::Ref<'a> {
+        // SAFETY: the trait caller pins the original owned reference for 'a.
+        unsafe { FrameRef::borrow_paddr(meta::from_identity(pointer.cast())) }
+    }
+    fn ref_as_raw(reference: Self::Ref<'_>) -> core::ptr::NonNull<Self::Target> {
+        meta::identity(reference.inner.paddr).cast()
+    }
+}
 
 impl<M: AnyFrameMeta + ?Sized> super::HasPaddr for Frame<M> {
     fn paddr(&self) -> Paddr {
@@ -164,20 +203,15 @@ impl<M: AnyFrameMeta + ?Sized> Deref for FrameRef<'_, M> {
 
 impl<M: AnyFrameMeta + ?Sized> core::fmt::Debug for FrameRef<'_, M> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        f.debug_struct("FrameRef").field("paddr", &self.inner.paddr).finish()
+        f.debug_struct("FrameRef")
+            .field("paddr", &self.inner.paddr)
+            .finish()
     }
 }
 
 // A frame's contents, through the direct map, as real OSTD's `VmIo` for frames.
-impl<M: AnyFrameMeta + ?Sized> super::VmIo for Frame<M> {
-    fn read(&self, offset: usize, writer: &mut super::VmWriter) -> crate::prelude::Result<()> {
-        segment::read_at(self.paddr, super::PAGE_SIZE, offset, writer)
-    }
-
-    fn write(&self, offset: usize, reader: &mut super::VmReader) -> crate::prelude::Result<()> {
-        segment::write_at(self.paddr, super::PAGE_SIZE, offset, reader)
-    }
-}
+// VmIo is supplied by the common HasVmReaderWriter adapter, which also serves
+// the safe kernel's BioSegment and Slice owners.
 
 pub mod untyped {
     //! Untyped frames: frames that may be mapped into user space.
@@ -205,17 +239,9 @@ pub mod segment {
     use core::{marker::PhantomData, ops::Range};
 
     use super::{allocator, AnyFrameMeta, Frame};
-    use crate::{
-        mm::{
-            io::{Fallible, FallibleVmRead, FallibleVmWrite, VmIo, VmReader, VmWriter},
-            paddr_to_vaddr, HasPaddr, HasSize, Paddr, PAGE_SIZE,
-        },
-        prelude::Result,
-        Error,
-    };
+    use crate::mm::{HasPaddr, HasSize, Paddr, PAGE_SIZE};
 
     /// A contiguous run of frames of the grant; holds one reference on each.
-    #[derive(Debug)]
     pub struct Segment<M: AnyFrameMeta + ?Sized = ()> {
         pub(crate) range: Range<Paddr>,
         _marker: PhantomData<M>,
@@ -230,6 +256,13 @@ pub mod segment {
                 range,
                 _marker: PhantomData,
             }
+        }
+    }
+
+    impl<M: AnyFrameMeta + ?Sized> From<Frame<M>> for Segment<M> {
+        fn from(frame: Frame<M>) -> Self {
+            let paddr = frame.into_raw();
+            Self::from_range(paddr..paddr + PAGE_SIZE)
         }
     }
 
@@ -270,55 +303,9 @@ pub mod segment {
         }
     }
 
-    pub(super) fn read_at(
-        base: Paddr,
-        size: usize,
-        offset: usize,
-        writer: &mut VmWriter,
-    ) -> Result<()> {
-        let len = writer.avail();
-        if offset.checked_add(len).ok_or(Error::Overflow)? > size {
-            return Err(Error::InvalidArgs);
-        }
-        // SAFETY: the range is inside frames the caller holds references to.
-        let mut reader =
-            unsafe { VmReader::<Fallible>::from_kernel_range(paddr_to_vaddr(base + offset), len) };
-        writer
-            .write_fallible(&mut reader)
-            .map_err(|(err, _)| err)
-            .map(|_| ())
-    }
-
-    pub(super) fn write_at(
-        base: Paddr,
-        size: usize,
-        offset: usize,
-        reader: &mut VmReader,
-    ) -> Result<()> {
-        let len = reader.remain();
-        if offset.checked_add(len).ok_or(Error::Overflow)? > size {
-            return Err(Error::InvalidArgs);
-        }
-        // SAFETY: as above.
-        let mut writer =
-            unsafe { VmWriter::<Fallible>::from_kernel_range(paddr_to_vaddr(base + offset), len) };
-        reader
-            .read_fallible(&mut writer)
-            .map_err(|(err, _)| err)
-            .map(|_| ())
-    }
-
     // A segment is physically contiguous, so its linear-map alias is one run of
     // kernel virtual addresses and the copies need no page-by-page walk.
-    impl<M: AnyFrameMeta + ?Sized> VmIo for Segment<M> {
-        fn read(&self, offset: usize, writer: &mut VmWriter) -> Result<()> {
-            read_at(self.range.start, self.size(), offset, writer)
-        }
-
-        fn write(&self, offset: usize, reader: &mut VmReader) -> Result<()> {
-            write_at(self.range.start, self.size(), offset, reader)
-        }
-    }
+    // VmIo is supplied by the common owner adapter.
 }
 
 pub mod allocator {
@@ -390,7 +377,7 @@ pub mod allocator {
         NFRAMES.store(nframes, Ordering::Release);
     }
 
-    fn index(paddr: Paddr) -> Option<usize> {
+    pub(super) fn index(paddr: Paddr) -> Option<usize> {
         let base = BASE.load(Ordering::Relaxed);
         let total = NFRAMES.load(Ordering::Acquire);
         if paddr < base || paddr % PAGE_SIZE != 0 {
@@ -406,7 +393,10 @@ pub mod allocator {
 
     /// The grant's base and size in frames, for diagnostics.
     pub(crate) fn bounds() -> (Paddr, usize) {
-        (BASE.load(Ordering::Relaxed), NFRAMES.load(Ordering::Relaxed))
+        (
+            BASE.load(Ordering::Relaxed),
+            NFRAMES.load(Ordering::Relaxed),
+        )
     }
 
     /// The frame's reference count, or `None` if it is not a frame of the grant.
@@ -416,13 +406,21 @@ pub mod allocator {
 
     pub(crate) fn inc_ref(paddr: Paddr) {
         let i = index(paddr).expect("inc_ref of a frame outside the grant");
-        let old = REFS[i].fetch_add(1, Ordering::Relaxed);
-        assert!(old > 0, "a reference taken on a free frame {:#x}", paddr);
+        REFS[i]
+            .try_update(Ordering::Acquire, Ordering::Relaxed, |n| {
+                if n == 0 {
+                    None
+                } else {
+                    n.checked_add(1)
+                }
+            })
+            .expect("frame reference count is zero or exhausted");
     }
 
     /// Where each frame's reference was last taken back from a page table, for
     /// the report of a reference dropped twice.
-    static LAST_FROM_RAW: [core::sync::atomic::AtomicPtr<core::panic::Location<'static>>; MAX_FRAMES] =
+    static LAST_FROM_RAW: [core::sync::atomic::AtomicPtr<core::panic::Location<'static>>;
+        MAX_FRAMES] =
         [const { core::sync::atomic::AtomicPtr::new(core::ptr::null_mut()) }; MAX_FRAMES];
 
     pub(crate) fn note_from_raw(paddr: Paddr, at: &'static core::panic::Location<'static>) {
@@ -437,16 +435,31 @@ pub mod allocator {
         if old == 0 {
             let at = LAST_FROM_RAW[i].load(Ordering::Relaxed);
             if at.is_null() {
-                panic!("a reference dropped on a free frame {:#x} (never taken back from a table)", paddr);
+                panic!(
+                    "a reference dropped on a free frame {:#x} (never taken back from a table)",
+                    paddr
+                );
             }
             // SAFETY: only `&'static Location`s are stored.
             let at = unsafe { &*at };
-            panic!("a reference dropped on a free frame {:#x}; last taken back from a table at {}", paddr, at);
+            panic!(
+                "a reference dropped on a free frame {:#x}; last taken back from a table at {}",
+                paddr, at
+            );
         }
         if old == 1 {
             core::sync::atomic::fence(Ordering::Acquire);
+            // Metadata hooks and destructors must finish while the bitmap still
+            // reserves the physical frame; callbacks run without its lock.
+            super::meta::release(paddr);
             dealloc(paddr, 1);
         }
+    }
+
+    /// Current unallocated Grant bytes, without claiming host-wide RAM.
+    pub fn free_bytes() -> usize {
+        let total = NFRAMES.load(Ordering::Acquire);
+        total.saturating_sub(IN_USE.load(Ordering::Relaxed)) * PAGE_SIZE
     }
 
     /// How many frames of the grant are allocated.
@@ -503,9 +516,7 @@ pub mod allocator {
     fn zero(paddr: Paddr, nframes: usize) {
         // SAFETY: the run was just allocated out of the grant, so its linear-map
         // alias is valid for writes of `nframes` pages.
-        unsafe {
-            core::ptr::write_bytes(paddr_to_vaddr(paddr) as *mut u8, 0, nframes * PAGE_SIZE)
-        };
+        unsafe { core::ptr::write_bytes(paddr_to_vaddr(paddr) as *mut u8, 0, nframes * PAGE_SIZE) };
     }
 
     /// Options for allocating physical memory frames.
@@ -537,12 +548,14 @@ pub mod allocator {
         }
 
         /// Allocates a single frame with additional metadata.
-        pub fn alloc_frame_with<M: AnyFrameMeta>(&self, _metadata: M) -> Result<Frame<M>> {
+        pub fn alloc_frame_with<M: AnyFrameMeta>(&self, metadata: M) -> Result<Frame<M>> {
             let paddr = alloc(1).ok_or(Error::NoMemory)?;
             if self.zeroed {
                 zero(paddr, 1);
             }
-            Ok(Frame::from_raw_unchecked(paddr))
+            let frame = Frame::from_raw_unchecked(paddr);
+            super::meta::publish(paddr, metadata);
+            Ok(frame)
         }
 
         /// Allocates a contiguous range of frames.
@@ -554,7 +567,7 @@ pub mod allocator {
         pub fn alloc_segment_with<M: AnyFrameMeta, F>(
             &self,
             nframes: usize,
-            _metadata_fn: F,
+            mut metadata_fn: F,
         ) -> Result<Segment<M>>
         where
             F: FnMut(Paddr) -> M,
@@ -566,7 +579,120 @@ pub mod allocator {
             if self.zeroed {
                 zero(paddr, nframes);
             }
-            Ok(Segment::from_range(paddr..paddr + nframes * PAGE_SIZE))
+            let segment = Segment::from_range(paddr..paddr + nframes * PAGE_SIZE);
+            for index in 0..nframes {
+                let page = paddr + index * PAGE_SIZE;
+                super::meta::publish(page, metadata_fn(page));
+            }
+            Ok(segment)
         }
+    }
+}
+
+impl<M: untyped::AnyUFrameMeta + ?Sized> super::io::util::HasVmReaderWriter for Frame<M> {
+    type Types = super::io::util::VmReaderWriterIdentity;
+    fn reader(&self) -> super::VmReader<'_, super::Infallible> {
+        // SAFETY: this handle retains its allocated, untyped Grant frame.
+        unsafe {
+            super::VmReader::from_kernel_space(
+                super::paddr_to_vaddr(self.paddr) as *const u8,
+                super::PAGE_SIZE,
+            )
+        }
+    }
+    fn writer(&self) -> super::VmWriter<'_, super::Infallible> {
+        // SAFETY: bytes of untyped frames are accessed only through opaque copies.
+        unsafe {
+            super::VmWriter::from_kernel_space(
+                super::paddr_to_vaddr(self.paddr) as *mut u8,
+                super::PAGE_SIZE,
+            )
+        }
+    }
+}
+impl<M: untyped::AnyUFrameMeta + ?Sized> super::io::util::HasVmReaderWriter
+    for segment::Segment<M>
+{
+    type Types = super::io::util::VmReaderWriterIdentity;
+    fn reader(&self) -> super::VmReader<'_, super::Infallible> {
+        // SAFETY: the segment retains every frame in this checked contiguous run.
+        unsafe {
+            super::VmReader::from_kernel_space(
+                super::paddr_to_vaddr(self.range.start) as *const u8,
+                self.range.end - self.range.start,
+            )
+        }
+    }
+    fn writer(&self) -> super::VmWriter<'_, super::Infallible> {
+        // SAFETY: all retained frames are untyped and copies are opaque.
+        unsafe {
+            super::VmWriter::from_kernel_space(
+                super::paddr_to_vaddr(self.range.start) as *mut u8,
+                self.range.end - self.range.start,
+            )
+        }
+    }
+}
+
+impl<M: AnyFrameMeta> Frame<M> {
+    /// Borrows the authenticated metadata of this typed handle.
+    pub fn meta(&self) -> &M {
+        let metadata: &dyn core::any::Any = self.dyn_meta();
+        metadata
+            .downcast_ref::<M>()
+            .expect("frame metadata type mismatch")
+    }
+}
+impl<M: AnyFrameMeta + ?Sized> Frame<M> {
+    pub fn dyn_meta(&self) -> &dyn AnyFrameMeta {
+        // SAFETY: self owns a counted frame reference and therefore pins metadata.
+        unsafe { meta::borrow(self.paddr) }
+    }
+}
+
+impl<M: AnyFrameMeta + ?Sized> Clone for segment::Segment<M> {
+    fn clone(&self) -> Self {
+        let mut clone = Self::from_range(self.range.start..self.range.start);
+        let mut p = self.range.start;
+        while p < self.range.end {
+            allocator::inc_ref(p);
+            clone.range.end += super::PAGE_SIZE;
+            p += super::PAGE_SIZE;
+        }
+        clone
+    }
+}
+impl<M: AnyFrameMeta + ?Sized> segment::Segment<M> {
+    pub fn paddr_range(&self) -> core::ops::Range<Paddr> {
+        self.range.clone()
+    }
+}
+impl<M: AnyFrameMeta + ?Sized> super::Split for segment::Segment<M> {
+    fn split(self, offset: usize) -> (Self, Self) {
+        let size = self.range.end - self.range.start;
+        assert!(offset > 0 && offset < size && offset % super::PAGE_SIZE == 0);
+        let this = core::mem::ManuallyDrop::new(self);
+        let middle = this.range.start + offset;
+        (
+            Self::from_range(this.range.start..middle),
+            Self::from_range(middle..this.range.end),
+        )
+    }
+}
+impl<M: untyped::AnyUFrameMeta> From<segment::Segment<M>> for segment::USegment {
+    fn from(value: segment::Segment<M>) -> Self {
+        let value = core::mem::ManuallyDrop::new(value);
+        Self::from_range(value.range.clone())
+    }
+}
+
+impl<M: AnyFrameMeta + ?Sized> core::fmt::Debug for Frame<M> {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        f.debug_tuple("Frame").field(&self.paddr).finish()
+    }
+}
+impl<M: AnyFrameMeta + ?Sized> core::fmt::Debug for segment::Segment<M> {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        f.debug_tuple("Segment").field(&self.range).finish()
     }
 }

@@ -24,5 +24,5 @@ pub fn halt_cpu() {
         crate::vcpu::idle(0);
     }
 
-    super::scheduler::might_preempt();
+    super::scheduler::preempt_at_user_boundary();
 }

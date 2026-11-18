@@ -15,14 +15,25 @@ use core::sync::atomic::{AtomicU64, Ordering};
 use crate::{abi::svc, time::read_tsc};
 
 struct HostHeap;
+static LIVE_BYTES: AtomicU64 = AtomicU64::new(0);
+/// Live requested bytes retained by instance-owned Rust heap allocations.
+/// Linux allocator overhead is excluded from guest-visible accounting.
+pub fn allocated_bytes() -> usize {
+    LIVE_BYTES.load(Ordering::Relaxed) as usize
+}
 
 unsafe impl GlobalAlloc for HostHeap {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        (svc().mem_alloc)(layout.size() as u64, layout.align() as u64)
+        let ptr = (svc().mem_alloc)(layout.size() as u64, layout.align() as u64);
+        if !ptr.is_null() {
+            LIVE_BYTES.fetch_add(layout.size() as u64, Ordering::Relaxed);
+        }
+        ptr
     }
 
     unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
-        (svc().mem_free)(ptr, layout.size() as u64, layout.align() as u64)
+        (svc().mem_free)(ptr, layout.size() as u64, layout.align() as u64);
+        LIVE_BYTES.fetch_sub(layout.size() as u64, Ordering::Relaxed);
     }
 }
 

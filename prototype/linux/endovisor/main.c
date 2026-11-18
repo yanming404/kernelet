@@ -554,6 +554,9 @@ static long klet_dev_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 		return klet_kind_list(uarg);
 	case KLET_KIND_UNREGISTER:
 		return klet_kind_unregister(uarg);
+	case KLET_TYPEDIO_CREATE_DEVICE:
+		if (!capable(CAP_SYS_ADMIN)) return -EPERM;
+		return klet_tio_create_device(uarg);
 	case KLET_CREATE:
 		return klet_sandbox_create(uarg);
 	default:
@@ -601,6 +604,10 @@ static int __init klet_init(void)
 	if (!klet_wq)
 		return -ENOMEM;
 
+	err = klet_tio_host_init();
+	if (err) { destroy_workqueue(klet_wq); return err; }
+	err = klet_tio_vsock_register();
+	if (err) { klet_tio_host_exit(); destroy_workqueue(klet_wq); return err; }
 	klet_evict_init();
 	klet_watch_init();
 	klet_sched_init();
@@ -611,6 +618,8 @@ static int __init klet_init(void)
 		klet_sched_exit();
 		klet_watch_exit();
 		klet_evict_exit();
+		klet_tio_vsock_unregister();
+		klet_tio_host_exit();
 		destroy_workqueue(klet_wq);
 		return err;
 	}
@@ -628,6 +637,8 @@ static void __exit klet_exit(void)
 	int i;
 
 	misc_deregister(&klet_misc);
+	klet_tio_vsock_unregister();
+	klet_tio_host_exit();
 	unregister_binfmt(&klet_format);
 	/* Waits for a destroy that a release left to the exit path, and the drains. */
 	destroy_workqueue(klet_wq);

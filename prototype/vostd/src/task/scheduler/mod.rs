@@ -231,6 +231,12 @@ pub(super) fn end_resched_window() {
 /// the decision answers does not count as one made after it.
 #[track_caller]
 pub(crate) fn might_preempt() {
+    // Asterinas ThreadLocal/CpuSync requires a non-preemptible kernel. Explicit
+    // blocking/yield and the user/idle boundaries still perform scheduling.
+    #[cfg(not(feature = "asterinas"))]
+    preempt_at_user_boundary();
+}
+pub(crate) fn preempt_at_user_boundary() {
     if !cpu_local::should_preempt() {
         return;
     }

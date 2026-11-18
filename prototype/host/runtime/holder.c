@@ -43,6 +43,8 @@
 #define _GNU_SOURCE
 
 #include <stdio.h>
+#include <errno.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -54,8 +56,19 @@ static void usage(void)
 	fprintf(stderr, "usage: holder register NAME IMAGE\n"
 			"       holder run [-c CGROUP] [-p] [-k] [--console FILE] [--log FILE]\n"
 			"                  [--seccomp-kill NR] [--kill-after MS] [--klet-kill-after MS]\n"
-			"                  NAME NR_VCPUS [CMDLINE...]\n");
+			"                  [--typedio-fd FD] NAME NR_VCPUS [CMDLINE...]\n");
 	exit(2);
+}
+
+static void add_typedio_fd(struct sandbox_opts *opt, const char *value)
+{
+    char *end;
+    long descriptor;
+    errno = 0;
+    descriptor = strtol(value, &end, 10);
+    if (errno || !*value || *end || descriptor < 0 || descriptor > INT_MAX || opt->nr_typedio_fds == 8)
+        usage();
+    opt->typedio_fds[opt->nr_typedio_fds++] = descriptor;
 }
 
 int main(int argc, char **argv)
@@ -72,6 +85,14 @@ int main(int argc, char **argv)
 	}
 	if (argc < 2 || strcmp(argv[1], "run") != 0)
 		usage();
+	const char *inherited = getenv("KLET_TYPEDIO_FDS");
+	if (inherited && *inherited) {
+		char *copy = strdup(inherited), *save = NULL;
+		if (!copy) { perror("strdup"); return 1; }
+		for (char *field = strtok_r(copy, ",", &save); field; field = strtok_r(NULL, ",", &save))
+			add_typedio_fd(&opt, field);
+		free(copy);
+	}
 	argv += 2; argc -= 2;
 	while (argc > 0 && argv[0][0] == '-') {
 		const char *o = argv[0];
@@ -80,6 +101,8 @@ int main(int argc, char **argv)
 			opt.pin = 1; argv++; argc--;
 		} else if (strcmp(o, "-k") == 0) {
 			opt.kernel_log = 1; argv++; argc--;
+		} else if (argc > 1 && strcmp(o, "--typedio-fd") == 0) {
+			add_typedio_fd(&opt, argv[1]); argv += 2; argc -= 2;
 		} else if (argc > 1 && strcmp(o, "-c") == 0) {
 			opt.cgroup = argv[1]; argv += 2; argc -= 2;
 		} else if (argc > 1 && strcmp(o, "--console") == 0) {

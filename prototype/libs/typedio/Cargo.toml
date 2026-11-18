@@ -1,0 +1,15 @@
+[package]
+name = "typedio"
+version = "0.1.0"
+edition = "2021"
+license = "MPL-2.0"
+publish = false
+
+[dependencies]
+typedio-macros = { path = "../typedio-macros" }
+
+[dev-dependencies]
+trybuild = "1"
+
+[lints]
+workspace = true

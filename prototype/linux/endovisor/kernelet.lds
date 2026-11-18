@@ -35,7 +35,13 @@ SECTIONS
     .data.rel.ro : { *(.data.rel.ro .data.rel.ro.*) } :data
     .dynamic : { *(.dynamic) } :data :dynamic
     .got : { *(.got .got.*) } :data
-    .data : { *(.data .data.*) } :data
+    .data : {
+        *(.data .data.*)
+        . = ALIGN(8);
+        __kernelet_registrations_start = .;
+        KEEP(*(kernelet_registrations))
+        __kernelet_registrations_end = .;
+    } :data
     .bss (NOLOAD) : { *(.bss .bss.*) *(COMMON) } :data
 
     /* Keep unsupported sections so that garbage collection cannot hide them. */

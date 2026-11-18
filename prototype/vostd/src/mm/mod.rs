@@ -3,6 +3,8 @@
 //! Virtual memory (VM).
 
 pub(crate) mod backend;
+pub mod dma;
+pub mod fault;
 pub mod frame;
 pub mod heap;
 pub mod io;
@@ -22,7 +24,8 @@ pub use self::{
         Frame, FrameRef,
     },
     io::{
-        Fallible, FallibleVmRead, FallibleVmWrite, Infallible, VmIo, VmReader, VmWriter,
+        Fallible, FallibleVmRead, FallibleVmWrite, Infallible, PodAtomic, PodOnce, VmIo, VmIoFill,
+        VmIoOnce, VmReader, VmWriter,
     },
     page_prop::{CachePolicy, PageFlags, PageProperty},
     vm_space::{Cursor, CursorMut, VmQueriedItem, VmSpace},
@@ -31,6 +34,10 @@ use crate::arch::mm::PagingConsts;
 
 /// Virtual addresses.
 pub type Vaddr = usize;
+
+/// Kernel half of canonical virtual addresses on the supported four-level host.
+/// This description does not authorize dereferencing or mapping host memory.
+pub const KERNEL_VADDR_RANGE: core::ops::Range<Vaddr> = 0xffff_8000_0000_0000..usize::MAX;
 
 /// Physical addresses.
 pub type Paddr = usize;
@@ -89,3 +96,18 @@ pub trait HasSize {
 pub(crate) fn paddr_to_vaddr(paddr: Paddr) -> usize {
     crate::abi::linear_map_base() + paddr
 }
+
+/// Device-side address of a prepared buffer. It is not authority for host DMA.
+pub type Daddr = usize;
+pub trait HasDaddr {
+    fn daddr(&self) -> Daddr;
+}
+pub trait Split: Sized {
+    fn split(self, offset: usize) -> (Self, Self);
+}
+pub trait HasPaddrRange: HasPaddr + HasSize {
+    fn paddr_range(&self) -> core::ops::Range<Paddr> {
+        self.paddr()..self.paddr() + self.size()
+    }
+}
+impl<T: HasPaddr + HasSize> HasPaddrRange for T {}

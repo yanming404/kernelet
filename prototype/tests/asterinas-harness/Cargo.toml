@@ -1,0 +1,15 @@
+[package]
+name="typedio-asterinas-harness"
+version="0.1.0"
+edition="2024"
+publish=false
+[workspace]
+[lib]
+crate-type=["staticlib"]
+[dependencies]
+typedio-host-harness={path="../host-harness"}
+spin="0.10"
+bitflags="2"
+
+[features]
+typedio-polling=[]

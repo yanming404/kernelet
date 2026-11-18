@@ -28,7 +28,7 @@ use core::{
 use crate::arch::trap::RawUserContext;
 
 /// The ABI version. Bumped whenever any of the tables changes shape.
-pub const KLET_ABI_VERSION: u64 = 6;
+pub const KLET_ABI_VERSION: u64 = 8;
 
 /// What the endovisor tells the kernelet about the machine it was given.
 #[repr(C)]
@@ -211,6 +211,12 @@ pub struct Services {
     /// Writes one console line, what the kernel proper prints. No trailing
     /// newline. [`Services::log_write`] is the kernel log, vOSTD's own lines.
     pub console_write: unsafe extern "C" fn(ptr: *const u8, len: u64),
+    /// Versioned TypedIO metadata service; captures arguments synchronously.
+    pub typedio: unsafe extern "C" fn(call: *mut typedio::service::Call) -> i64,
+    /// Reads/writes actual current-user FS (0) or GS (1) base on the Linux stack.
+    /// operation=0 reads into value; operation=1 writes a checked user address.
+    /// The pointer is a synchronous initialized kernel scalar, never retained.
+    pub user_tls: unsafe extern "C" fn(which: u64, operation: u64, value: *mut u64) -> i64,
 }
 
 /// The kernelet functions the host may call.
@@ -354,7 +360,11 @@ pub(crate) fn linear_map_base() -> usize {
 pub(crate) fn space_rec(id: u64) -> &'static SpaceRec {
     let base = SPACE_RECS.load(Ordering::Relaxed);
     let n = NR_SPACE_RECS.load(Ordering::Relaxed);
-    assert!(base != 0 && id >= 1 && (id as usize) <= n, "no record for space {}", id);
+    assert!(
+        base != 0 && id >= 1 && (id as usize) <= n,
+        "no record for space {}",
+        id
+    );
     // SAFETY: the endovisor allocated `n` records at `base` for the instance's
     // lifetime, and every field is atomic.
     unsafe { &*((base as *const SpaceRec).add(id as usize - 1)) }
@@ -370,4 +380,9 @@ pub(crate) fn mem_stats() -> Option<&'static MemStats> {
         // lifetime, and every field is atomic.
         Some(unsafe { &*(p as *const MemStats) })
     }
+}
+
+/// Whether the version-checked platform service table has been published.
+pub fn platform_initialized() -> bool {
+    SERVICES.load(Ordering::Acquire) != 0
 }

@@ -20,7 +20,7 @@
 //! what is virtualized is the machine beneath them. See [`vcpu`].
 
 #![no_std]
-#![feature(negative_impls, sync_unsafe_cell)]
+#![feature(negative_impls, sync_unsafe_cell, linkage)]
 #![allow(non_upper_case_globals)]
 
 extern crate alloc;
@@ -33,6 +33,7 @@ pub mod cpu;
 mod error;
 pub mod irq;
 pub mod klet;
+pub mod log;
 pub mod mm;
 pub mod panic;
 pub mod power;
@@ -41,7 +42,9 @@ pub mod sync;
 pub mod task;
 pub mod time;
 pub mod timer;
+pub mod typedio;
 pub mod user;
+pub mod util;
 pub(crate) mod utils;
 pub(crate) mod vcpu;
 
@@ -84,19 +87,19 @@ pub(crate) unsafe extern "C" fn kernelet_entry(
     time::init(args.tsc_khz);
     mm::frame::allocator::init(args.grant_paddr as usize, args.grant_len as usize);
     mm::heap::init();
+    sync::init();
     arch::cpu::context::init_fpu(args.fpu_area_size as usize);
+    boot::register_image_components();
 
     // The sandbox's command line, once the heap can hold it.
     let cmdline = if args.cmdline_ptr != 0 && args.cmdline_len != 0 {
-        let bytes = core::slice::from_raw_parts(
-            args.cmdline_ptr as *const u8,
-            args.cmdline_len as usize,
-        );
+        let bytes =
+            core::slice::from_raw_parts(args.cmdline_ptr as *const u8, args.cmdline_len as usize);
         core::str::from_utf8(bytes).unwrap_or("")
     } else {
         ""
     };
-    boot::init(cmdline);
+    boot::init(cmdline, args.grant_paddr as usize, args.grant_len as usize);
 
     crate::early_println!(
         "vOSTD up: grant {:#x}..{:#x}, linear map {:#x}, {} vCPU(s), tsc {} kHz, fpu area {} B",

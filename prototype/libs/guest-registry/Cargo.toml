@@ -1,0 +1,13 @@
+[package]
+name = "kernelet-registry"
+version = "0.1.0"
+edition = "2021"
+license = "MPL-2.0"
+publish = false
+
+[dependencies]
+# The macro uses the same internal Node layout as inventory's submit macro.
+inventory = "=0.3.24"
+
+[lints]
+workspace = true

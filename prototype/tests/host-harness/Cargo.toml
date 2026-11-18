@@ -1,0 +1,14 @@
+[package]
+name = "typedio-host-harness"
+version = "0.1.0"
+edition = "2021"
+publish = false
+[workspace]
+[features]
+default = ["native-host"]
+native-host = []
+[lib]
+crate-type = ["staticlib", "rlib"]
+[dependencies]
+typedio-macros = {path="../../libs/typedio-macros"}
+ostd-pod = {path="../../../../asterinas/ostd/libs/ostd-pod",default-features=false}

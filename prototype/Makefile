@@ -99,6 +99,11 @@ CARGO_DIR  := $(BUILD)/cargo
 # any other name is an error.
 KLET_KERNEL ?= hello
 STATICLIB  := $(CARGO_DIR)/$(RUST_TARGET)/release/lib$(KLET_KERNEL).a
+KLET_SOURCE_DIR := $(CURDIR)
+KLET_PACKAGE := $(KLET_KERNEL)
+KLET_PROFILE := --release
+ASTERINAS_DIR ?= $(abspath $(CURDIR)/../../asterinas)
+KLET_INITRAMFS ?= $(BUILD)/asterinas-initramfs.cpio
 ifeq ($(KLET_KERNEL),hello)
 KERNEL_PROPER_DEP := kernel-proper-check $(CURDIR)/kernels/hello/hello
 else ifeq ($(KLET_KERNEL),probe)
@@ -111,8 +116,14 @@ else ifeq ($(KLET_KERNEL),mem)
 KERNEL_PROPER_DEP := $(CURDIR)/kernels/mem/mem
 else ifeq ($(KLET_KERNEL),piecheck)
 KERNEL_PROPER_DEP :=
+else ifeq ($(KLET_KERNEL),asterinas)
+KERNEL_PROPER_DEP := $(KLET_INITRAMFS)
+KLET_SOURCE_DIR := $(ASTERINAS_DIR)
+KLET_PACKAGE := asterinas-kernelet
+KLET_PROFILE := --profile kernelet
+STATICLIB := $(CARGO_DIR)/$(RUST_TARGET)/kernelet/libasterinas_kernelet.a
 else
-$(error KLET_KERNEL=$(KLET_KERNEL) is not a kernel proper of this repository: hello, probe, yieldk, schedk, mem or piecheck)
+$(error unsupported KLET_KERNEL=$(KLET_KERNEL): hello, probe, yieldk, schedk, mem, piecheck or asterinas)
 endif
 IMAGE      := $(BUILD)/$(KLET_KERNEL).image
 HELLO_ELF  := $(CURDIR)/kernels/hello/hello
@@ -304,10 +315,17 @@ $(HELLO_ELF): $(CURDIR)/kernels/hello/hello.S
 KLET_STACK_PAGES := 64
 KLET_LINKER_SCRIPT := linux/endovisor/kernelet.lds
 
+$(BUILD)/asterinas-init: $(ASTERINAS_DIR)/kernel/kernelet/init.S | $(BUILD)
+	gcc -static -nostdlib -no-pie -Wl,--build-id=none $< -o $@
+
+$(BUILD)/asterinas-initramfs.cpio: $(BUILD)/asterinas-init $(ASTERINAS_DIR)/kernel/kernelet/mkinitramfs.py
+	python3 $(ASTERINAS_DIR)/kernel/kernelet/mkinitramfs.py $< $@
+
 image: $(CRATES_STAMP) $(KERNEL_PROPER_DEP) $(KLET_LINKER_SCRIPT) tools/check-image.py
-	cd $(CURDIR) && CARGO_TARGET_DIR=$(CARGO_DIR) RUSTFLAGS="$(KLET_RUSTFLAGS)" \
+	cd $(KLET_SOURCE_DIR) && CARGO_TARGET_DIR=$(CARGO_DIR) RUSTFLAGS="$(KLET_RUSTFLAGS)" \
+	  KLET_INITRAMFS=$(abspath $(KLET_INITRAMFS)) \
 	  OSTD_TASK_STACK_SIZE_IN_PAGES=$(KLET_STACK_PAGES) \
-	  $(CARGO) build --offline --release -p $(KLET_KERNEL) \
+	  $(CARGO) build --offline --locked $(KLET_PROFILE) -p $(KLET_PACKAGE) \
 	    --target $(RUST_TARGET) $(KLET_BUILD_STD) || \
 	  { echo "image: the build failed; it is --offline, so if a crate is missing, run make crates (once, with a network)"; exit 1; }
 	ld -pie --no-dynamic-linker --no-undefined --gc-sections --exclude-libs ALL \
@@ -1274,3 +1292,8 @@ clean:
 # Also throws away the configured and built kernel.
 distclean: clean
 	-$(KBUILD) mrproper
+
+# Native TypedIO substrate checks; never starts QEMU or runs a benchmark.
+.PHONY: typedio-check
+typedio-check:
+	./typedio/check.sh

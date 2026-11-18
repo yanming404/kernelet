@@ -73,6 +73,9 @@ pub enum ReturnReason {
 
 /// Hooks that will be called during [`UserMode::execute`].
 pub trait UserModeHooks {
+    /// Restores per-thread TLS/FPU state before user execution, with virtual IRQs masked.
+    fn pre_user_run(&self, _guard: &crate::irq::DisabledLocalIrqGuard) {}
+
     /// Checks whether a kernel event is pending.
     fn has_kernel_event(&self) -> bool {
         false

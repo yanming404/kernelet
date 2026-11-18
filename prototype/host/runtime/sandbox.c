@@ -500,7 +500,13 @@ int run_sandbox(int sys_fd, const char *name, unsigned int nr_vcpus, const char 
 		if (err != 2)
 			close(err);
 	}
-	/* A disk would be attached here: KLET_ATTACH_DEVICE with its open file. */
+	/* Authorization is attached before the first carrier can start. */
+	for (i = 0; i < opt->nr_typedio_fds; i++) {
+		struct klet_device device = { .type = KLET_DEVICE_TYPEDIO, .fd = opt->typedio_fds[i] };
+		if (ioctl(sb.fd, KLET_ATTACH_DEVICE, &device) < 0)
+			die("KLET_ATTACH_DEVICE (TypedIO)");
+		close(opt->typedio_fds[i]); /* the attachment owns an independent reference */
+	}
 	if (ioctl(sb.fd, KLET_GET_STATS, &st) < 0)
 		die("KLET_GET_STATS");
 	sb.slot = (int)st.slot;

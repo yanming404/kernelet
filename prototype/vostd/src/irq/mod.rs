@@ -29,7 +29,11 @@ pub(crate) fn last_mask() -> Option<&'static core::panic::Location<'static>> {
     let v = crate::cpu::CpuId::current_racy().as_usize();
     let p = LAST_MASK[v].load(core::sync::atomic::Ordering::Relaxed);
     // SAFETY: only `&'static Location`s are stored.
-    if p.is_null() { None } else { Some(unsafe { &*p }) }
+    if p.is_null() {
+        None
+    } else {
+        Some(unsafe { &*p })
+    }
 }
 
 /// A guard for disabled virtual interrupts.
@@ -78,27 +82,22 @@ impl Drop for DisabledLocalIrqGuard {
     }
 }
 
-/// Where in the machine the current code is running.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum InterruptLevel {
-    /// Ordinary task (or bootstrap) context.
-    Task,
-    /// Inside a virtual-interrupt upcall.
-    Interrupt,
+mod bottom_half;
+mod level;
+pub use bottom_half::{register_bottom_half_handler_l1, register_bottom_half_handler_l2};
+pub use level::InterruptLevel;
+pub(crate) fn enter_scope(f: impl FnOnce(), privilege: crate::cpu::PrivilegeLevel) {
+    level::enter(f, privilege)
+}
+pub(crate) fn finish_bottom_half(number: u8) {
+    bottom_half::process(number)
 }
 
-impl InterruptLevel {
-    /// The level of the code calling this.
-    pub fn current() -> Self {
-        if crate::vcpu::in_upcall() {
-            Self::Interrupt
-        } else {
-            Self::Task
-        }
-    }
+mod line;
+pub(crate) use line::dispatch;
+pub use line::IrqLine;
 
-    /// Whether this is ordinary task context.
-    pub fn is_task_context(&self) -> bool {
-        *self == Self::Task
-    }
+/// Reports this vCPU's virtual IRQ state, without reading/modifying host IF.
+pub fn is_local_enabled() -> bool {
+    crate::arch::irq::is_local_enabled()
 }

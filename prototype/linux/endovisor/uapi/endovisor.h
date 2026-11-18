@@ -28,7 +28,7 @@
 #include <linux/types.h>
 
 // Returned by `KLET_GET_API_VERSION`; a runtime refuses any other value.
-#define KLET_API_VERSION	2
+#define KLET_API_VERSION	3
 
 // The ioctl type byte is chosen for the prototype.
 // `0xEB` is unassigned in `Documentation/userspace-api/ioctl/ioctl-number.rst` at v6.12.
@@ -219,7 +219,7 @@ struct klet_create {
 // and with `ESRCH` if the sandbox has been killed.
 #define KLET_GET_VCPU_EXEC_FD	_IOW(KLET_IOC, 0x10, __u32)
 
-// The ioctl for attaching a virtio device backed by an open file.
+// The ioctl for attaching an authorized device provider backed by an open file.
 //
 // `type` selects the device type, and `fd` is a file the caller opened.
 // The endovisor takes its own reference to the file;
@@ -236,9 +236,10 @@ struct klet_create {
 //
 // # Prototype limitations
 //
-// The prototype has no devices, so this ioctl fails with `EOPNOTSUPP`.
+// Block and TAP providers remain unsupported; TypedIO uses its provider FD.
 enum klet_device_type {
 	KLET_DEVICE_BLOCK	= 1,		// `fd`: a regular file or a block device
+	KLET_DEVICE_TYPEDIO = 3,          // fd: a registered TypedIO provider
 	KLET_DEVICE_NET	= 2,		// `fd`: a TAP interface
 };
 #define KLET_DEVICE_READONLY	0x1
@@ -391,5 +392,14 @@ struct klet_stats {
 	struct klet_exit exit;			// out: final exit record, zero before exit
 };
 #define KLET_GET_STATS		_IOWR(KLET_IOC, 0x17, struct klet_stats)
+
+// The ioctl for creating an authorized TypedIO provider descriptor.
+// Protocol/schema/features must match a registered kernel backend.
+// Configuration is validated by that backend before the close-on-exec FD is returned.
+// The FD may be attached once, before the target sandbox starts.
+// # Security
+// Requires access to /dev/endovisor; attaching still enforces sandbox cgroup ownership.
+#include "typedio.h"
+#define KLET_TYPEDIO_CREATE_DEVICE _IOW(KLET_IOC, 0x05, struct klet_tio_descriptor)
 
 #endif // `_UAPI_LINUX_KLET_H`

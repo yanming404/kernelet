@@ -3,3 +3,4 @@
 //! The CPU context of user mode and the floating-point state.
 
 pub mod context;
+pub mod cpuid;

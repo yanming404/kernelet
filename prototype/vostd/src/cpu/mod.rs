@@ -15,7 +15,7 @@ pub const MAX_CPUS: usize = 8;
 static NUM_CPUS: AtomicU32 = AtomicU32::new(1);
 
 /// The ID of a virtual CPU in the sandbox.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct CpuId(u32);
 
 impl CpuId {
@@ -114,4 +114,15 @@ pub enum PrivilegeLevel {
     User = 0,
     /// Kernel mode.
     Kernel = 1,
+}
+
+// SAFETY: checked CpuId construction and the boot-fixed CPU count establish a
+// bijection to [0,num_cpus()). No host CPU identifier crosses this interface.
+unsafe impl crate::util::id_set::Id for CpuId {
+    unsafe fn new_unchecked(raw_id: u32) -> Self {
+        Self(raw_id)
+    }
+    fn cardinality() -> u32 {
+        num_cpus() as u32
+    }
 }

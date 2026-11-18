@@ -129,3 +129,13 @@ macro_rules! console_println {
         $crate::console::console_print(format_args!(concat!($fmt, "\n") $(, $($arg)+)?))
     }
 }
+
+/// Sends arbitrary console bytes through the existing bounded line sink.
+/// No pointer is retained by the host service.
+pub fn write_bytes(bytes: &[u8]) {
+    let mut writer = LineWriter::new(Sink::Console);
+    for byte in bytes {
+        writer.push(*byte);
+    }
+    writer.flush();
+}

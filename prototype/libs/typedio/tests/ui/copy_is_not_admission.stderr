@@ -1,0 +1,26 @@
+error[E0277]: the trait bound `Unchecked: Message` is not satisfied
+ --> tests/ui/copy_is_not_admission.rs:4:10
+  |
+4 | #[derive(typedio::Message)]
+  |          ^^^^^^^^^^^^^^^^ unsatisfied trait bound
+  |
+help: the trait `Message` is not implemented for `Unchecked`
+ --> tests/ui/copy_is_not_admission.rs:3:1
+  |
+3 | struct Unchecked(u32);
+  | ^^^^^^^^^^^^^^^^
+  = help: the following other types implement trait `Message`:
+            ()
+            (A, B)
+            (A, B, C)
+            (A, B, C, D)
+            (A, B, C, D, E)
+            (A, B, C, D, E, F)
+            (A, B, C, D, E, F, G)
+            (A, B, C, D, E, F, G, H)
+          and $N others
+  = note: this error originates in the derive macro `typedio::Message` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+  |
+2 + #![feature(trivial_bounds)]
+  |

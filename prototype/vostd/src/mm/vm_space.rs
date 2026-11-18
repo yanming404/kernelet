@@ -34,7 +34,7 @@ use super::{
     io::{Fallible, VmReader, VmWriter},
     is_in_user_space, page_table,
     tlb::{FlushTarget, TlbFlusher},
-    CachePolicy, PageFlags, PageProperty, Paddr, UFrame, Vaddr, MAX_USERSPACE_VADDR, PAGE_SIZE,
+    CachePolicy, Paddr, PageFlags, PageProperty, UFrame, Vaddr, MAX_USERSPACE_VADDR, PAGE_SIZE,
 };
 use crate::{
     abi,
@@ -106,8 +106,7 @@ impl VmSpace {
                 } else {
                     cur + 1
                 };
-                if w
-                    .compare_exchange(cur, new, Ordering::Acquire, Ordering::Relaxed)
+                if w.compare_exchange(cur, new, Ordering::Acquire, Ordering::Relaxed)
                     .is_ok()
                 {
                     return;
@@ -119,8 +118,7 @@ impl VmSpace {
             // changes. Nothing spins.
             let want = cur | WAITERS | if exclusive { WRITER_WAITING } else { 0 };
             if want != cur
-                && w
-                    .compare_exchange(cur, want, Ordering::Relaxed, Ordering::Relaxed)
+                && w.compare_exchange(cur, want, Ordering::Relaxed, Ordering::Relaxed)
                     .is_err()
             {
                 LOCK_CAS_RETRIES.fetch_add(1, Ordering::Relaxed);
@@ -141,7 +139,11 @@ impl VmSpace {
             let mut old = w.load(Ordering::Relaxed);
             loop {
                 let dec = old - 1;
-                let new = if dec & READERS == 0 { dec & !WAITERS } else { dec };
+                let new = if dec & READERS == 0 {
+                    dec & !WAITERS
+                } else {
+                    dec
+                };
                 match w.compare_exchange_weak(old, new, Ordering::Release, Ordering::Relaxed) {
                     Ok(_) => break,
                     Err(cur) => old = cur,
@@ -191,7 +193,9 @@ pub struct VmSpace {
 
 impl core::fmt::Debug for VmSpace {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        f.debug_struct("VmSpace").field("backend", &self.backend).finish()
+        f.debug_struct("VmSpace")
+            .field("backend", &self.backend)
+            .finish()
     }
 }
 
@@ -307,8 +311,7 @@ impl VmSpace {
     }
 
     fn check_active(&self, vaddr: Vaddr, len: usize) -> Result<()> {
-        if current_page_table_paddr() != self.backend().token() || !is_in_user_space(vaddr, len)
-        {
+        if current_page_table_paddr() != self.backend().token() || !is_in_user_space(vaddr, len) {
             return Err(Error::AccessDenied);
         }
         Ok(())
@@ -367,6 +370,27 @@ impl Drop for VmSpace {
 crate::cpu_local_cell! {
     /// The space active on this vCPU, holding one reference, as the tree's.
     static ACTIVATED: *const VmSpace = core::ptr::null();
+}
+
+pub(crate) fn flush_current(start: Vaddr, len: usize) {
+    let _pin = disable_preempt();
+    let pointer = ACTIVATED.load();
+    if !pointer.is_null() {
+        // SAFETY: ACTIVATED owns an Arc, and this vCPU remains pinned.
+        unsafe { &*pointer }.backend().flush(start, len);
+    }
+}
+
+pub(crate) fn current_root() -> Option<Paddr> {
+    let _pin = disable_preempt();
+    let pointer = ACTIVATED.load();
+    if pointer.is_null() {
+        None
+    } else {
+        // SAFETY: this vCPU retains an Arc reference on its activated space;
+        // the pin prevents a task switch while the pointer is borrowed.
+        Some(unsafe { &*pointer }.root())
+    }
 }
 
 fn check_range(va: &Range<Vaddr>) -> Result<()> {
@@ -451,7 +475,10 @@ impl Core<'_> {
 
     fn find_next(&mut self, len: usize) -> Option<Vaddr> {
         let end = self.va + len;
-        assert!(end <= self.range.end, "find_next past the end of the cursor's range");
+        assert!(
+            end <= self.range.end,
+            "find_next past the end of the cursor's range"
+        );
         match self.next_mapped(self.va, end) {
             Some(v) => {
                 self.va = v;
@@ -561,7 +588,10 @@ impl<'a> CursorMut<'a> {
     /// (which on the tree is a page-table node it cannot allocate).
     pub fn map(&mut self, frame: UFrame, prop: PageProperty) {
         let va = self.core.va;
-        assert!(va < self.core.range.end, "the cursor is past the end of its range");
+        assert!(
+            va < self.core.range.end,
+            "the cursor is past the end of its range"
+        );
         let space = self.core.space;
 
         if !prop.flags.contains(PageFlags::R) {
@@ -606,7 +636,10 @@ impl<'a> CursorMut<'a> {
         assert!(len % PAGE_SIZE == 0, "unmap of an unaligned length");
         let start = self.core.va;
         let end = start + len;
-        assert!(end <= self.core.range.end, "unmap past the end of the cursor's range");
+        assert!(
+            end <= self.core.range.end,
+            "unmap past the end of the cursor's range"
+        );
         let space = self.core.space;
 
         // The leaves, read through the direct map before the host clears them.
@@ -649,7 +682,10 @@ impl<'a> CursorMut<'a> {
         mut op: impl FnMut(&mut PageFlags, &mut CachePolicy),
     ) -> Option<Range<Vaddr>> {
         let end = self.core.va + len;
-        assert!(end <= self.core.range.end, "protect_next past the end of the cursor's range");
+        assert!(
+            end <= self.core.range.end,
+            "protect_next past the end of the cursor's range"
+        );
         let Some(va) = self.core.next_mapped(self.core.va, end) else {
             self.core.va = end;
             return None;
@@ -705,6 +741,7 @@ pub enum VmQueriedItem<'a> {
     },
     /// The slot is mapped to device memory. Never produced on this host:
     /// `map_iomem` is refused in the first version.
+    #[cfg(not(feature = "asterinas"))]
     MappedIoMem {
         /// The physical address.
         paddr: Paddr,
@@ -718,6 +755,7 @@ impl VmQueriedItem<'_> {
     pub fn prop(&self) -> &PageProperty {
         match self {
             Self::MappedRam { prop, .. } => prop,
+            #[cfg(not(feature = "asterinas"))]
             Self::MappedIoMem { prop, .. } => prop,
         }
     }

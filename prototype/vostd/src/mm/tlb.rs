@@ -42,7 +42,10 @@ impl TlbFlushOp {
 
     /// Flushes a range of pages.
     pub const fn for_range(range: Range<Vaddr>) -> Self {
-        assert!(range.start % PAGE_SIZE == 0, "range start must be page-aligned");
+        assert!(
+            range.start % PAGE_SIZE == 0,
+            "range start must be page-aligned"
+        );
         assert!(range.end % PAGE_SIZE == 0, "range end must be page-aligned");
         assert!(range.start < range.end, "range must not be empty");
         let num_pages = (range.end - range.start) / PAGE_SIZE;
@@ -50,6 +53,17 @@ impl TlbFlushOp {
             return TlbFlushOp::for_all();
         }
         TlbFlushOp(range.start | num_pages)
+    }
+
+    /// Flushes the active space through the host's synchronous shootdown.
+    /// This is stronger than a local flush and also covers carrier migration.
+    pub fn perform_on_current(&self) {
+        let (start, len) = if self.is_all() {
+            (0, usize::MAX)
+        } else {
+            (self.start(), self.num_pages() * PAGE_SIZE)
+        };
+        super::vm_space::flush_current(start, len);
     }
 
     fn is_all(&self) -> bool {

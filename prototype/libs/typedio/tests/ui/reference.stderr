@@ -1,0 +1,19 @@
+error[E0277]: the trait bound `&'static u8: Message` is not satisfied
+ --> tests/ui/reference.rs:2:10
+  |
+2 | #[derive(typedio::Message)]
+  |          ^^^^^^^^^^^^^^^^ the trait `Message` is not implemented for `&'static u8`
+  |
+help: the trait `Message` is implemented for `u8`
+ --> src/message.rs
+  |
+  |         unsafe impl Message for $ty {
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+  | integer!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize, f32, f64);
+  | ---------------------------------------------------------------------------------- in this macro invocation
+  = note: this error originates in the derive macro `typedio::Message` which comes from the expansion of the macro `integer` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+  |
+2 + #![feature(trivial_bounds)]
+  |

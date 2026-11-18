@@ -29,7 +29,7 @@ pub struct CpuLocal<T> {
 
 // SAFETY: each virtual CPU only ever touches its own slot, and a caller must
 // hold a guard that pins it to that virtual CPU.
-unsafe impl<T> Sync for CpuLocal<T> {}
+unsafe impl<T: Send> Sync for CpuLocal<T> {}
 
 impl<T> CpuLocal<T> {
     /// Creates the variable with one copy of `init` per virtual CPU.
@@ -40,7 +40,7 @@ impl<T> CpuLocal<T> {
     }
 
     /// Returns this virtual CPU's copy.
-    pub fn get_with<G: super::PinCurrentCpu>(&self, guard: &G) -> &T {
+    pub fn get_with<'a, G: super::PinCurrentCpu>(&'a self, guard: &'a G) -> &'a T {
         let index = guard.current_cpu().as_usize();
         // SAFETY: the guard pins the current task to this virtual CPU, so
         // nothing else touches this slot.
@@ -58,7 +58,11 @@ unsafe impl<T: Copy> Sync for CpuLocalCell<T> {}
 
 impl<T: Copy> CpuLocalCell<T> {
     /// Creates the variable with `init` on every virtual CPU.
-    pub const fn new(init: T) -> Self {
+    /// # Safety
+    /// Used only for static per-vCPU initializers whose copied initial values
+    /// do not introduce cross-vCPU aliases to unsynchronized objects.
+    #[doc(hidden)]
+    pub const unsafe fn __new(init: T) -> Self {
         Self {
             slots: UnsafeCell::new([init; MAX_CPUS]),
         }
@@ -94,10 +98,10 @@ impl<T: Copy> CpuLocalCell<T> {
 /// `MAX_CPUS` in step.
 #[macro_export]
 macro_rules! cpu_local {
-    ($( $(#[$attr:meta])* static $name:ident : $t:ty = $init:expr; )*) => {
+    ($( $(#[$attr:meta])* $vis:vis static $name:ident : $t:ty = $init:expr; )*) => {
         $(
             $(#[$attr])*
-            static $name: $crate::cpu::local::CpuLocal<$t> =
+            $vis static $name: $crate::cpu::local::CpuLocal<$t> =
                 $crate::cpu::local::CpuLocal::new(
                     [$init, $init, $init, $init, $init, $init, $init, $init]
                 );
@@ -105,16 +109,20 @@ macro_rules! cpu_local {
     };
 }
 
-const _: () = assert!(MAX_CPUS == 8, "the cpu_local! macro writes out 8 initialisers");
+const _: () = assert!(
+    MAX_CPUS == 8,
+    "the cpu_local! macro writes out 8 initialisers"
+);
 
 /// Declares CPU-local words.
 #[macro_export]
 macro_rules! cpu_local_cell {
-    ($( $(#[$attr:meta])* static $name:ident : $t:ty = $init:expr; )*) => {
+    ($( $(#[$attr:meta])* $vis:vis static $name:ident : $t:ty = $init:expr; )*) => {
         $(
             $(#[$attr])*
-            static $name: $crate::cpu::local::CpuLocalCell<$t> =
-                $crate::cpu::local::CpuLocalCell::new($init);
+            $vis static $name: $crate::cpu::local::CpuLocalCell<$t> =
+                // SAFETY: static initializer, with one independent word per vCPU.
+                unsafe { $crate::cpu::local::CpuLocalCell::__new($init) };
         )*
     };
 }
@@ -185,5 +193,77 @@ impl AtomicCpuSet {
     /// Whether the set holds `cpu`.
     pub fn contains(&self, cpu: CpuId, order: Ordering) -> bool {
         self.0.load(order) & (1 << cpu.as_usize()) != 0
+    }
+}
+
+/// Static CPU-local storage uses per-vCPU instances rather than host GS offsets.
+pub type StaticCpuLocal<T> = CpuLocal<T>;
+impl<T: Sync> CpuLocal<T> {
+    /// Remote read is safe only for values that admit concurrent shared access.
+    pub fn get_on_cpu(&self, cpu: CpuId) -> &T {
+        // SAFETY: CpuId is checked; T: Sync permits shared cross-vCPU access.
+        unsafe { &(*self.slots.get())[cpu.as_usize()] }
+    }
+}
+impl CpuSet {
+    pub fn is_full(&self) -> bool {
+        self.0 == Self::new_full().0
+    }
+    pub fn iter_in<'a, R: core::ops::RangeBounds<CpuId> + 'a>(
+        &'a self,
+        range: R,
+    ) -> impl Iterator<Item = CpuId> + 'a {
+        self.iter().filter(move |cpu| range.contains(cpu))
+    }
+}
+impl AtomicCpuSet {
+    pub fn load(&self, order: Ordering) -> CpuSet {
+        CpuSet(self.0.load(order))
+    }
+    pub fn store(&self, set: &CpuSet, order: Ordering) {
+        self.0.store(set.0, order);
+    }
+}
+
+#[path = "local/dynamic.rs"]
+mod dynamic;
+pub use dynamic::{DynCpuLocalChunk, DynamicCpuLocal};
+
+// Each operation is one x86 memory RMW. No load/modify/store sequence can lose
+// an update when an IRQ touches the same CPU-local word between instructions.
+macro_rules! cell_rmw {
+    ($t:ty,$width:literal,$modifier:literal)=>{
+        impl CpuLocalCell<$t>{
+            pub fn add_assign(&self,value:$t){unsafe{core::arch::asm!(concat!("add ",$width," ptr [{p}],{v",$modifier,"}"),p=in(reg)self.slot(),v=in(reg)value,options(nostack));}}
+            pub fn sub_assign(&self,value:$t){unsafe{core::arch::asm!(concat!("sub ",$width," ptr [{p}],{v",$modifier,"}"),p=in(reg)self.slot(),v=in(reg)value,options(nostack));}}
+            pub fn bitor_assign(&self,value:$t){unsafe{core::arch::asm!(concat!("or ",$width," ptr [{p}],{v",$modifier,"}"),p=in(reg)self.slot(),v=in(reg)value,options(nostack));}}
+            pub fn bitand_assign(&self,value:$t){unsafe{core::arch::asm!(concat!("and ",$width," ptr [{p}],{v",$modifier,"}"),p=in(reg)self.slot(),v=in(reg)value,options(nostack));}}
+        }
+    };
+}
+cell_rmw!(u16, "word", ":x");
+cell_rmw!(u32, "dword", ":e");
+cell_rmw!(u64, "qword", "");
+cell_rmw!(usize, "qword", "");
+impl CpuLocalCell<u8> {
+    pub fn add_assign(&self, value: u8) {
+        unsafe {
+            core::arch::asm!("add byte ptr [{p}],{v}",p=in(reg)self.slot(),v=in(reg_byte)value,options(nostack));
+        }
+    }
+    pub fn sub_assign(&self, value: u8) {
+        unsafe {
+            core::arch::asm!("sub byte ptr [{p}],{v}",p=in(reg)self.slot(),v=in(reg_byte)value,options(nostack));
+        }
+    }
+    pub fn bitor_assign(&self, value: u8) {
+        unsafe {
+            core::arch::asm!("or byte ptr [{p}],{v}",p=in(reg)self.slot(),v=in(reg_byte)value,options(nostack));
+        }
+    }
+    pub fn bitand_assign(&self, value: u8) {
+        unsafe {
+            core::arch::asm!("and byte ptr [{p}],{v}",p=in(reg)self.slot(),v=in(reg_byte)value,options(nostack));
+        }
     }
 }

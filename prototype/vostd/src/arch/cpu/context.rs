@@ -14,6 +14,20 @@ use crate::{
 const RFLAGS_IF: usize = 1 << 9;
 const RFLAGS_ID: usize = 1 << 21;
 
+/// User-modifiable flags used by Linux-compatible signal restoration.
+/// Privileged IF/IOPL bits remain outside this mask.
+pub const USER_MODIFIABLE_RFLAGS: usize = (1 << 0)
+    | (1 << 2)
+    | (1 << 4)
+    | (1 << 6)
+    | (1 << 7)
+    | (1 << 8)
+    | (1 << 10)
+    | (1 << 11)
+    | (1 << 14)
+    | (1 << 16)
+    | (1 << 18);
+
 /// Userspace CPU context, including general-purpose registers and exception
 /// information.
 #[repr(C)]
@@ -75,6 +89,8 @@ pub enum CpuException {
     InvalidOpcode,
     ///  7 - #NM  Device not available (FPU/MMX/SSE disabled).
     DeviceNotAvailable,
+    /// 12 - #SS Stack segment fault.
+    StackSegmentFault(SelectorErrorCode),
     /// 13 - #GP  General protection fault.
     GeneralProtectionFault(Option<SelectorErrorCode>),
     /// 14 - #PF  Page fault.
@@ -99,6 +115,7 @@ impl CpuException {
             5 => Self::BoundRangeExceeded,
             6 => Self::InvalidOpcode,
             7 => Self::DeviceNotAvailable,
+            12 => Self::StackSegmentFault(SelectorErrorCode(error_code)),
             13 => {
                 let error_code = if error_code == 0 {
                     None
@@ -114,7 +131,7 @@ impl CpuException {
             16 => Self::X87FloatingPointException,
             17 => Self::AlignmentCheck,
             19 => Self::SIMDFloatingPointException,
-            2 | 8..=12 | 15 | 18 | 20..=31 => Self::Reserved,
+            2 | 8..=11 | 15 | 18 | 20..=31 => Self::Reserved,
             _ => return None,
         };
 
@@ -201,6 +218,16 @@ impl UserContextApiInternal for UserContext {
         self.user_context.general.rflags |= RFLAGS_IF | RFLAGS_ID;
 
         loop {
+            #[cfg(feature = "asterinas")]
+            {
+                crate::task::scheduler::preempt_at_user_boundary();
+                let guard = crate::irq::disable_local();
+                hooks.pre_user_run(&guard);
+                // Kernel preemption is disabled in this platform mode. IRQ
+                // handlers preserve live FPU/TLS; a later loop re-enters the
+                // explicit scheduling boundary before restoring state again.
+                drop(guard);
+            }
             match self.user_context.run() {
                 0 => return ReturnReason::UserSyscall,
                 1 => {
@@ -331,8 +358,13 @@ impl FpuContext {
     /// Creates a new FPU context.
     pub fn new() -> Self {
         let area_size = FPU_AREA_SIZE.load(core::sync::atomic::Ordering::Relaxed);
+        let mut area = alloc::boxed::Box::new(XSaveArea([0; MAX_FPU_AREA_SIZE]));
+        // Legacy FXSAVE initial values also make the no-XSAVE host path valid.
+        // The zero XSAVE header requests initial state for all admitted features.
+        area.0[0..2].copy_from_slice(&0x037fu16.to_ne_bytes());
+        area.0[24..28].copy_from_slice(&0x1f80u32.to_ne_bytes());
         Self {
-            xsave_area: alloc::boxed::Box::new(XSaveArea([0; MAX_FPU_AREA_SIZE])),
+            xsave_area: area,
             area_size,
         }
     }
@@ -381,3 +413,7 @@ impl Clone for FpuContext {
         }
     }
 }
+
+#[path = "context/user_tls.rs"]
+mod user_tls;
+pub use user_tls::{FsBase, GsBase};

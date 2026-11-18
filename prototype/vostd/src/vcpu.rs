@@ -276,6 +276,7 @@ global_asm!(
     "  push r15",
     "  mov rbp, rsp",
     "  and rsp, -16",
+    "  mov rdi, rbp",
     "  call klet_virq_body",
     "  mov rsp, rbp",
     "  mov [rsp + 128], rax",
@@ -316,7 +317,7 @@ extern "C" {
 /// and the record this frame acts on is the one it was entered on, not whichever
 /// vCPU it happens to be on when it returns.
 #[no_mangle]
-extern "C" fn klet_virq_body() -> u64 {
+extern "C" fn klet_virq_body(saved: *const usize) -> u64 {
     let rec = vrec();
     let ip = unsafe { core::ptr::read_volatile(rec.virq_ip.get()) } as usize;
 
@@ -335,7 +336,12 @@ extern "C" fn klet_virq_body() -> u64 {
         host_preempt_inc();
     }
 
-    run_handlers(rec);
+    // SAFETY: entry assembly passes its real saved register block.
+    let frame = unsafe { crate::arch::trap::TrapFrame::from_saved(saved, ip) };
+    let previous = IN_VIRQ.load();
+    IN_VIRQ.store(true);
+    run_handlers(rec, &frame);
+    IN_VIRQ.store(previous);
 
     // The `iret`: hand the mirror back and unmask, in that order.
     let host_wants_cpu = if owns_mirror {
@@ -360,26 +366,39 @@ extern "C" fn klet_virq_body() -> u64 {
 }
 
 /// Takes every pending virtual interrupt of `rec` and runs what it means.
-fn run_handlers(rec: &VcpuRec) {
-    loop {
-        let pending = rec.pending.swap(0, Ordering::AcqRel);
-        if pending == 0 {
-            break;
-        }
-        if pending & VIRQ_TICK != 0 {
-            crate::timer::call_timer_callback_functions();
-        }
-        if pending & (VIRQ_KICK | VIRQ_LINES) != 0 {
-            // What a reschedule IPI means: look again at who should run.
-            crate::task::preempt::cpu_local::set_need_preempt();
-        }
-    }
+fn run_handlers(rec: &VcpuRec, frame: &crate::arch::trap::TrapFrame) {
+    let privilege = if USER_DELIVERY.load() {
+        crate::cpu::PrivilegeLevel::User
+    } else {
+        crate::cpu::PrivilegeLevel::Kernel
+    };
+    crate::irq::enter_scope(
+        || loop {
+            let pending = rec.pending.swap(0, Ordering::AcqRel);
+            if pending == 0 {
+                break;
+            }
+            if pending & VIRQ_TICK != 0 {
+                crate::timer::call_timer_callback_functions();
+                crate::irq::finish_bottom_half(32);
+            }
+            if pending & VIRQ_LINES != 0 {
+                crate::irq::dispatch(frame);
+            }
+            if pending & VIRQ_KICK != 0 {
+                crate::task::preempt::cpu_local::set_need_preempt();
+                crate::irq::finish_bottom_half(33);
+            }
+        },
+        privilege,
+    );
 }
 
 crate::cpu_local_cell! {
     /// Whether this vCPU is inside `handle_virq`. Stops the guard-drop delivery
     /// path from recursing into the handler it is running under.
     static IN_VIRQ: bool = false;
+    static USER_DELIVERY: bool = false;
 }
 
 /// Delivers pending virtual interrupts from ordinary kernelet code, which is what
@@ -395,7 +414,8 @@ pub(crate) fn handle_virq() {
         // endovisor; here vOSTD does it itself, and dropping the guard hands the
         // mirror back and asks the host to reschedule if it wanted to.
         let _guard = crate::irq::disable_local();
-        run_handlers(vrec());
+        // SAFETY: the entry saves a real synchronous delivery context.
+        unsafe { klet_sync_irq_entry() };
     }
 
     // Cleared before the switch below, because the switch may not come back on
@@ -416,10 +436,13 @@ pub(crate) fn deliver_no_switch() {
         return;
     }
     IN_VIRQ.store(true);
+    USER_DELIVERY.store(true);
     {
         let _guard = crate::irq::disable_local();
-        run_handlers(vrec());
+        // SAFETY: the entry saves a real synchronous delivery context.
+        unsafe { klet_sync_irq_entry() };
     }
+    USER_DELIVERY.store(false);
     IN_VIRQ.store(false);
 }
 
@@ -496,3 +519,62 @@ pub(crate) fn on_spin() {
     // SAFETY: as above.
     unsafe { (svc().vcpu_on_spin)() }
 }
+
+extern "C" {
+    fn klet_sync_irq_entry();
+}
+#[no_mangle]
+extern "C" fn klet_sync_irq_body(saved: *const usize) {
+    // SAFETY: the assembly entry saved a real return address after its GPR block.
+    let ip = unsafe { *saved.add(16) };
+    // SAFETY: that block stays on this masked vCPU stack through callback return.
+    let frame = unsafe { crate::arch::trap::TrapFrame::from_saved(saved, ip) };
+    run_handlers(vrec(), &frame);
+}
+
+global_asm!(
+    r#"
+.pushsection .text.klet_sync_irq_entry,"ax",@progbits
+.globl klet_sync_irq_entry
+klet_sync_irq_entry:
+pushfq
+push rax
+push rcx
+push rdx
+push rbx
+push rbp
+push rsi
+push rdi
+push r8
+push r9
+push r10
+push r11
+push r12
+push r13
+push r14
+push r15
+mov rbp,rsp
+mov rdi,rsp
+and rsp,-16
+call klet_sync_irq_body
+mov rsp,rbp
+pop r15
+pop r14
+pop r13
+pop r12
+pop r11
+pop r10
+pop r9
+pop r8
+pop rdi
+pop rsi
+pop rbp
+pop rbx
+pop rdx
+pop rcx
+pop rax
+popfq
+ret
+.popsection
+"#
+);

@@ -87,6 +87,8 @@
 #include <asm/asm.h>
 #include <asm/cpufeature.h>
 #include <asm/fpu/api.h>
+#include <asm/fsgsbase.h>
+#include <asm/gsseg.h>
 #include <asm/msr.h>
 #include <asm/processor.h>
 #include <asm/ptrace.h>
@@ -94,6 +96,7 @@
 #include <asm/trapnr.h>
 
 #include "kernelet.h"
+#include "platform_tls.h"
 
 /* ------------------------------------------------------------------ */
 /* Carrier records                                                    */
@@ -305,6 +308,7 @@ void klet_sandbox_gone(struct klet_inst *inst)
 	unsigned int stacks, busy;
 
 	klet_spaces_destroy(inst);
+	klet_tio_resources_evicted(inst);
 	blocks = klet_heap_destroy(inst, &bytes);
 	stacks = klet_kstack_pool_destroy(inst, &busy);
 	pr_info("kernelet: sandbox %d is gone: %lu heap block(s) the kernelet still held freed (%lu bytes), %u kernelet stack(s) returned to vmalloc (%u still in use)\n",
@@ -1722,6 +1726,8 @@ static u64 klet_xcr0(void)
 
 static u64 klet_allowed_features(void)
 {
+	if (!boot_cpu_has(X86_FEATURE_XSAVE))
+		return BIT_ULL(0) | BIT_ULL(1);
 	return KLET_XFEATURE_MASK_USER & klet_xcr0();
 }
 
@@ -1733,6 +1739,13 @@ static bool klet_fpu_validate(struct klet_carrier *c, void *stage, u64 len)
 	u32 *mxcsr;
 	int i;
 
+	if (!boot_cpu_has(X86_FEATURE_XSAVE)) {
+		if (len < KLET_XSAVE_HDR_OFF)
+			return false;
+		mxcsr = (u32 *)((char *)stage + KLET_MXCSR_OFF);
+		*mxcsr &= KLET_MXCSR_MASK;
+		return true;
+	}
 	if (len < KLET_XSAVE_HDR_OFF + 64)
 		return false;
 
@@ -1808,7 +1821,9 @@ static void klet_do_fpu_load(struct klet_carrier *c, const void *area, u64 len)
 	if (!klet_fpu_validate(c, stage, len))
 		return;
 
-	mask = *(u64 *)((char *)stage + KLET_XSTATE_BV_OFF) & klet_allowed_features();
+	// Restore every admitted component. A clear XSTATE_BV bit means reset that
+	// component to its initial state, not preserve the previous tenant's state.
+	mask = klet_allowed_features();
 
 	fpregs_lock();
 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
@@ -1853,6 +1868,88 @@ static void klet_do_fpu_load(struct klet_carrier *c, const void *area, u64 len)
  * is being watched. That is how the yield stub gets the watch re-armed after
  * its schedule(), possibly on a different CPU.
  */
+// Read/write user TLS in the authenticated carrier, never the kernel GS base.
+// This follows arch_prctl's selector reset and current-task bookkeeping, but
+// uses MSR_KERNEL_GS_BASE directly: no unexported helper or local SWAPGS window.
+static s64 klet_tls_scalar(struct klet_carrier *c, u64 *value, u64 *scalar,
+                          bool write)
+{
+    struct klet_kstack *stack;
+    unsigned long flags;
+    s64 result = -EFAULT;
+
+    // This ledger is host-private. Do not authorize using the shared stack_limit.
+    // Hold the lock across nofault access so pool retirement cannot race it.
+    spin_lock_irqsave(&c->inst->lock, flags);
+    list_for_each_entry(stack, &c->inst->kstack_all, link) {
+        if (!stack->busy ||
+            !klet_tls_scalar_in_stack((unsigned long)value,
+                                     (unsigned long)stack->base, KLET_STACK_SIZE))
+            continue;
+        if (!write) {
+            result = get_kernel_nofault(*scalar, value);
+            break;
+        }
+        pagefault_disable();
+        __put_kernel_nofault(value, scalar, u64, write_fault);
+        pagefault_enable();
+        result = 0;
+        break;
+    }
+    spin_unlock_irqrestore(&c->inst->lock, flags);
+    return result;
+write_fault:
+    pagefault_enable();
+    spin_unlock_irqrestore(&c->inst->lock, flags);
+    return -EFAULT;
+}
+
+static s64 klet_do_user_tls(struct klet_carrier *c, u64 which, u64 operation, u64 *value)
+{
+    u64 scalar = 0;
+    unsigned long address = (unsigned long)value;
+
+    if (!value || !IS_ALIGNED(address, sizeof(*value)) ||
+        access_ok((void __user *)value, sizeof(*value)))
+        return -EFAULT;
+    if (klet_tls_scalar(c, value, &scalar, false))
+        return -EFAULT;
+    if (!klet_tls_request_valid(which, operation, scalar, TASK_SIZE_MAX,
+                                pgtable_l5_enabled() ? 57 : 48,
+                                boot_cpu_has(X86_FEATURE_FSGSBASE)))
+        return -EINVAL;
+    // Xen PV changes segment-base semantics and is outside this platform.
+    if (cpu_feature_enabled(X86_FEATURE_XENPV))
+        return -EOPNOTSUPP;
+
+    preempt_disable();
+    if (operation == 1) {
+        if (which == 0) {
+            loadsegment(fs, 0);
+            x86_fsbase_write_cpu(scalar);
+            current->thread.fsindex = 0;
+            current->thread.fsbase = scalar;
+        } else {
+            // The exported Linux assembly helper preserves kernel GS and
+            // handles interrupt/NMI entry while clearing the user selector.
+            load_gs_index(0);
+            wrmsrl(MSR_KERNEL_GS_BASE, scalar);
+            current->thread.gsindex = 0;
+            current->thread.gsbase = scalar;
+        }
+    } else if (which == 0) {
+        scalar = x86_fsbase_read_cpu();
+    } else {
+        // On syscall/interrupt entry Linux swaps the actual user GS base into
+        // this inactive MSR (also the user base storage with FRED).
+        rdmsrl(MSR_KERNEL_GS_BASE, scalar);
+    }
+    preempt_enable();
+    if (operation == 1)
+        return 0;
+    return klet_tls_scalar(c, value, &scalar, true);
+}
+
 static inline void klet_svc_prologue(struct klet_carrier *c)
 {
 	c->depth++;
@@ -1931,6 +2028,9 @@ void klet_svc_body(struct klet_svc_args *args)
 	case KLET_SVC_VCPU_ON_SPIN:
 		klet_do_on_spin(c);
 		break;
+	case KLET_SVC_USER_TLS:
+		args->ret = klet_do_user_tls(c, args->a0, args->a1, (u64 *)args->a2);
+		break;
 	case KLET_SVC_FPU_SAVE:
 		klet_do_fpu_save(c, (void *)args->a0, args->a1);
 		break;
@@ -1968,6 +2068,9 @@ void klet_svc_body(struct klet_svc_args *args)
 		break;
 	case KLET_SVC_VM_WAKE:
 		args->ret = (u64)klet_do_vm_wake(c, args->a0, (u32)args->a1);
+		break;
+	case KLET_SVC_TYPEDIO:
+		args->ret = (u64)klet_tio_service(c, (struct klet_tio_call *)args->a0);
 		break;
 	default:
 		pr_err("kernelet: unknown service %llu\n", args->op);
@@ -2245,6 +2348,16 @@ static void klet_svc_stop(u64 code)
 		klet_leave(c, KLET_DEAD);
 }
 
+static s64 klet_svc_typedio(struct klet_tio_call *call)
+{
+    return (s64)klet_svc_enter(KLET_SVC_TYPEDIO, (u64)call, 0, 0);
+}
+
+static s64 klet_svc_user_tls(u64 which, u64 operation, u64 *value)
+{
+    return (s64)klet_svc_enter(KLET_SVC_USER_TLS, which, operation, (u64)value);
+}
+
 const struct klet_services klet_services = {
 	.abi_version = KLET_ABI_VERSION,
 	.log_write = klet_svc_log_write,
@@ -2271,4 +2384,6 @@ const struct klet_services klet_services = {
 	.fpu_load = klet_svc_fpu_load,
 	.stop = klet_svc_stop,
 	.console_write = klet_svc_console_write,
+	.typedio = klet_svc_typedio,
+	.user_tls = klet_svc_user_tls,
 };

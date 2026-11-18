@@ -31,12 +31,14 @@
 #include <linux/wait.h>
 
 #include "uapi/endovisor.h"
+#include "typedio_bounds.h"
+#include "typedio_host.h"
 
 /* ------------------------------------------------------------------ */
 /* The image ABI. Mirrors vostd/src/abi.rs; keep the two in step.     */
 /* ------------------------------------------------------------------ */
 
-#define KLET_ABI_VERSION 6ULL
+#define KLET_ABI_VERSION 8ULL
 
 /* Errors of the vm_* services, returned negated. */
 #define KLET_INVALID	1	/* an address outside the area, a bad argument, a space not this kernelet's, an entry already present */
@@ -248,6 +250,8 @@ struct klet_services {
 	void (*stop)(u64 code);
 	/* The console, what the kernel proper prints; log_write is vOSTD's log. */
 	void (*console_write)(const char *ptr, u64 len);
+	s64 (*typedio)(struct klet_tio_call *call);
+	s64 (*user_tls)(u64 which, u64 operation, u64 *value);
 };
 
 struct klet_entry_table {
@@ -555,6 +559,9 @@ struct klet_out {
 	spinlock_t lock;
 };
 
+struct klet_grant_backing;
+struct tio_device;
+
 struct klet_inst {
 	refcount_t refs;		/* the sandbox file's, and each carrier record's */
 	struct klet_kind *kind;
@@ -570,6 +577,10 @@ struct klet_inst {
 	struct cgroup *cgrp;		/* the sandbox's control group, held */
 
 	/* the grant */
+	struct tio_device *typedio_devices[KLET_TIO_ATTACHMENTS];
+	u64 typedio_retired[KLET_TIO_ATTACHMENTS];
+	bool typedio_detached;
+	struct klet_grant_backing *grant_backing;
 	struct page *grant_pages;
 	unsigned int grant_order;
 	struct klet_boot_args boot;
@@ -739,8 +750,8 @@ static inline bool klet_in_kernelet(struct klet_carrier *c)
 
 static inline bool klet_in_grant(struct klet_inst *inst, u64 paddr, u64 len)
 {
-	return paddr >= inst->boot.grant_paddr &&
-	       paddr + len <= inst->boot.grant_paddr + inst->boot.grant_len;
+	return klet_range_contains(inst->boot.grant_paddr, inst->boot.grant_len,
+				   paddr, len);
 }
 
 // Is `ip` inside this sandbox's executable image mapping?
@@ -778,6 +789,8 @@ enum klet_svc_op {
 	KLET_SVC_VM_WAIT,
 	KLET_SVC_VM_WAKE,
 	KLET_SVC_CONSOLE_WRITE,
+	KLET_SVC_TYPEDIO,
+	KLET_SVC_USER_TLS,
 };
 
 /*
@@ -898,5 +911,13 @@ void klet_sched_attach(struct klet_carrier *c);
 void klet_sched_detach(struct klet_carrier *c);
 void klet_do_on_spin(struct klet_carrier *c);
 void klet_kick_remote(struct klet_carrier *c);
+
+// Independent backing ownership for trusted asynchronous TypedIO adapters.
+struct klet_grant_backing *klet_grant_alloc(unsigned int order);
+struct page *klet_grant_pages(struct klet_grant_backing *backing);
+struct klet_grant_backing *klet_grant_lease_get(struct klet_inst *inst,
+                                             u64 paddr, u64 len);
+void klet_grant_put(struct klet_grant_backing *backing);
+void klet_grant_lease_put(struct klet_grant_backing *backing);
 
 #endif /* _KLET_ENDOVISOR_H */
