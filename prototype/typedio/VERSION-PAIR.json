@@ -1,0 +1,17 @@
+{
+  "kernelet": {
+    "source_commit": "647d68a00f3541715be4633e908d1ebb66a8762e",
+    "baseline": "a5ec4b875d0a17890321a362fbc3fd16859b7eb4",
+    "branch": "implement/typedio-vsock",
+    "personal_remote": "https://github.com/yanming404/kernelet.git"
+  },
+  "asterinas": {
+    "source_commit": "48860174799d0796d4aa446c87274ad08a76dc53",
+    "baseline": "e87d8425f987820431bd35068ef2d4489bdcc735",
+    "branch": "integrate/typedio-vsock",
+    "personal_remote": "https://github.com/yanming404/asterinas.git"
+  },
+  "image_abi": 8,
+  "image_sha256": "79a91363ad54cfc79069c3f4a747735ded0d66b75453a49339e3934bce8ec1c2",
+  "delivery": "Local commits and incremental Git bundles; remote push deferred by user. Documentation commit is a descendant of kernelet.source_commit."
+}

@@ -1,0 +1,3928 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+make: '/home/ym/typedio-work/kernelet/prototype/kernels/hello/hello' is up to date.
+make: '/home/ym/typedio-work/kernelet/prototype/kernels/probe/probe' is up to date.
+make: '/home/ym/typedio-work/kernelet/prototype/kernels/yield/yield' is up to date.
+make: '/home/ym/typedio-work/kernelet/prototype/kernels/sched/sched' is up to date.
+make: '/home/ym/typedio-work/kernelet/prototype/kernels/mem/mem' is up to date.
+warning: struct `PanicGuard` is never constructed
+  --> vostd/src/panic.rs:32:19
+   |
+32 | pub(crate) struct PanicGuard {
+   |                   ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated items `new` and `forget` are never used
+  --> vostd/src/panic.rs:36:19
+   |
+35 | impl PanicGuard {
+   | --------------- associated items in this implementation
+36 |     pub(crate) fn new() -> Self {
+   |                   ^^^
+...
+39 |     pub(crate) fn forget(self) {
+   |                   ^^^^^^
+
+warning: associated function `into_inner` is never used
+   --> vostd/src/sync/rcu/mod.rs:495:26
+    |
+475 | impl<T: Send + 'static> RcuDrop<T> {
+    | ---------------------------------- associated function in this implementation
+...
+495 |     pub(crate) unsafe fn into_inner(slot: RcuDrop<T>) -> (T, PanicGuard) {
+    |                          ^^^^^^^^^^
+
+warning: function `range_difference` is never used
+  --> vostd/src/util/ops.rs:12:15
+   |
+12 | pub(crate) fn range_difference<T: Ord + Copy>(
+   |               ^^^^^^^^^^^^^^^^
+
+warning: `vostd` (lib) generated 4 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/lib.rs (target/debug/deps/typedio-faf37229c72d0e0b)
+
+running 31 tests
+test flow::tests::address_reuse_waits_for_queued_work_and_late_controls_are_stale ... ok
+test flow::tests::handshake_uses_only_offer_accept_and_established ... ok
+test irq::tests::coalesced_irq_does_not_erase_independent_pending_sources ... ok
+test flow::tests::reset_racing_pipe_preparation_prevents_publication ... ok
+test irq::tests::stale_binding_and_source_cannot_reach_replacement ... ok
+test irq::tests::instance_detachment_removes_routes_without_guest_callbacks ... ok
+test lifetime::tests::death_requires_both_eviction_and_mapping_teardown ... ok
+test lifetime::tests::death_and_quarantine_do_not_release_active_backing ... ok
+test lifetime::tests::final_completion_waits_for_access ... ok
+test lifetime::tests::quota_rejection_changes_neither_account ... ok
+test notification::tests::interest_install_checks_level_but_rearm_does_not ... ok
+test notification::tests::publish_during_drain_and_empty_rearm_gap ... ok
+test notification::tests::shared_line_keeps_sources_independent ... ok
+test notification::tests::terminal_survives_interest_removal_and_unbind ... ok
+test pipe::tests::active_payload_access_cannot_be_finalized_or_reused ... ok
+test pipe::tests::cancelled_consume_is_peek_and_partial_commit_retains_suffix ... ok
+test pipe::tests::close_fences_active_production_and_preserves_published_data ... ok
+test pipe::tests::forgotten_reservation_blocks_reuse_and_transfer_but_not_reset ... ok
+test pipe::tests::partial_progress_wraparound_and_eof ... ok
+test pipe::tests::progress_and_authority_cannot_be_forged ... ok
+test pipe::tests::zero_byte_cancel_restores_readiness_and_interest_is_independent ... ok
+test queue::tests::cancel_and_remove_do_not_complete_active_work ... ok
+test queue::tests::completions_are_out_of_order_and_once_only ... ok
+test queue::tests::credits_duplicate_tags_and_unread_completions ... ok
+test queue::tests::failed_prepublication_commit_restores_credit_without_reusing_identity ... ok
+test queue::tests::request_sequence_and_generation_never_wrap ... ok
+test resource::tests::endpoint_capture_rollback_preserves_original_owner ... ok
+test resource::tests::overflowed_ranges_are_rejected_before_any_reference ... ok
+test resource::tests::partial_capture_failure_rolls_back_prior_retention ... ok
+test resource::tests::retained_backing_outlives_death_and_stale_generation ... ok
+test schema::tests::sha256_known_vectors_and_block_boundary ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/abi.rs (target/debug/deps/abi-ef9b911bd4e771c3)
+
+running 1 test
+test actual_c_and_rust_records_have_identical_layout ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/commit_resources.rs (target/debug/deps/commit_resources-565fe5bb8b46871d)
+
+running 1 test
+test transfer_disarms_every_active_field_including_packed_and_inline_containers ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/concurrency.rs (target/debug/deps/concurrency-bcac33149e4988e9)
+
+running 2 tests
+test publication_racing_interest_installation_is_always_discoverable ... ok
+test detach_racing_irq_publication_never_leaves_a_dead_instance_route ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/derive.rs (target/debug/deps/derive-867042d21991953c)
+
+running 1 test
+    Checking typedio-tests v0.0.0 (/home/ym/typedio-work/kernelet/prototype/target/tests/trybuild/typedio)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+
+
+test tests/ui/cell.rs ... ok
+test tests/ui/copy_is_not_admission.rs ... ok
+test tests/ui/custom_drop.rs ... ok
+test tests/ui/function.rs ... ok
+test tests/ui/inactive_variant.rs ... ok
+test tests/ui/maybe_uninit.rs ... ok
+test tests/ui/reference.rs ... ok
+test tests/ui/union.rs ... ok
+test tests/ui/vector.rs ... ok
+
+
+test rejected_message_types ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.34s
+
+     Running tests/messages.rs (target/debug/deps/messages-fe5f9b65d11bcd5a)
+
+running 6 tests
+test bounded_vec_transfers_only_live_elements ... ok
+test nested_variants_roundtrip_and_padding_is_omitted ... ok
+test invalid_bytes_cannot_construct_invalid_rust_values ... ok
+test packed_noncopy_fields_use_aligned_snapshots_without_native_padding ... ok
+test pointer_is_an_opaque_address_even_for_non_message_pointee ... ok
+test schema_covers_types_names_widths_and_bounds ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/no_allocation.rs (target/debug/deps/no_allocation-91c412541dde1d87)
+
+running 1 test
+test queue_admission_completion_cancel_and_drain_allocate_nothing ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests typedio
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+warning: unused import: `vec::Vec`
+  --> src/lib.rs:25:51
+   |
+25 |     pub(crate) use alloc::{boxed::Box, sync::Arc, vec::Vec};
+   |                                                   ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `CpuSync` is never constructed
+   --> src/../../../../../asterinas/kernel/core/src/process/posix_thread/cpu_sync.rs:100:19
+    |
+100 | pub(crate) struct CpuSync<R> {
+    |                   ^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated items `new`, `get`, `set`, `before_schedule`, and `before_user_exec` are never used
+   --> src/../../../../../asterinas/kernel/core/src/process/posix_thread/cpu_sync.rs:112:25
+    |
+105 | impl<R: UserReg> CpuSync<R> {
+    | --------------------------- associated items in this implementation
+...
+112 |     pub(super) const fn new(reg: R) -> Self {
+    |                         ^^^
+...
+123 |     pub(crate) fn get(&self) -> R
+    |                   ^^^
+...
+149 |     pub(crate) fn set(&self, new_reg: R) {
+    |                   ^^^
+...
+163 |     pub(super) fn before_schedule(&self, guard: &DisabledLocalIrqGuard) {
+    |                   ^^^^^^^^^^^^^^^
+...
+181 |     pub(super) fn before_user_exec(&self, guard: &DisabledLocalIrqGuard) {
+    |                   ^^^^^^^^^^^^^^^^
+
+warning: trait `UserReg` is never used
+   --> src/../../../../../asterinas/kernel/core/src/process/posix_thread/cpu_sync.rs:195:18
+    |
+195 | pub(crate) trait UserReg {
+    |                  ^^^^^^^
+
+warning: enum `CanonicalValueLocation` is never used
+   --> src/../../../../../asterinas/kernel/core/src/process/posix_thread/cpu_sync.rs:229:6
+    |
+229 | enum CanonicalValueLocation {
+    |      ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `range_difference` is never used
+  --> src/../../../vostd/src/util/ops.rs:12:15
+   |
+12 | pub(crate) fn range_difference<T: Ord + Copy>(
+   |               ^^^^^^^^^^^^^^^^
+
+warning: associated function `from_space` is never used
+   --> src/mm/../../../../vostd/src/mm/io.rs:305:26
+    |
+298 | impl VmReader<'_, Fallible> {
+    | --------------------------- associated function in this implementation
+...
+305 |     pub(crate) unsafe fn from_space(root: Paddr, vaddr: Vaddr, len: usize) -> Self {
+    |                          ^^^^^^^^^^
+
+warning: associated function `from_space` is never used
+   --> src/mm/../../../../vostd/src/mm/io.rs:389:26
+    |
+383 | impl VmWriter<'_, Fallible> {
+    | --------------------------- associated function in this implementation
+...
+389 |     pub(crate) unsafe fn from_space(root: Paddr, vaddr: Vaddr, len: usize) -> Self {
+    |                          ^^^^^^^^^^
+
+warning: function `init` is never used
+   --> src/mm/../../../../vostd/src/mm/frame.rs:369:19
+    |
+369 |     pub(crate) fn init(paddr: usize, len: usize) {
+    |                   ^^^^
+
+warning: struct `Rcu` is never constructed
+  --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:67:12
+   |
+67 | pub struct Rcu<P: NonNullPtr>(RcuInner<P>);
+   |            ^^^
+
+warning: struct `RcuReadGuard` is never constructed
+  --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:72:12
+   |
+72 | pub struct RcuReadGuard<'a, P: NonNullPtr>(RcuReadGuardInner<'a, P>);
+   |            ^^^^^^^^^^^^
+
+warning: associated items `new`, `update`, `read`, and `read_with` are never used
+   --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:258:12
+    |
+256 | impl<P: NonNullPtr + Send> Rcu<P> {
+    | --------------------------------- associated items in this implementation
+257 |     /// Creates a new RCU primitive with the given pointer.
+258 |     pub fn new(pointer: P) -> Self {
+    |            ^^^
+...
+271 |     pub fn update(&self, new_ptr: P) {
+    |            ^^^^^^
+...
+279 |     pub fn read(&self) -> RcuReadGuard<'_, P> {
+    |            ^^^^
+...
+292 |     pub fn read_with<'a, G: AsAtomicModeGuard + ?Sized>(&'a self, guard: &'a G) -> P::Ref<'a> {
+    |            ^^^^^^^^^
+
+warning: methods `get` and `compare_exchange` are never used
+   --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:357:12
+    |
+355 | impl<P: NonNullPtr + Send> RcuReadGuard<'_, P> {
+    | ---------------------------------------------- methods in this implementation
+356 |     /// Gets the reference of the protected data.
+357 |     pub fn get(&self) -> P::Ref<'_> {
+    |            ^^^
+...
+374 |     pub fn compare_exchange(self, new_ptr: P) -> Result<(), P> {
+    |            ^^^^^^^^^^^^^^^^
+
+warning: struct `RcuDrop` is never constructed
+   --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:471:12
+    |
+471 | pub struct RcuDrop<T: Send + 'static> {
+    |            ^^^^^^^
+
+warning: associated functions `new` and `into_inner` are never used
+   --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:477:12
+    |
+475 | impl<T: Send + 'static> RcuDrop<T> {
+    | ---------------------------------- associated functions in this implementation
+476 |     /// Creates a new [`RcuDrop`] instance that delays the dropping of `value`.
+477 |     pub fn new(value: T) -> Self {
+    |            ^^^
+...
+495 |     pub(crate) unsafe fn into_inner(slot: RcuDrop<T>) -> (T, PanicGuard) {
+    |                          ^^^^^^^^^^
+
+warning: function `range_difference` is never used
+  --> src/../../../vostd/src/util/ops.rs:12:15
+   |
+12 | pub(crate) fn range_difference<T: Ord + Copy>(
+   |               ^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `kernelet-platform-harness` (lib) generated 15 warnings (run `cargo fix --lib -p kernelet-platform-harness` to apply 1 suggestion)
+warning: `kernelet-platform-harness` (lib test) generated 8 warnings (7 duplicates)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/lib.rs (tests/platform-harness/target/debug/deps/kernelet_platform_harness-aa108c8a1d21bf98)
+
+running 12 tests
+test tests::actual_asterinas_cpu_sync_keeps_threads_separate_across_native_carriers ... ok
+test tests::boot_memory_regions_reject_overflow_and_misalignment ... ok
+test tests::dma_separate_views_sync_actual_bytes_and_enforce_direction ... ok
+test tests::dynamic_cpu_local_ownership_and_slot_retirement ... ok
+test tests::frame_metadata_is_retained_and_dropped_before_backing_reuse ... ok
+test tests::pod_partial_fault_rolls_cursor_back_and_once_is_nonadvancing_on_error ... ok
+test tests::rcu_defers_drop_until_every_cpu_reports_quiescence ... ok
+test tests::recoverable_faults_check_current_root_and_leave_atomic_context_before_handler ... ok
+test tests::registrations_are_explicit_and_reach_the_original_inventory ... ok
+test tests::tls_wrappers_read_live_state_instead_of_caching_last_write ... ok
+test tests::vmio_bounds_pod_and_partial_progress ... ok
+test tests::locks_preserve_exclusive_updates_and_upgrade ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/bin/image-abi.rs (tests/platform-harness/target/debug/deps/image_abi-c8bebfdc3868a9fc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/guard_lifetime.rs (tests/platform-harness/target/debug/deps/guard_lifetime-1eee2871d82cf406)
+
+running 1 test
+test cpu_local_reference_cannot_outlive_its_guard ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
+usage: typedio-device CID PEER[,PEER...] [--listen PORT] -- PROGRAM [ARG...]
+Creates a privileged kernel provider; guest FDs use KLET_TYPEDIO_FDS, host listeners use KLET_TYPEDIO_LISTENER_FD. No module is loaded and no benchmark runs.
+warning: struct `ReservationRecord` is never constructed
+ --> src/../../../libs/typedio/src/abi.rs:9:12
+  |
+9 | pub struct ReservationRecord {
+  |            ^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: enum `Error` is never used
+  --> src/../../../libs/typedio/src/irq.rs:10:10
+   |
+10 | pub enum Error {
+   |          ^^^^^
+
+warning: struct `SourceId` is never constructed
+  --> src/../../../libs/typedio/src/irq.rs:18:12
+   |
+18 | pub struct SourceId {
+   |            ^^^^^^^^
+
+warning: struct `PendingSource` is never constructed
+  --> src/../../../libs/typedio/src/irq.rs:23:12
+   |
+23 | pub struct PendingSource {
+   |            ^^^^^^^^^^^^^
+
+warning: struct `Line` is never constructed
+  --> src/../../../libs/typedio/src/irq.rs:29:8
+   |
+29 | struct Line {
+   |        ^^^^
+
+warning: struct `Source` is never constructed
+  --> src/../../../libs/typedio/src/irq.rs:36:8
+   |
+36 | struct Source {
+   |        ^^^^^^
+
+warning: struct `SourceRecord` is never constructed
+  --> src/../../../libs/typedio/src/irq.rs:41:8
+   |
+41 | struct SourceRecord {
+   |        ^^^^^^^^^^^^
+
+warning: struct `Router` is never constructed
+  --> src/../../../libs/typedio/src/irq.rs:47:12
+   |
+47 | pub struct Router<const L: usize, const S: usize> {
+   |            ^^^^^^
+
+warning: multiple associated items are never used
+   --> src/../../../libs/typedio/src/irq.rs:57:12
+    |
+ 56 | impl<const L: usize, const S: usize> Router<L, S> {
+    | ------------------------------------------------- associated items in this implementation
+ 57 |     pub fn new() -> Self {
+    |            ^^^
+...
+ 75 |     pub fn alloc_line(&mut self, instance: u64, vcpu: u32) -> Result<Binding, Error> {
+    |            ^^^^^^^^^^
+...
+ 90 |     fn validate(&self, binding: Binding) -> Result<(), Error> {
+    |        ^^^^^^^^
+...
+100 |     pub fn bind(&mut self, binding: Binding, identity: PendingSource) -> Result<SourceId, Error> {
+    |            ^^^^
+...
+133 |     fn source(&mut self, id: SourceId) -> Result<&mut SourceRecord, Error> {
+    |        ^^^^^^
+...
+140 |     pub fn mark_pending(&mut self, id: SourceId) -> Result<Binding, Error> {
+    |            ^^^^^^^^^^^^
+...
+148 |     pub fn take_pending(&mut self, binding: Binding) -> Result<Option<PendingSource>, Error> {
+    |            ^^^^^^^^^^^^
+...
+163 |     pub fn unbind(&mut self, id: SourceId) -> Result<(), Error> {
+    |            ^^^^^^
+...
+168 |     pub fn free_line(&mut self, binding: Binding) -> Result<(), Error> {
+    |            ^^^^^^^^^
+...
+180 |     pub fn detach_instance(&mut self, instance: u64) {
+    |            ^^^^^^^^^^^^^^^
+
+warning: enum `State` is never used
+ --> src/../../../libs/typedio/src/lifetime.rs:9:10
+  |
+9 | pub enum State {
+  |          ^^^^^
+
+warning: enum `Error` is never used
+  --> src/../../../libs/typedio/src/lifetime.rs:18:10
+   |
+18 | pub enum Error {
+   |          ^^^^^
+
+warning: struct `Retention` is never constructed
+  --> src/../../../libs/typedio/src/lifetime.rs:25:12
+   |
+25 | pub struct Retention {
+   |            ^^^^^^^^^
+
+warning: multiple associated items are never used
+   --> src/../../../libs/typedio/src/lifetime.rs:35:18
+    |
+ 34 | impl Retention {
+    | -------------- associated items in this implementation
+ 35 |     pub const fn prepared() -> Self {
+    |                  ^^^^^^^^
+...
+ 46 |     pub fn state(&self) -> State {
+    |            ^^^^^
+...
+ 49 |     pub fn accept(&mut self) -> Result<(), Error> {
+    |            ^^^^^^
+...
+ 57 |     pub fn begin_access(&mut self) -> Result<(), Error> {
+    |            ^^^^^^^^^^^^
+...
+ 64 |     pub fn end_access(&mut self) -> Result<(), Error> {
+    |            ^^^^^^^^^^
+...
+ 71 |     pub fn finish(&mut self) -> Result<(), Error> {
+    |            ^^^^^^
+...
+ 80 |     fn retire_if_quiescent(&mut self) {
+    |        ^^^^^^^^^^^^^^^^^^^
+...
+ 85 |     pub fn detach(&mut self) {
+    |            ^^^^^^
+...
+ 92 |     pub fn carrier_eviction_complete(&mut self) {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+ 95 |     pub fn mapping_teardown_complete(&mut self) {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+ 98 |     pub fn quarantine(&mut self) {
+    |            ^^^^^^^^^^
+...
+103 |     pub fn release(&mut self) -> Result<(), Error> {
+    |            ^^^^^^^
+
+warning: struct `Charge` is never constructed
+   --> src/../../../libs/typedio/src/lifetime.rs:124:12
+    |
+124 | pub struct Charge {
+    |            ^^^^^^
+
+warning: methods `add`, `fits`, and `sub` are never used
+   --> src/../../../libs/typedio/src/lifetime.rs:131:8
+    |
+130 | impl Charge {
+    | ----------- methods in this implementation
+131 |     fn add(self, rhs: Self) -> Option<Self> {
+    |        ^^^
+...
+139 |     fn fits(self, limit: Self) -> bool {
+    |        ^^^^
+...
+145 |     fn sub(self, rhs: Self) -> Option<Self> {
+    |        ^^^
+
+warning: struct `Account` is never constructed
+   --> src/../../../libs/typedio/src/lifetime.rs:154:12
+    |
+154 | pub struct Account {
+    |            ^^^^^^^
+
+warning: associated items `new`, `used`, `reserve`, and `release` are never used
+   --> src/../../../libs/typedio/src/lifetime.rs:159:18
+    |
+158 | impl Account {
+    | ------------ associated items in this implementation
+159 |     pub const fn new(limit: Charge) -> Self {
+    |                  ^^^
+...
+170 |     pub fn used(&self) -> Charge {
+    |            ^^^^
+...
+175 |     pub fn reserve(local: &mut Self, global: &mut Self, charge: Charge) -> Result<(), Error> {
+    |            ^^^^^^^
+...
+185 |     pub fn release(local: &mut Self, global: &mut Self, charge: Charge) -> Result<(), Error> {
+    |            ^^^^^^^
+
+warning: struct `Binding` is never constructed
+  --> src/../../../libs/typedio/src/notification.rs:10:12
+   |
+10 | pub struct Binding {
+   |            ^^^^^^^
+
+warning: struct `Notification` is never constructed
+  --> src/../../../libs/typedio/src/notification.rs:21:12
+   |
+21 | pub struct Notification {
+   |            ^^^^^^^^^^^^
+
+warning: multiple associated items are never used
+  --> src/../../../libs/typedio/src/notification.rs:31:18
+   |
+29 | impl Notification {
+   | ----------------- associated items in this implementation
+30 |     /// Creates an unbound source with the given terminal-cause mask.
+31 |     pub const fn new(terminal: u8) -> Self {
+   |                  ^^^
+...
+42 |     pub fn bind(&mut self, binding: Binding) {
+   |            ^^^^
+...
+48 |     pub fn unbind(&mut self) {
+   |            ^^^^^^
+...
+54 |     pub fn binding(&self) -> Option<Binding> {
+   |            ^^^^^^^
+...
+58 |     pub fn pending(&self) -> u8 {
+   |            ^^^^^^^
+...
+62 |     pub fn set_interest(&mut self, interest: u8, current_ready: u8, current_terminal: u8) {
+   |            ^^^^^^^^^^^^
+...
+72 |     pub fn publish(&mut self, causes: u8) -> Option<Binding> {
+   |            ^^^^^^^
+...
+83 |     pub fn take_delivery(&mut self) -> Option<Binding> {
+   |            ^^^^^^^^^^^^^
+...
+92 |     pub fn take_events(&mut self) -> u8 {
+   |            ^^^^^^^^^^^
+...
+99 |     pub fn rearm(&mut self, records_pending: bool) -> bool {
+   |            ^^^^^
+
+warning: constant `READY` is never used
+  --> src/../../../libs/typedio/src/pipe.rs:11:11
+   |
+11 | pub const READY: u8 = 1;
+   |           ^^^^^
+
+warning: constant `CLOSED` is never used
+  --> src/../../../libs/typedio/src/pipe.rs:13:11
+   |
+13 | pub const CLOSED: u8 = 2;
+   |           ^^^^^^
+
+warning: constant `RESET` is never used
+  --> src/../../../libs/typedio/src/pipe.rs:15:11
+   |
+15 | pub const RESET: u8 = 4;
+   |           ^^^^^
+
+warning: enum `PipeError` is never used
+  --> src/../../../libs/typedio/src/pipe.rs:18:10
+   |
+18 | pub enum PipeError {
+   |          ^^^^^^^^^
+
+warning: enum `Role` is never used
+  --> src/../../../libs/typedio/src/pipe.rs:36:10
+   |
+36 | pub enum Role {
+   |          ^^^^
+
+warning: struct `Reservation` is never constructed
+  --> src/../../../libs/typedio/src/pipe.rs:44:12
+   |
+44 | pub struct Reservation {
+   |            ^^^^^^^^^^^
+
+warning: methods `token`, `offset`, `length`, `progress`, and `remaining` are never used
+  --> src/../../../libs/typedio/src/pipe.rs:53:12
+   |
+51 | impl Reservation {
+   | ---------------- methods in this implementation
+52 |     /// Returns the reservation identity for trusted wrapper correlation.
+53 |     pub fn token(&self) -> u64 {
+   |            ^^^^^
+...
+57 |     pub fn offset(&self) -> usize {
+   |            ^^^^^^
+...
+61 |     pub fn length(&self) -> usize {
+   |            ^^^^^^
+...
+65 |     pub fn progress(&self) -> usize {
+   |            ^^^^^^^^
+...
+69 |     pub fn remaining(&self) -> usize {
+   |            ^^^^^^^^^
+
+warning: struct `Endpoint` is never constructed
+  --> src/../../../libs/typedio/src/pipe.rs:73:8
+   |
+73 | struct Endpoint {
+   |        ^^^^^^^^
+
+warning: associated function `new` is never used
+  --> src/../../../libs/typedio/src/pipe.rs:80:8
+   |
+79 | impl Endpoint {
+   | ------------- associated function in this implementation
+80 |     fn new(owner: u64) -> Self {
+   |        ^^^
+
+warning: struct `PipeCore` is never constructed
+  --> src/../../../libs/typedio/src/pipe.rs:90:12
+   |
+90 | pub struct PipeCore {
+   |            ^^^^^^^^
+
+warning: multiple associated items are never used
+   --> src/../../../libs/typedio/src/pipe.rs:103:12
+    |
+101 | impl PipeCore {
+    | ------------- associated items in this implementation
+102 |     /// Creates metadata for nonempty, initialized host-owned storage.
+103 |     pub fn new(capacity: usize, producer_owner: u64, consumer_owner: u64) -> Option<Self> {
+    |            ^^^
+...
+119 |     fn write(&self) -> usize {
+    |        ^^^^^
+...
+122 |     fn producer_ready(&self) -> bool {
+    |        ^^^^^^^^^^^^^^
+...
+129 |     fn consumer_ready(&self) -> bool {
+    |        ^^^^^^^^^^^^^^
+...
+135 |     fn endpoint(&mut self, role: Role) -> &mut Endpoint {
+    |        ^^^^^^^^
+...
+141 |     fn verify(&self, role: Role, owner: u64) -> Result<(), PipeError> {
+    |        ^^^^^^
+...
+151 |     fn ready(&self) -> (bool, bool) {
+    |        ^^^^^
+...
+154 |     fn transitions(&mut self, before: (bool, bool)) {
+    |        ^^^^^^^^^^^
+...
+163 |     fn token(&mut self) -> Result<u64, PipeError> {
+    |        ^^^^^
+...
+169 |     pub fn reserve_producer(&mut self, owner: u64, limit: usize) -> Result<Reservation, PipeError> {
+    |            ^^^^^^^^^^^^^^^^
+...
+199 |     pub fn reserve_consumer(
+    |            ^^^^^^^^^^^^^^^^
+...
+237 |     pub fn record_progress(
+    |            ^^^^^^^^^^^^^^^
+...
+259 |     pub fn commit(
+    |            ^^^^^^
+...
+307 |     pub fn cancel(&mut self, owner: u64, reservation: Reservation) -> Result<(), PipeError> {
+    |            ^^^^^^
+...
+321 |     pub fn close_producer(&mut self) {
+    |            ^^^^^^^^^^^^^^
+...
+327 |     pub fn close_consumer(&mut self) {
+    |            ^^^^^^^^^^^^^^
+...
+333 |     pub fn reset(&mut self) {
+    |            ^^^^^
+...
+341 |     pub fn can_transfer_role(&mut self, role: Role, owner: u64) -> Result<(), PipeError> {
+    |            ^^^^^^^^^^^^^^^^^
+...
+349 |     pub fn transfer_role(&mut self, role: Role, from: u64, to: u64) -> Result<(), PipeError> {
+    |            ^^^^^^^^^^^^^
+...
+361 |     pub fn bind_irq(&mut self, role: Role, owner: u64, binding: Binding) -> Result<(), PipeError> {
+    |            ^^^^^^^^
+...
+369 |     fn terminal(&self, role: Role) -> u8 {
+    |        ^^^^^^^^
+...
+382 |     pub fn set_interest(&mut self, role: Role, owner: u64, interest: u8) -> Result<(), PipeError> {
+    |            ^^^^^^^^^^^^
+...
+397 |     pub fn take_events(&mut self, role: Role, owner: u64) -> Result<u8, PipeError> {
+    |            ^^^^^^^^^^^
+...
+402 |     pub fn rearm_irq(&mut self, role: Role, owner: u64) -> Result<bool, PipeError> {
+    |            ^^^^^^^^^
+...
+408 |     pub fn begin_transfer(
+    |            ^^^^^^^^^^^^^^
+...
+429 |     pub fn end_transfer(
+    |            ^^^^^^^^^^^^
+...
+446 |     pub fn reservation(
+    |            ^^^^^^^^^^^
+...
+460 |     pub fn current_events(&self, role: Role, owner: u64) -> Result<u8, PipeError> {
+    |            ^^^^^^^^^^^^^^
+...
+470 |     pub fn take_delivery(&mut self, role: Role) -> Option<Binding> {
+    |            ^^^^^^^^^^^^^
+...
+474 |     pub fn can_release_storage(&self) -> bool {
+    |            ^^^^^^^^^^^^^^^^^^^
+
+warning: function `advance` is never used
+   --> src/../../../libs/typedio/src/pipe.rs:480:4
+    |
+480 | fn advance(index: usize, bytes: usize, capacity: usize) -> usize {
+    |    ^^^^^^^
+
+warning: constant `COMPLETION_AVAILABLE` is never used
+  --> src/../../../libs/typedio/src/queue.rs:10:11
+   |
+10 | pub const COMPLETION_AVAILABLE: u8 = 1;
+   |           ^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CAPACITY_AVAILABLE` is never used
+  --> src/../../../libs/typedio/src/queue.rs:11:11
+   |
+11 | pub const CAPACITY_AVAILABLE: u8 = 2;
+   |           ^^^^^^^^^^^^^^^^^^
+
+warning: constant `REMOVED` is never used
+  --> src/../../../libs/typedio/src/queue.rs:12:11
+   |
+12 | pub const REMOVED: u8 = 4;
+   |           ^^^^^^^
+
+warning: struct `RequestId` is never constructed
+  --> src/../../../libs/typedio/src/queue.rs:15:12
+   |
+15 | pub struct RequestId {
+   |            ^^^^^^^^^
+
+warning: struct `RequestTag` is never constructed
+  --> src/../../../libs/typedio/src/queue.rs:38:12
+   |
+38 | pub struct RequestTag(pub u64);
+   |            ^^^^^^^^^^
+
+warning: enum `RequestError` is never used
+  --> src/../../../libs/typedio/src/queue.rs:41:10
+   |
+41 | pub enum RequestError {
+   |          ^^^^^^^^^^^^
+
+warning: enum `Reject` is never used
+  --> src/../../../libs/typedio/src/queue.rs:50:10
+   |
+50 | pub enum Reject {
+   |          ^^^^^^
+
+warning: struct `SubmitError` is never constructed
+  --> src/../../../libs/typedio/src/queue.rs:57:12
+   |
+57 | pub struct SubmitError<R> {
+   |            ^^^^^^^^^^^
+
+warning: struct `Completion` is never constructed
+  --> src/../../../libs/typedio/src/queue.rs:61:12
+   |
+61 | pub struct Completion<R> {
+   |            ^^^^^^^^^^
+
+warning: struct `Slot` is never constructed
+  --> src/../../../libs/typedio/src/queue.rs:67:8
+   |
+67 | struct Slot<R, T> {
+   |        ^^^^
+
+warning: struct `QueueCore` is never constructed
+  --> src/../../../libs/typedio/src/queue.rs:75:12
+   |
+75 | pub struct QueueCore<R, T, const N: usize> {
+   |            ^^^^^^^^^
+
+warning: multiple associated items are never used
+   --> src/../../../libs/typedio/src/queue.rs:88:12
+    |
+ 87 | impl<R, T, const N: usize> QueueCore<R, T, N> {
+    | --------------------------------------------- associated items in this implementation
+ 88 |     pub fn new(generation: u64) -> Option<Self> {
+    |            ^^^
+...
+108 |     pub fn with_capacity(generation: u64, capacity: usize) -> Option<Self> {
+    |            ^^^^^^^^^^^^^
+...
+118 |     pub fn try_submit(&mut self, request: R, tag: RequestTag) -> Result<RequestId, SubmitError<R>> {
+    |            ^^^^^^^^^^
+...
+156 |     pub fn reject_before_dispatch(&mut self, id: RequestId) -> Result<R, RequestError> {
+    |            ^^^^^^^^^^^^^^^^^^^^^^
+...
+170 |     pub fn take_for_dispatch(&mut self, id: RequestId) -> Option<R> {
+    |            ^^^^^^^^^^^^^^^^^
+...
+178 |     pub fn cancel(&mut self, id: RequestId) -> Result<(), RequestError> {
+    |            ^^^^^^
+...
+186 |     pub fn cancellation_requested(&self, id: RequestId) -> bool {
+    |            ^^^^^^^^^^^^^^^^^^^^^^
+...
+195 |     pub fn finish(
+    |            ^^^^^^
+...
+216 |     pub fn try_pop_completion(&mut self) -> Option<Completion<T>> {
+    |            ^^^^^^^^^^^^^^^^^^
+...
+235 |     pub fn remove(&mut self) -> Option<Binding> {
+    |            ^^^^^^
+...
+239 |     pub fn bind_irq(&mut self, binding: Binding) {
+    |            ^^^^^^^^
+...
+242 |     pub fn unbind_irq(&mut self) {
+    |            ^^^^^^^^^^
+...
+246 |     pub fn take_delivery(&mut self) -> Option<Binding> {
+    |            ^^^^^^^^^^^^^
+...
+249 |     pub fn take_events(&mut self) -> u8 {
+    |            ^^^^^^^^^^^
+...
+252 |     pub fn rearm_irq(&mut self) -> bool {
+    |            ^^^^^^^^^
+...
+255 |     pub fn used(&self) -> usize {
+    |            ^^^^
+...
+258 |     fn slot_mut(&mut self, id: RequestId) -> Option<&mut Slot<R, T>> {
+    |        ^^^^^^^^
+
+warning: struct `ResourceId` is never constructed
+  --> src/../../../libs/typedio/src/resource.rs:10:12
+   |
+10 | pub struct ResourceId {
+   |            ^^^^^^^^^^
+
+warning: enum `Kind` is never used
+  --> src/../../../libs/typedio/src/resource.rs:15:10
+   |
+15 | pub enum Kind {
+   |          ^^^^
+
+warning: enum `Access` is never used
+  --> src/../../../libs/typedio/src/resource.rs:21:10
+   |
+21 | pub enum Access {
+   |          ^^^^^^
+
+warning: method `allows` is never used
+  --> src/../../../libs/typedio/src/resource.rs:27:8
+   |
+26 | impl Access {
+   | ----------- method in this implementation
+27 |     fn allows(self, requested: Self) -> bool {
+   |        ^^^^^^
+
+warning: enum `Error` is never used
+  --> src/../../../libs/typedio/src/resource.rs:32:10
+   |
+32 | pub enum Error {
+   |          ^^^^^
+
+warning: struct `Record` is never constructed
+  --> src/../../../libs/typedio/src/resource.rs:40:8
+   |
+40 | struct Record {
+   |        ^^^^^^
+
+warning: struct `Slot` is never constructed
+  --> src/../../../libs/typedio/src/resource.rs:51:8
+   |
+51 | struct Slot {
+   |        ^^^^
+
+warning: struct `ResourceTable` is never constructed
+  --> src/../../../libs/typedio/src/resource.rs:55:12
+   |
+55 | pub struct ResourceTable<const N: usize> {
+   |            ^^^^^^^^^^^^^
+
+warning: multiple associated items are never used
+   --> src/../../../libs/typedio/src/resource.rs:64:12
+    |
+ 63 | impl<const N: usize> ResourceTable<N> {
+    | ------------------------------------- associated items in this implementation
+ 64 |     pub fn new() -> Self {
+    |            ^^^
+...
+ 73 |     pub fn register(
+    |            ^^^^^^^^
+...
+106 |     fn record(&mut self, id: ResourceId) -> Result<&mut Record, Error> {
+    |        ^^^^^^
+...
+113 |     pub fn set_reserved(
+    |            ^^^^^^^^^^^^
+...
+129 |     pub fn revoke_owner(&mut self, owner: u64) {
+    |            ^^^^^^^^^^^^
+...
+136 |     pub fn unregister(&mut self, id: ResourceId) -> Result<(), Error> {
+    |            ^^^^^^^^^^
+...
+144 |     pub fn retire_reference(&mut self, id: ResourceId) -> Result<(), Error> {
+    |            ^^^^^^^^^^^^^^^^
+...
+149 |     pub fn prepare<const M: usize>(&mut self, owner: u64) -> Transaction<'_, N, M> {
+    |            ^^^^^^^
+
+warning: enum `Action` is never used
+   --> src/../../../libs/typedio/src/resource.rs:160:6
+    |
+160 | enum Action {
+    |      ^^^^^^
+
+warning: struct `Transaction` is never constructed
+   --> src/../../../libs/typedio/src/resource.rs:166:12
+    |
+166 | pub struct Transaction<'a, const N: usize, const M: usize> {
+    |            ^^^^^^^^^^^
+
+warning: methods `retain_dma`, `move_endpoint`, and `commit` are never used
+   --> src/../../../libs/typedio/src/resource.rs:174:12
+    |
+173 | impl<const N: usize, const M: usize> Transaction<'_, N, M> {
+    | ---------------------------------------------------------- methods in this implementation
+174 |     pub fn retain_dma(
+    |            ^^^^^^^^^^
+...
+204 |     pub fn move_endpoint(&mut self, id: ResourceId, destination: u64) -> Result<(), Error> {
+    |            ^^^^^^^^^^^^^
+...
+220 |     pub fn commit(mut self) {
+    |            ^^^^^^
+
+warning: constant `ABI_VERSION` is never used
+ --> src/../../../libs/typedio/src/service.rs:5:11
+  |
+5 | pub const ABI_VERSION: u32 = 2;
+  |           ^^^^^^^^^^^
+
+warning: constant `MAX_METADATA` is never used
+ --> src/../../../libs/typedio/src/service.rs:6:11
+  |
+6 | pub const MAX_METADATA: usize = 128;
+  |           ^^^^^^^^^^^^
+
+warning: constant `MAX_QUEUE_DEPTH` is never used
+ --> src/../../../libs/typedio/src/service.rs:7:11
+  |
+7 | pub const MAX_QUEUE_DEPTH: usize = 8;
+  |           ^^^^^^^^^^^^^^^
+
+warning: constant `MAX_ATTACHMENTS` is never used
+ --> src/../../../libs/typedio/src/service.rs:8:11
+  |
+8 | pub const MAX_ATTACHMENTS: usize = 8;
+  |           ^^^^^^^^^^^^^^^
+
+warning: constant `DISCOVER` is never used
+ --> src/../../../libs/typedio/src/service.rs:9:11
+  |
+9 | pub const DISCOVER: u32 = 1;
+  |           ^^^^^^^^
+
+warning: constant `OPEN` is never used
+  --> src/../../../libs/typedio/src/service.rs:10:11
+   |
+10 | pub const OPEN: u32 = 2;
+   |           ^^^^
+
+warning: constant `SUBMIT` is never used
+  --> src/../../../libs/typedio/src/service.rs:11:11
+   |
+11 | pub const SUBMIT: u32 = 3;
+   |           ^^^^^^
+
+warning: constant `POP` is never used
+  --> src/../../../libs/typedio/src/service.rs:12:11
+   |
+12 | pub const POP: u32 = 4;
+   |           ^^^
+
+warning: constant `CANCEL` is never used
+  --> src/../../../libs/typedio/src/service.rs:13:11
+   |
+13 | pub const CANCEL: u32 = 5;
+   |           ^^^^^^
+
+warning: constant `EVENTS` is never used
+  --> src/../../../libs/typedio/src/service.rs:14:11
+   |
+14 | pub const EVENTS: u32 = 6;
+   |           ^^^^^^
+
+warning: constant `REARM` is never used
+  --> src/../../../libs/typedio/src/service.rs:15:11
+   |
+15 | pub const REARM: u32 = 7;
+   |           ^^^^^
+
+warning: constant `CLOSE` is never used
+  --> src/../../../libs/typedio/src/service.rs:16:11
+   |
+16 | pub const CLOSE: u32 = 8;
+   |           ^^^^^
+
+warning: constant `BIND` is never used
+  --> src/../../../libs/typedio/src/service.rs:17:11
+   |
+17 | pub const BIND: u32 = 9;
+   |           ^^^^
+
+warning: constant `IRQ_POLL` is never used
+  --> src/../../../libs/typedio/src/service.rs:18:11
+   |
+18 | pub const IRQ_POLL: u32 = 10;
+   |           ^^^^^^^^
+
+warning: constant `UNBIND_LINE` is never used
+  --> src/../../../libs/typedio/src/service.rs:19:11
+   |
+19 | pub const UNBIND_LINE: u32 = 11;
+   |           ^^^^^^^^^^^
+
+warning: struct `Resource` is never constructed
+  --> src/../../../libs/typedio/src/service.rs:24:12
+   |
+24 | pub struct Resource {
+   |            ^^^^^^^^
+
+warning: struct `Descriptor` is never constructed
+  --> src/../../../libs/typedio/src/service.rs:34:12
+   |
+34 | pub struct Descriptor {
+   |            ^^^^^^^^^^
+
+warning: struct `Record` is never constructed
+  --> src/../../../libs/typedio/src/service.rs:60:12
+   |
+60 | pub struct Record {
+   |            ^^^^^^
+
+warning: struct `Call` is never constructed
+  --> src/../../../libs/typedio/src/service.rs:88:12
+   |
+88 | pub struct Call {
+   |            ^^^^
+
+warning: constant `PIPE_RESERVE` is never used
+  --> src/../../../libs/typedio/src/service.rs:99:11
+   |
+99 | pub const PIPE_RESERVE: u32 = 16;
+   |           ^^^^^^^^^^^^
+
+warning: constant `PIPE_PROGRESS` is never used
+   --> src/../../../libs/typedio/src/service.rs:100:11
+    |
+100 | pub const PIPE_PROGRESS: u32 = 17;
+    |           ^^^^^^^^^^^^^
+
+warning: constant `PIPE_COMMIT` is never used
+   --> src/../../../libs/typedio/src/service.rs:101:11
+    |
+101 | pub const PIPE_COMMIT: u32 = 18;
+    |           ^^^^^^^^^^^
+
+warning: constant `PIPE_CANCEL` is never used
+   --> src/../../../libs/typedio/src/service.rs:102:11
+    |
+102 | pub const PIPE_CANCEL: u32 = 19;
+    |           ^^^^^^^^^^^
+
+warning: constant `PIPE_DROP` is never used
+   --> src/../../../libs/typedio/src/service.rs:103:11
+    |
+103 | pub const PIPE_DROP: u32 = 20;
+    |           ^^^^^^^^^
+
+warning: associated function `from_space` is never used
+   --> src/mm/../../../../vostd/src/mm/io.rs:305:26
+    |
+298 | impl VmReader<'_, Fallible> {
+    | --------------------------- associated function in this implementation
+...
+305 |     pub(crate) unsafe fn from_space(root: Paddr, vaddr: Vaddr, len: usize) -> Self {
+    |                          ^^^^^^^^^^
+
+warning: associated function `from_space` is never used
+   --> src/mm/../../../../vostd/src/mm/io.rs:389:26
+    |
+383 | impl VmWriter<'_, Fallible> {
+    | --------------------------- associated function in this implementation
+...
+389 |     pub(crate) unsafe fn from_space(root: Paddr, vaddr: Vaddr, len: usize) -> Self {
+    |                          ^^^^^^^^^^
+
+warning: method `set_backlog` is never used
+  --> src/../../../linux/endovisor/typedio_host_socket.rs:37:12
+   |
+25 | impl Listener {
+   | ------------- method in this implementation
+...
+37 |     pub fn set_backlog(&mut self, n: usize) {
+   |            ^^^^^^^^^^^
+
+warning: `typedio-host-harness` (lib) generated 83 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+warning: struct `ReservationRecord` is never constructed
+ --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/abi.rs:9:12
+  |
+9 | pub struct ReservationRecord {
+  |            ^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: enum `Error` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/irq.rs:10:10
+   |
+10 | pub enum Error {
+   |          ^^^^^
+
+warning: struct `SourceId` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/irq.rs:18:12
+   |
+18 | pub struct SourceId {
+   |            ^^^^^^^^
+
+warning: struct `PendingSource` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/irq.rs:23:12
+   |
+23 | pub struct PendingSource {
+   |            ^^^^^^^^^^^^^
+
+warning: struct `Line` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/irq.rs:29:8
+   |
+29 | struct Line {
+   |        ^^^^
+
+warning: struct `Source` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/irq.rs:36:8
+   |
+36 | struct Source {
+   |        ^^^^^^
+
+warning: struct `SourceRecord` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/irq.rs:41:8
+   |
+41 | struct SourceRecord {
+   |        ^^^^^^^^^^^^
+
+warning: struct `Router` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/irq.rs:47:12
+   |
+47 | pub struct Router<const L: usize, const S: usize> {
+   |            ^^^^^^
+
+warning: multiple associated items are never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/irq.rs:57:12
+    |
+ 56 | impl<const L: usize, const S: usize> Router<L, S> {
+    | ------------------------------------------------- associated items in this implementation
+ 57 |     pub fn new() -> Self {
+    |            ^^^
+...
+ 75 |     pub fn alloc_line(&mut self, instance: u64, vcpu: u32) -> Result<Binding, Error> {
+    |            ^^^^^^^^^^
+...
+ 90 |     fn validate(&self, binding: Binding) -> Result<(), Error> {
+    |        ^^^^^^^^
+...
+100 |     pub fn bind(&mut self, binding: Binding, identity: PendingSource) -> Result<SourceId, Error> {
+    |            ^^^^
+...
+133 |     fn source(&mut self, id: SourceId) -> Result<&mut SourceRecord, Error> {
+    |        ^^^^^^
+...
+140 |     pub fn mark_pending(&mut self, id: SourceId) -> Result<Binding, Error> {
+    |            ^^^^^^^^^^^^
+...
+148 |     pub fn take_pending(&mut self, binding: Binding) -> Result<Option<PendingSource>, Error> {
+    |            ^^^^^^^^^^^^
+...
+163 |     pub fn unbind(&mut self, id: SourceId) -> Result<(), Error> {
+    |            ^^^^^^
+...
+168 |     pub fn free_line(&mut self, binding: Binding) -> Result<(), Error> {
+    |            ^^^^^^^^^
+...
+180 |     pub fn detach_instance(&mut self, instance: u64) {
+    |            ^^^^^^^^^^^^^^^
+
+warning: enum `State` is never used
+ --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/lifetime.rs:9:10
+  |
+9 | pub enum State {
+  |          ^^^^^
+
+warning: enum `Error` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/lifetime.rs:18:10
+   |
+18 | pub enum Error {
+   |          ^^^^^
+
+warning: struct `Retention` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/lifetime.rs:25:12
+   |
+25 | pub struct Retention {
+   |            ^^^^^^^^^
+
+warning: multiple associated items are never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/lifetime.rs:35:18
+    |
+ 34 | impl Retention {
+    | -------------- associated items in this implementation
+ 35 |     pub const fn prepared() -> Self {
+    |                  ^^^^^^^^
+...
+ 46 |     pub fn state(&self) -> State {
+    |            ^^^^^
+...
+ 49 |     pub fn accept(&mut self) -> Result<(), Error> {
+    |            ^^^^^^
+...
+ 57 |     pub fn begin_access(&mut self) -> Result<(), Error> {
+    |            ^^^^^^^^^^^^
+...
+ 64 |     pub fn end_access(&mut self) -> Result<(), Error> {
+    |            ^^^^^^^^^^
+...
+ 71 |     pub fn finish(&mut self) -> Result<(), Error> {
+    |            ^^^^^^
+...
+ 80 |     fn retire_if_quiescent(&mut self) {
+    |        ^^^^^^^^^^^^^^^^^^^
+...
+ 85 |     pub fn detach(&mut self) {
+    |            ^^^^^^
+...
+ 92 |     pub fn carrier_eviction_complete(&mut self) {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+ 95 |     pub fn mapping_teardown_complete(&mut self) {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+ 98 |     pub fn quarantine(&mut self) {
+    |            ^^^^^^^^^^
+...
+103 |     pub fn release(&mut self) -> Result<(), Error> {
+    |            ^^^^^^^
+
+warning: struct `Charge` is never constructed
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/lifetime.rs:124:12
+    |
+124 | pub struct Charge {
+    |            ^^^^^^
+
+warning: methods `add`, `fits`, and `sub` are never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/lifetime.rs:131:8
+    |
+130 | impl Charge {
+    | ----------- methods in this implementation
+131 |     fn add(self, rhs: Self) -> Option<Self> {
+    |        ^^^
+...
+139 |     fn fits(self, limit: Self) -> bool {
+    |        ^^^^
+...
+145 |     fn sub(self, rhs: Self) -> Option<Self> {
+    |        ^^^
+
+warning: struct `Account` is never constructed
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/lifetime.rs:154:12
+    |
+154 | pub struct Account {
+    |            ^^^^^^^
+
+warning: associated items `new`, `used`, `reserve`, and `release` are never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/lifetime.rs:159:18
+    |
+158 | impl Account {
+    | ------------ associated items in this implementation
+159 |     pub const fn new(limit: Charge) -> Self {
+    |                  ^^^
+...
+170 |     pub fn used(&self) -> Charge {
+    |            ^^^^
+...
+175 |     pub fn reserve(local: &mut Self, global: &mut Self, charge: Charge) -> Result<(), Error> {
+    |            ^^^^^^^
+...
+185 |     pub fn release(local: &mut Self, global: &mut Self, charge: Charge) -> Result<(), Error> {
+    |            ^^^^^^^
+
+warning: struct `Binding` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/notification.rs:10:12
+   |
+10 | pub struct Binding {
+   |            ^^^^^^^
+
+warning: struct `Notification` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/notification.rs:21:12
+   |
+21 | pub struct Notification {
+   |            ^^^^^^^^^^^^
+
+warning: multiple associated items are never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/notification.rs:31:18
+   |
+29 | impl Notification {
+   | ----------------- associated items in this implementation
+30 |     /// Creates an unbound source with the given terminal-cause mask.
+31 |     pub const fn new(terminal: u8) -> Self {
+   |                  ^^^
+...
+42 |     pub fn bind(&mut self, binding: Binding) {
+   |            ^^^^
+...
+48 |     pub fn unbind(&mut self) {
+   |            ^^^^^^
+...
+54 |     pub fn binding(&self) -> Option<Binding> {
+   |            ^^^^^^^
+...
+58 |     pub fn pending(&self) -> u8 {
+   |            ^^^^^^^
+...
+62 |     pub fn set_interest(&mut self, interest: u8, current_ready: u8, current_terminal: u8) {
+   |            ^^^^^^^^^^^^
+...
+72 |     pub fn publish(&mut self, causes: u8) -> Option<Binding> {
+   |            ^^^^^^^
+...
+83 |     pub fn take_delivery(&mut self) -> Option<Binding> {
+   |            ^^^^^^^^^^^^^
+...
+92 |     pub fn take_events(&mut self) -> u8 {
+   |            ^^^^^^^^^^^
+...
+99 |     pub fn rearm(&mut self, records_pending: bool) -> bool {
+   |            ^^^^^
+
+warning: constant `READY` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:11:11
+   |
+11 | pub const READY: u8 = 1;
+   |           ^^^^^
+
+warning: constant `CLOSED` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:13:11
+   |
+13 | pub const CLOSED: u8 = 2;
+   |           ^^^^^^
+
+warning: constant `RESET` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:15:11
+   |
+15 | pub const RESET: u8 = 4;
+   |           ^^^^^
+
+warning: enum `PipeError` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:18:10
+   |
+18 | pub enum PipeError {
+   |          ^^^^^^^^^
+
+warning: enum `Role` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:36:10
+   |
+36 | pub enum Role {
+   |          ^^^^
+
+warning: struct `Reservation` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:44:12
+   |
+44 | pub struct Reservation {
+   |            ^^^^^^^^^^^
+
+warning: methods `token`, `offset`, `length`, `progress`, and `remaining` are never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:53:12
+   |
+51 | impl Reservation {
+   | ---------------- methods in this implementation
+52 |     /// Returns the reservation identity for trusted wrapper correlation.
+53 |     pub fn token(&self) -> u64 {
+   |            ^^^^^
+...
+57 |     pub fn offset(&self) -> usize {
+   |            ^^^^^^
+...
+61 |     pub fn length(&self) -> usize {
+   |            ^^^^^^
+...
+65 |     pub fn progress(&self) -> usize {
+   |            ^^^^^^^^
+...
+69 |     pub fn remaining(&self) -> usize {
+   |            ^^^^^^^^^
+
+warning: struct `Endpoint` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:73:8
+   |
+73 | struct Endpoint {
+   |        ^^^^^^^^
+
+warning: associated function `new` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:80:8
+   |
+79 | impl Endpoint {
+   | ------------- associated function in this implementation
+80 |     fn new(owner: u64) -> Self {
+   |        ^^^
+
+warning: struct `PipeCore` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:90:12
+   |
+90 | pub struct PipeCore {
+   |            ^^^^^^^^
+
+warning: multiple associated items are never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:103:12
+    |
+101 | impl PipeCore {
+    | ------------- associated items in this implementation
+102 |     /// Creates metadata for nonempty, initialized host-owned storage.
+103 |     pub fn new(capacity: usize, producer_owner: u64, consumer_owner: u64) -> Option<Self> {
+    |            ^^^
+...
+119 |     fn write(&self) -> usize {
+    |        ^^^^^
+...
+122 |     fn producer_ready(&self) -> bool {
+    |        ^^^^^^^^^^^^^^
+...
+129 |     fn consumer_ready(&self) -> bool {
+    |        ^^^^^^^^^^^^^^
+...
+135 |     fn endpoint(&mut self, role: Role) -> &mut Endpoint {
+    |        ^^^^^^^^
+...
+141 |     fn verify(&self, role: Role, owner: u64) -> Result<(), PipeError> {
+    |        ^^^^^^
+...
+151 |     fn ready(&self) -> (bool, bool) {
+    |        ^^^^^
+...
+154 |     fn transitions(&mut self, before: (bool, bool)) {
+    |        ^^^^^^^^^^^
+...
+163 |     fn token(&mut self) -> Result<u64, PipeError> {
+    |        ^^^^^
+...
+169 |     pub fn reserve_producer(&mut self, owner: u64, limit: usize) -> Result<Reservation, PipeError> {
+    |            ^^^^^^^^^^^^^^^^
+...
+199 |     pub fn reserve_consumer(
+    |            ^^^^^^^^^^^^^^^^
+...
+237 |     pub fn record_progress(
+    |            ^^^^^^^^^^^^^^^
+...
+259 |     pub fn commit(
+    |            ^^^^^^
+...
+307 |     pub fn cancel(&mut self, owner: u64, reservation: Reservation) -> Result<(), PipeError> {
+    |            ^^^^^^
+...
+321 |     pub fn close_producer(&mut self) {
+    |            ^^^^^^^^^^^^^^
+...
+327 |     pub fn close_consumer(&mut self) {
+    |            ^^^^^^^^^^^^^^
+...
+333 |     pub fn reset(&mut self) {
+    |            ^^^^^
+...
+341 |     pub fn can_transfer_role(&mut self, role: Role, owner: u64) -> Result<(), PipeError> {
+    |            ^^^^^^^^^^^^^^^^^
+...
+349 |     pub fn transfer_role(&mut self, role: Role, from: u64, to: u64) -> Result<(), PipeError> {
+    |            ^^^^^^^^^^^^^
+...
+361 |     pub fn bind_irq(&mut self, role: Role, owner: u64, binding: Binding) -> Result<(), PipeError> {
+    |            ^^^^^^^^
+...
+369 |     fn terminal(&self, role: Role) -> u8 {
+    |        ^^^^^^^^
+...
+382 |     pub fn set_interest(&mut self, role: Role, owner: u64, interest: u8) -> Result<(), PipeError> {
+    |            ^^^^^^^^^^^^
+...
+397 |     pub fn take_events(&mut self, role: Role, owner: u64) -> Result<u8, PipeError> {
+    |            ^^^^^^^^^^^
+...
+402 |     pub fn rearm_irq(&mut self, role: Role, owner: u64) -> Result<bool, PipeError> {
+    |            ^^^^^^^^^
+...
+408 |     pub fn begin_transfer(
+    |            ^^^^^^^^^^^^^^
+...
+429 |     pub fn end_transfer(
+    |            ^^^^^^^^^^^^
+...
+446 |     pub fn reservation(
+    |            ^^^^^^^^^^^
+...
+460 |     pub fn current_events(&self, role: Role, owner: u64) -> Result<u8, PipeError> {
+    |            ^^^^^^^^^^^^^^
+...
+470 |     pub fn take_delivery(&mut self, role: Role) -> Option<Binding> {
+    |            ^^^^^^^^^^^^^
+...
+474 |     pub fn can_release_storage(&self) -> bool {
+    |            ^^^^^^^^^^^^^^^^^^^
+
+warning: function `advance` is never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/pipe.rs:480:4
+    |
+480 | fn advance(index: usize, bytes: usize, capacity: usize) -> usize {
+    |    ^^^^^^^
+
+warning: constant `COMPLETION_AVAILABLE` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:10:11
+   |
+10 | pub const COMPLETION_AVAILABLE: u8 = 1;
+   |           ^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `CAPACITY_AVAILABLE` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:11:11
+   |
+11 | pub const CAPACITY_AVAILABLE: u8 = 2;
+   |           ^^^^^^^^^^^^^^^^^^
+
+warning: constant `REMOVED` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:12:11
+   |
+12 | pub const REMOVED: u8 = 4;
+   |           ^^^^^^^
+
+warning: struct `RequestId` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:15:12
+   |
+15 | pub struct RequestId {
+   |            ^^^^^^^^^
+
+warning: struct `RequestTag` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:38:12
+   |
+38 | pub struct RequestTag(pub u64);
+   |            ^^^^^^^^^^
+
+warning: enum `RequestError` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:41:10
+   |
+41 | pub enum RequestError {
+   |          ^^^^^^^^^^^^
+
+warning: enum `Reject` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:50:10
+   |
+50 | pub enum Reject {
+   |          ^^^^^^
+
+warning: struct `SubmitError` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:57:12
+   |
+57 | pub struct SubmitError<R> {
+   |            ^^^^^^^^^^^
+
+warning: struct `Completion` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:61:12
+   |
+61 | pub struct Completion<R> {
+   |            ^^^^^^^^^^
+
+warning: struct `Slot` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:67:8
+   |
+67 | struct Slot<R, T> {
+   |        ^^^^
+
+warning: struct `QueueCore` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:75:12
+   |
+75 | pub struct QueueCore<R, T, const N: usize> {
+   |            ^^^^^^^^^
+
+warning: multiple associated items are never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/queue.rs:88:12
+    |
+ 87 | impl<R, T, const N: usize> QueueCore<R, T, N> {
+    | --------------------------------------------- associated items in this implementation
+ 88 |     pub fn new(generation: u64) -> Option<Self> {
+    |            ^^^
+...
+108 |     pub fn with_capacity(generation: u64, capacity: usize) -> Option<Self> {
+    |            ^^^^^^^^^^^^^
+...
+118 |     pub fn try_submit(&mut self, request: R, tag: RequestTag) -> Result<RequestId, SubmitError<R>> {
+    |            ^^^^^^^^^^
+...
+156 |     pub fn reject_before_dispatch(&mut self, id: RequestId) -> Result<R, RequestError> {
+    |            ^^^^^^^^^^^^^^^^^^^^^^
+...
+170 |     pub fn take_for_dispatch(&mut self, id: RequestId) -> Option<R> {
+    |            ^^^^^^^^^^^^^^^^^
+...
+178 |     pub fn cancel(&mut self, id: RequestId) -> Result<(), RequestError> {
+    |            ^^^^^^
+...
+186 |     pub fn cancellation_requested(&self, id: RequestId) -> bool {
+    |            ^^^^^^^^^^^^^^^^^^^^^^
+...
+195 |     pub fn finish(
+    |            ^^^^^^
+...
+216 |     pub fn try_pop_completion(&mut self) -> Option<Completion<T>> {
+    |            ^^^^^^^^^^^^^^^^^^
+...
+235 |     pub fn remove(&mut self) -> Option<Binding> {
+    |            ^^^^^^
+...
+239 |     pub fn bind_irq(&mut self, binding: Binding) {
+    |            ^^^^^^^^
+...
+242 |     pub fn unbind_irq(&mut self) {
+    |            ^^^^^^^^^^
+...
+246 |     pub fn take_delivery(&mut self) -> Option<Binding> {
+    |            ^^^^^^^^^^^^^
+...
+249 |     pub fn take_events(&mut self) -> u8 {
+    |            ^^^^^^^^^^^
+...
+252 |     pub fn rearm_irq(&mut self) -> bool {
+    |            ^^^^^^^^^
+...
+255 |     pub fn used(&self) -> usize {
+    |            ^^^^
+...
+258 |     fn slot_mut(&mut self, id: RequestId) -> Option<&mut Slot<R, T>> {
+    |        ^^^^^^^^
+
+warning: struct `ResourceId` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:10:12
+   |
+10 | pub struct ResourceId {
+   |            ^^^^^^^^^^
+
+warning: enum `Kind` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:15:10
+   |
+15 | pub enum Kind {
+   |          ^^^^
+
+warning: enum `Access` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:21:10
+   |
+21 | pub enum Access {
+   |          ^^^^^^
+
+warning: method `allows` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:27:8
+   |
+26 | impl Access {
+   | ----------- method in this implementation
+27 |     fn allows(self, requested: Self) -> bool {
+   |        ^^^^^^
+
+warning: enum `Error` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:32:10
+   |
+32 | pub enum Error {
+   |          ^^^^^
+
+warning: struct `Record` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:40:8
+   |
+40 | struct Record {
+   |        ^^^^^^
+
+warning: struct `Slot` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:51:8
+   |
+51 | struct Slot {
+   |        ^^^^
+
+warning: struct `ResourceTable` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:55:12
+   |
+55 | pub struct ResourceTable<const N: usize> {
+   |            ^^^^^^^^^^^^^
+
+warning: multiple associated items are never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:64:12
+    |
+ 63 | impl<const N: usize> ResourceTable<N> {
+    | ------------------------------------- associated items in this implementation
+ 64 |     pub fn new() -> Self {
+    |            ^^^
+...
+ 73 |     pub fn register(
+    |            ^^^^^^^^
+...
+106 |     fn record(&mut self, id: ResourceId) -> Result<&mut Record, Error> {
+    |        ^^^^^^
+...
+113 |     pub fn set_reserved(
+    |            ^^^^^^^^^^^^
+...
+129 |     pub fn revoke_owner(&mut self, owner: u64) {
+    |            ^^^^^^^^^^^^
+...
+136 |     pub fn unregister(&mut self, id: ResourceId) -> Result<(), Error> {
+    |            ^^^^^^^^^^
+...
+144 |     pub fn retire_reference(&mut self, id: ResourceId) -> Result<(), Error> {
+    |            ^^^^^^^^^^^^^^^^
+...
+149 |     pub fn prepare<const M: usize>(&mut self, owner: u64) -> Transaction<'_, N, M> {
+    |            ^^^^^^^
+
+warning: enum `Action` is never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:160:6
+    |
+160 | enum Action {
+    |      ^^^^^^
+
+warning: struct `Transaction` is never constructed
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:166:12
+    |
+166 | pub struct Transaction<'a, const N: usize, const M: usize> {
+    |            ^^^^^^^^^^^
+
+warning: methods `retain_dma`, `move_endpoint`, and `commit` are never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/resource.rs:174:12
+    |
+173 | impl<const N: usize, const M: usize> Transaction<'_, N, M> {
+    | ---------------------------------------------------------- methods in this implementation
+174 |     pub fn retain_dma(
+    |            ^^^^^^^^^^
+...
+204 |     pub fn move_endpoint(&mut self, id: ResourceId, destination: u64) -> Result<(), Error> {
+    |            ^^^^^^^^^^^^^
+...
+220 |     pub fn commit(mut self) {
+    |            ^^^^^^
+
+warning: constant `ABI_VERSION` is never used
+ --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:5:11
+  |
+5 | pub const ABI_VERSION: u32 = 2;
+  |           ^^^^^^^^^^^
+
+warning: constant `MAX_METADATA` is never used
+ --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:6:11
+  |
+6 | pub const MAX_METADATA: usize = 128;
+  |           ^^^^^^^^^^^^
+
+warning: constant `MAX_QUEUE_DEPTH` is never used
+ --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:7:11
+  |
+7 | pub const MAX_QUEUE_DEPTH: usize = 8;
+  |           ^^^^^^^^^^^^^^^
+
+warning: constant `MAX_ATTACHMENTS` is never used
+ --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:8:11
+  |
+8 | pub const MAX_ATTACHMENTS: usize = 8;
+  |           ^^^^^^^^^^^^^^^
+
+warning: constant `DISCOVER` is never used
+ --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:9:11
+  |
+9 | pub const DISCOVER: u32 = 1;
+  |           ^^^^^^^^
+
+warning: constant `OPEN` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:10:11
+   |
+10 | pub const OPEN: u32 = 2;
+   |           ^^^^
+
+warning: constant `SUBMIT` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:11:11
+   |
+11 | pub const SUBMIT: u32 = 3;
+   |           ^^^^^^
+
+warning: constant `POP` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:12:11
+   |
+12 | pub const POP: u32 = 4;
+   |           ^^^
+
+warning: constant `CANCEL` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:13:11
+   |
+13 | pub const CANCEL: u32 = 5;
+   |           ^^^^^^
+
+warning: constant `EVENTS` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:14:11
+   |
+14 | pub const EVENTS: u32 = 6;
+   |           ^^^^^^
+
+warning: constant `REARM` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:15:11
+   |
+15 | pub const REARM: u32 = 7;
+   |           ^^^^^
+
+warning: constant `CLOSE` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:16:11
+   |
+16 | pub const CLOSE: u32 = 8;
+   |           ^^^^^
+
+warning: constant `BIND` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:17:11
+   |
+17 | pub const BIND: u32 = 9;
+   |           ^^^^
+
+warning: constant `IRQ_POLL` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:18:11
+   |
+18 | pub const IRQ_POLL: u32 = 10;
+   |           ^^^^^^^^
+
+warning: constant `UNBIND_LINE` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:19:11
+   |
+19 | pub const UNBIND_LINE: u32 = 11;
+   |           ^^^^^^^^^^^
+
+warning: struct `Resource` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:24:12
+   |
+24 | pub struct Resource {
+   |            ^^^^^^^^
+
+warning: struct `Descriptor` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:34:12
+   |
+34 | pub struct Descriptor {
+   |            ^^^^^^^^^^
+
+warning: struct `Record` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:60:12
+   |
+60 | pub struct Record {
+   |            ^^^^^^
+
+warning: struct `Call` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:88:12
+   |
+88 | pub struct Call {
+   |            ^^^^
+
+warning: constant `PIPE_RESERVE` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:99:11
+   |
+99 | pub const PIPE_RESERVE: u32 = 16;
+   |           ^^^^^^^^^^^^
+
+warning: constant `PIPE_PROGRESS` is never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:100:11
+    |
+100 | pub const PIPE_PROGRESS: u32 = 17;
+    |           ^^^^^^^^^^^^^
+
+warning: constant `PIPE_COMMIT` is never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:101:11
+    |
+101 | pub const PIPE_COMMIT: u32 = 18;
+    |           ^^^^^^^^^^^
+
+warning: constant `PIPE_CANCEL` is never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:102:11
+    |
+102 | pub const PIPE_CANCEL: u32 = 19;
+    |           ^^^^^^^^^^^
+
+warning: constant `PIPE_DROP` is never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../libs/typedio/src/service.rs:103:11
+    |
+103 | pub const PIPE_DROP: u32 = 20;
+    |           ^^^^^^^^^
+
+warning: associated function `from_space` is never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/mm/../../../../vostd/src/mm/io.rs:305:26
+    |
+298 | impl VmReader<'_, Fallible> {
+    | --------------------------- associated function in this implementation
+...
+305 |     pub(crate) unsafe fn from_space(root: Paddr, vaddr: Vaddr, len: usize) -> Self {
+    |                          ^^^^^^^^^^
+
+warning: associated function `from_space` is never used
+   --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/mm/../../../../vostd/src/mm/io.rs:389:26
+    |
+383 | impl VmWriter<'_, Fallible> {
+    | --------------------------- associated function in this implementation
+...
+389 |     pub(crate) unsafe fn from_space(root: Paddr, vaddr: Vaddr, len: usize) -> Self {
+    |                          ^^^^^^^^^^
+
+warning: method `set_backlog` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/tests/host-harness/src/../../../linux/endovisor/typedio_host_socket.rs:37:12
+   |
+25 | impl Listener {
+   | ------------- method in this implementation
+...
+37 |     pub fn set_backlog(&mut self, n: usize) {
+   |            ^^^^^^^^^^^
+
+warning: `typedio-host-harness` (lib) generated 83 warnings
+warning: field `0` is never read
+   --> /home/ym/typedio-work/asterinas/kernel/core/src/net/socket/vsock/typedio.rs:113:12
+    |
+113 |     Failed(BoundPort, Error),
+    |     ------ ^^^^^^^^^
+    |     |
+    |     field in this variant
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+    |
+113 -     Failed(BoundPort, Error),
+113 +     Failed((), Error),
+    |
+
+warning: function `owns` is never used
+   --> /home/ym/typedio-work/asterinas/kernel/core/src/net/socket/vsock/typedio.rs:128:38
+    |
+128 | pub(in crate::net::socket::vsock) fn owns(cid: u32) -> bool {
+    |                                      ^^^^
+
+warning: associated function `new_ephemeral` is never used
+   --> /home/ym/typedio-work/asterinas/kernel/core/src/net/socket/vsock/typedio.rs:229:42
+    |
+185 | impl BoundPort {
+    | -------------- associated function in this implementation
+...
+229 |     pub(in crate::net::socket::vsock) fn new_ephemeral() -> Result<Self> {
+    |                                          ^^^^^^^^^^^^^
+
+warning: methods `pollee` and `test_and_clear_error` are never used
+   --> /home/ym/typedio-work/asterinas/kernel/core/src/net/socket/vsock/typedio.rs:487:42
+    |
+474 | impl Connection {
+    | --------------- methods in this implementation
+...
+487 |     pub(in crate::net::socket::vsock) fn pollee(&self) -> &Pollee {
+    |                                          ^^^^^^
+...
+490 |     pub(in crate::net::socket::vsock) fn test_and_clear_error(&self) -> Result<()> {
+    |                                          ^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `set_backlog`, `local_addr`, and `check_io_events` are never used
+   --> /home/ym/typedio-work/asterinas/kernel/core/src/net/socket/vsock/typedio.rs:706:42
+    |
+688 | impl Listener {
+    | ------------- methods in this implementation
+...
+706 |     pub(in crate::net::socket::vsock) fn set_backlog(&self, n: usize) {
+    |                                          ^^^^^^^^^^^
+...
+710 |     pub(in crate::net::socket::vsock) fn local_addr(&self) -> VsockSocketAddr {
+    |                                          ^^^^^^^^^^
+...
+713 |     pub(in crate::net::socket::vsock) fn check_io_events(&self) -> IoEvents {
+    |                                          ^^^^^^^^^^^^^^^
+
+warning: `typedio-asterinas-harness` (lib) generated 5 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+PASS native mock: attachment/discovery/open/dispatch/completion/cancel/retention/IRQ/rearm/generation/death
+PASS native mock: real pipe/transfer rollback/ownership/peek/EOF/target death/guest eviction/host reservation quarantine/grant lease
+PASS native mock: production guest Queue/Pipe/VmIO -> carrier service -> host framework -> safe Vsock backend -> peer guest; bidirectional echo/peek/EOF/cancel/retirement
+PASS native mock: production Linux File adapter listen/accept/FD/read/write/poll/nonblocking/partial transfer/EOF/retirement with real guest Queue/Pipe and host Vsock backend
+PASS native mock: actual Asterinas Socket transport -> production guest ABI -> safe Vsock backend -> host Linux File; multiple attachments/connect/accept/echo/peek/half-close/EOF
+TypedIO range checks: PASS
+make: Entering directory '/home/ym/typedio-work/linux-6.12'
+  LD [M]  /home/ym/typedio-work/kernelet/prototype/linux/endovisor/endovisor.o
+  MODPOST /home/ym/typedio-work/kernelet/prototype/linux/endovisor/Module.symvers
+  LD [M]  /home/ym/typedio-work/kernelet/prototype/linux/endovisor/endovisor.ko
+make: Leaving directory '/home/ym/typedio-work/linux-6.12'
+0000000000008778 T klet_tio_pipe_core_reserve
+warning: unused import: `vec::Vec`
+  --> src/lib.rs:25:51
+   |
+25 |     pub(crate) use alloc::{boxed::Box, sync::Arc, vec::Vec};
+   |                                                   ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `CpuSync` is never constructed
+   --> src/../../../../../asterinas/kernel/core/src/process/posix_thread/cpu_sync.rs:100:19
+    |
+100 | pub(crate) struct CpuSync<R> {
+    |                   ^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated items `new`, `get`, `set`, `before_schedule`, and `before_user_exec` are never used
+   --> src/../../../../../asterinas/kernel/core/src/process/posix_thread/cpu_sync.rs:112:25
+    |
+105 | impl<R: UserReg> CpuSync<R> {
+    | --------------------------- associated items in this implementation
+...
+112 |     pub(super) const fn new(reg: R) -> Self {
+    |                         ^^^
+...
+123 |     pub(crate) fn get(&self) -> R
+    |                   ^^^
+...
+149 |     pub(crate) fn set(&self, new_reg: R) {
+    |                   ^^^
+...
+163 |     pub(super) fn before_schedule(&self, guard: &DisabledLocalIrqGuard) {
+    |                   ^^^^^^^^^^^^^^^
+...
+181 |     pub(super) fn before_user_exec(&self, guard: &DisabledLocalIrqGuard) {
+    |                   ^^^^^^^^^^^^^^^^
+
+warning: trait `UserReg` is never used
+   --> src/../../../../../asterinas/kernel/core/src/process/posix_thread/cpu_sync.rs:195:18
+    |
+195 | pub(crate) trait UserReg {
+    |                  ^^^^^^^
+
+warning: enum `CanonicalValueLocation` is never used
+   --> src/../../../../../asterinas/kernel/core/src/process/posix_thread/cpu_sync.rs:229:6
+    |
+229 | enum CanonicalValueLocation {
+    |      ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `range_difference` is never used
+  --> src/../../../vostd/src/util/ops.rs:12:15
+   |
+12 | pub(crate) fn range_difference<T: Ord + Copy>(
+   |               ^^^^^^^^^^^^^^^^
+
+warning: associated function `from_space` is never used
+   --> src/mm/../../../../vostd/src/mm/io.rs:305:26
+    |
+298 | impl VmReader<'_, Fallible> {
+    | --------------------------- associated function in this implementation
+...
+305 |     pub(crate) unsafe fn from_space(root: Paddr, vaddr: Vaddr, len: usize) -> Self {
+    |                          ^^^^^^^^^^
+
+warning: associated function `from_space` is never used
+   --> src/mm/../../../../vostd/src/mm/io.rs:389:26
+    |
+383 | impl VmWriter<'_, Fallible> {
+    | --------------------------- associated function in this implementation
+...
+389 |     pub(crate) unsafe fn from_space(root: Paddr, vaddr: Vaddr, len: usize) -> Self {
+    |                          ^^^^^^^^^^
+
+warning: function `init` is never used
+   --> src/mm/../../../../vostd/src/mm/frame.rs:369:19
+    |
+369 |     pub(crate) fn init(paddr: usize, len: usize) {
+    |                   ^^^^
+
+warning: struct `Rcu` is never constructed
+  --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:67:12
+   |
+67 | pub struct Rcu<P: NonNullPtr>(RcuInner<P>);
+   |            ^^^
+
+warning: struct `RcuReadGuard` is never constructed
+  --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:72:12
+   |
+72 | pub struct RcuReadGuard<'a, P: NonNullPtr>(RcuReadGuardInner<'a, P>);
+   |            ^^^^^^^^^^^^
+
+warning: associated items `new`, `update`, `read`, and `read_with` are never used
+   --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:258:12
+    |
+256 | impl<P: NonNullPtr + Send> Rcu<P> {
+    | --------------------------------- associated items in this implementation
+257 |     /// Creates a new RCU primitive with the given pointer.
+258 |     pub fn new(pointer: P) -> Self {
+    |            ^^^
+...
+271 |     pub fn update(&self, new_ptr: P) {
+    |            ^^^^^^
+...
+279 |     pub fn read(&self) -> RcuReadGuard<'_, P> {
+    |            ^^^^
+...
+292 |     pub fn read_with<'a, G: AsAtomicModeGuard + ?Sized>(&'a self, guard: &'a G) -> P::Ref<'a> {
+    |            ^^^^^^^^^
+
+warning: methods `get` and `compare_exchange` are never used
+   --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:357:12
+    |
+355 | impl<P: NonNullPtr + Send> RcuReadGuard<'_, P> {
+    | ---------------------------------------------- methods in this implementation
+356 |     /// Gets the reference of the protected data.
+357 |     pub fn get(&self) -> P::Ref<'_> {
+    |            ^^^
+...
+374 |     pub fn compare_exchange(self, new_ptr: P) -> Result<(), P> {
+    |            ^^^^^^^^^^^^^^^^
+
+warning: struct `RcuDrop` is never constructed
+   --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:471:12
+    |
+471 | pub struct RcuDrop<T: Send + 'static> {
+    |            ^^^^^^^
+
+warning: associated functions `new` and `into_inner` are never used
+   --> src/sync/../../../../vostd/src/sync/rcu/mod.rs:477:12
+    |
+475 | impl<T: Send + 'static> RcuDrop<T> {
+    | ---------------------------------- associated functions in this implementation
+476 |     /// Creates a new [`RcuDrop`] instance that delays the dropping of `value`.
+477 |     pub fn new(value: T) -> Self {
+    |            ^^^
+...
+495 |     pub(crate) unsafe fn into_inner(slot: RcuDrop<T>) -> (T, PanicGuard) {
+    |                          ^^^^^^^^^^
+
+warning: `kernelet-platform-harness` (lib) generated 15 warnings (run `cargo fix --lib -p kernelet-platform-harness` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running `tests/platform-harness/target/debug/image-abi .build/typedio-check/image-abi-c.bin`
+image ABI 8: 94 size/alignment/field checks match real Linux C and production Rust
+    Checking aster-core v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 14.13s
+warning: missing documentation for an enum
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:25:1
+   |
+25 | pub enum DiscoverError {
+   | ^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: the lint level is defined here
+  --> ostd/src/lib.rs:18:9
+   |
+18 | #![warn(missing_docs)]
+   |         ^^^^^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:26:5
+   |
+26 |     Host(i64),
+   |     ^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:27:5
+   |
+27 |     Schema,
+   |     ^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:28:5
+   |
+28 |     Transfer(TransferError),
+   |     ^^^^^^^^
+
+warning: missing documentation for an enum
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:31:1
+   |
+31 | pub enum OpenError {
+   | ^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:32:5
+   |
+32 |     Host(i64),
+   |     ^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:33:5
+   |
+33 |     InvalidOptions,
+   |     ^^^^^^^^^^^^^^
+
+warning: missing documentation for an enum
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:36:1
+   |
+36 | pub enum SubmitReason {
+   | ^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:37:5
+   |
+37 |     WouldBlock,
+   |     ^^^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:38:5
+   |
+38 |     DuplicateTag,
+   |     ^^^^^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:39:5
+   |
+39 |     Removed,
+   |     ^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:40:5
+   |
+40 |     Transfer(TransferError),
+   |     ^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:41:5
+   |
+41 |     Host(i64),
+   |     ^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:43:1
+   |
+43 | pub struct SubmitError<R> {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct field
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:44:5
+   |
+44 |     pub reason: SubmitReason,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct field
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:45:5
+   |
+45 |     pub request: R,
+   |     ^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:48:1
+   |
+48 | pub struct CancelError(pub i64);
+   | ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:50:1
+   |
+50 | pub struct BindError(pub i64);
+   | ^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:52:1
+   |
+52 | pub struct QueueOptions {
+   | ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct field
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:53:5
+   |
+53 |     pub depth: usize,
+   |     ^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct field
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:54:5
+   |
+54 |     pub features: u64,
+   |     ^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:57:1
+   |
+57 | pub struct QueueEvents(u8);
+   | ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:59:5
+   |
+59 |     pub fn bits(self) -> u8 {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:62:5
+   |
+62 |     pub const COMPLETION_AVAILABLE: Self = Self(COMPLETION_AVAILABLE);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:63:5
+   |
+63 |     pub const CAPACITY_AVAILABLE: Self = Self(CAPACITY_AVAILABLE);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:64:5
+   |
+64 |     pub const REMOVED: Self = Self(REMOVED);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated function
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:65:5
+   |
+65 |     pub const fn empty() -> Self {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:68:5
+   |
+68 |     pub fn contains(self, mask: Self) -> bool {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:71:5
+   |
+71 |     pub fn is_empty(self) -> bool {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:76:1
+   |
+76 | pub struct Device<P: Protocol> {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:82:1
+   |
+82 | pub struct Queue<P: Protocol> {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a function
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:90:1
+   |
+90 | pub fn discover<P: Protocol>() -> Result<Vec<Device<P>>, DiscoverError> {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:137:5
+    |
+137 |     pub fn config(&self) -> &P::Config {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:140:5
+    |
+140 |     pub fn open(&self, options: QueueOptions) -> Result<Queue<P>, OpenError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:180:5
+    |
+180 | /     pub fn try_submit(
+181 | |         &self,
+182 | |         mut request: P::Request,
+183 | |         tag: RequestTag,
+184 | |     ) -> Result<RequestId, SubmitError<P::Request>> {
+    | |___________________________________________________^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:219:5
+    |
+219 |     pub fn try_pop_completion(&self) -> Option<Completion<P::Reply>> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:293:5
+    |
+293 |     pub fn cancel(&self, id: RequestId) -> Result<(), CancelError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:303:5
+    |
+303 |     pub fn take_events(&self) -> QueueEvents {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:308:5
+    |
+308 |     pub fn rearm_irq(&self) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:311:5
+    |
+311 |     pub fn bind_irq(&self, line: &IrqLine) -> Result<(), BindError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:126:1
+    |
+126 | pub struct ProducerInterest(u8);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:128:1
+    |
+128 | pub struct ConsumerInterest(u8);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:130:5
+    |
+130 |     pub const SPACE_AVAILABLE: Self = Self(1);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated function
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:131:5
+    |
+131 |     pub const fn empty() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:136:5
+    |
+136 |     pub const DATA_AVAILABLE: Self = Self(1);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated function
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:137:5
+    |
+137 |     pub const fn empty() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:142:1
+    |
+142 | pub struct ProducerEvents(u8);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:144:1
+    |
+144 | pub struct ConsumerEvents(u8);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:148:13
+    |
+148 |             pub const $ready: Self = Self(1);
+    |             ^^^^^^^^^^^^^^^^^^^^^^
+...
+160 | events!(ProducerEvents, SPACE_AVAILABLE);
+    | ---------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:149:13
+    |
+149 |             pub const CLOSED: Self = Self(2);
+    |             ^^^^^^^^^^^^^^^^^^^^^^
+...
+160 | events!(ProducerEvents, SPACE_AVAILABLE);
+    | ---------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:150:13
+    |
+150 |             pub const RESET: Self = Self(4);
+    |             ^^^^^^^^^^^^^^^^^^^^^
+...
+160 | events!(ProducerEvents, SPACE_AVAILABLE);
+    | ---------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:151:13
+    |
+151 |             pub fn bits(self) -> u8 {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^
+...
+160 | events!(ProducerEvents, SPACE_AVAILABLE);
+    | ---------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:154:13
+    |
+154 |             pub fn contains(self, other: Self) -> bool {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+160 | events!(ProducerEvents, SPACE_AVAILABLE);
+    | ---------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:148:13
+    |
+148 |             pub const $ready: Self = Self(1);
+    |             ^^^^^^^^^^^^^^^^^^^^^^
+...
+161 | events!(ConsumerEvents, DATA_AVAILABLE);
+    | --------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:149:13
+    |
+149 |             pub const CLOSED: Self = Self(2);
+    |             ^^^^^^^^^^^^^^^^^^^^^^
+...
+161 | events!(ConsumerEvents, DATA_AVAILABLE);
+    | --------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:150:13
+    |
+150 |             pub const RESET: Self = Self(4);
+    |             ^^^^^^^^^^^^^^^^^^^^^
+...
+161 | events!(ConsumerEvents, DATA_AVAILABLE);
+    | --------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:151:13
+    |
+151 |             pub fn bits(self) -> u8 {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^
+...
+161 | events!(ConsumerEvents, DATA_AVAILABLE);
+    | --------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:154:13
+    |
+154 |             pub fn contains(self, other: Self) -> bool {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+161 | events!(ConsumerEvents, DATA_AVAILABLE);
+    | --------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:165:13
+    |
+165 |             pub fn bind_irq(&mut self, line: &IrqLine) -> Result<(), BindError> {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+180 | notifications!(Producer, ProducerInterest, ProducerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:168:13
+    |
+168 |             pub fn set_interest(&mut self, interest: $i) -> Result<(), PipeError> {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+180 | notifications!(Producer, ProducerInterest, ProducerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:171:13
+    |
+171 |             pub fn take_events(&mut self) -> $e {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+180 | notifications!(Producer, ProducerInterest, ProducerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:174:13
+    |
+174 |             pub fn rearm_irq(&mut self) -> bool {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+180 | notifications!(Producer, ProducerInterest, ProducerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:165:13
+    |
+165 |             pub fn bind_irq(&mut self, line: &IrqLine) -> Result<(), BindError> {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+181 | notifications!(Consumer, ConsumerInterest, ConsumerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:168:13
+    |
+168 |             pub fn set_interest(&mut self, interest: $i) -> Result<(), PipeError> {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+181 | notifications!(Consumer, ConsumerInterest, ConsumerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:171:13
+    |
+171 |             pub fn take_events(&mut self) -> $e {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+181 | notifications!(Consumer, ConsumerInterest, ConsumerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:174:13
+    |
+174 |             pub fn rearm_irq(&mut self) -> bool {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+181 | notifications!(Consumer, ConsumerInterest, ConsumerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:224:1
+    |
+224 | pub struct ProducerReservation<'a>(Reservation<'a>);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:225:1
+    |
+225 | pub struct ConsumerReservation<'a>(Reservation<'a>);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:227:5
+    |
+227 |     pub fn try_reserve(&mut self, limit: usize) -> Result<ProducerReservation<'_>, PipeError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:235:5
+    |
+235 | /     pub fn try_reserve(
+236 | |         &mut self,
+237 | |         limit: usize,
+238 | |     ) -> Result<Option<ConsumerReservation<'_>>, PipeError> {
+    | |___________________________________________________________^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:243:5
+    |
+243 |     pub fn produce(&mut self, src: &mut VmReader) -> Result<usize, (Error, usize)> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:246:5
+    |
+246 | /     pub fn produce_with<F>(&mut self, transfer: F) -> Result<usize, (Error, usize)>
+247 | |     where
+248 | |         F: for<'b> FnOnce(&mut VmWriter<'b, Infallible>) -> Result<usize, (Error, usize)>,
+    | |__________________________________________________________________________________________^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:261:5
+    |
+261 |     pub fn commit(self, bytes: usize) -> Result<(), PipeError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:266:5
+    |
+266 |     pub fn consume(&mut self, dst: &mut VmWriter) -> Result<usize, (Error, usize)> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:269:5
+    |
+269 | /     pub fn consume_with<F>(&mut self, transfer: F) -> Result<usize, (Error, usize)>
+270 | |     where
+271 | |         F: for<'b> FnOnce(&mut VmReader<'b, Infallible>) -> Result<usize, (Error, usize)>,
+    | |__________________________________________________________________________________________^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:283:5
+    |
+283 |     pub fn commit(self, bytes: usize) -> Result<(), PipeError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a type alias
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:337:5
+    |
+337 |     pub type VsockEvent = ::typedio::vsock::VsockEvent<super::Producer, super::Consumer>;
+    |     ^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a type alias
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:338:5
+    |
+338 |     pub type VsockReply = ::typedio::vsock::VsockReply<super::Producer, super::Consumer>;
+    |     ^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a type alias
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:339:5
+    |
+339 |     pub type VsockProtocol = ::typedio::vsock::VsockProtocol<super::Producer, super::Consumer>;
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `ostd` (lib) generated 79 warnings
+    Checking aster-core v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.64s
+warning: missing documentation for an enum
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:25:1
+   |
+25 | pub enum DiscoverError {
+   | ^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: the lint level is defined here
+  --> ostd/src/lib.rs:18:9
+   |
+18 | #![warn(missing_docs)]
+   |         ^^^^^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:26:5
+   |
+26 |     Host(i64),
+   |     ^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:27:5
+   |
+27 |     Schema,
+   |     ^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:28:5
+   |
+28 |     Transfer(TransferError),
+   |     ^^^^^^^^
+
+warning: missing documentation for an enum
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:31:1
+   |
+31 | pub enum OpenError {
+   | ^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:32:5
+   |
+32 |     Host(i64),
+   |     ^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:33:5
+   |
+33 |     InvalidOptions,
+   |     ^^^^^^^^^^^^^^
+
+warning: missing documentation for an enum
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:36:1
+   |
+36 | pub enum SubmitReason {
+   | ^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:37:5
+   |
+37 |     WouldBlock,
+   |     ^^^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:38:5
+   |
+38 |     DuplicateTag,
+   |     ^^^^^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:39:5
+   |
+39 |     Removed,
+   |     ^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:40:5
+   |
+40 |     Transfer(TransferError),
+   |     ^^^^^^^^
+
+warning: missing documentation for a variant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:41:5
+   |
+41 |     Host(i64),
+   |     ^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:43:1
+   |
+43 | pub struct SubmitError<R> {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct field
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:44:5
+   |
+44 |     pub reason: SubmitReason,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct field
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:45:5
+   |
+45 |     pub request: R,
+   |     ^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:48:1
+   |
+48 | pub struct CancelError(pub i64);
+   | ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:50:1
+   |
+50 | pub struct BindError(pub i64);
+   | ^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:52:1
+   |
+52 | pub struct QueueOptions {
+   | ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct field
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:53:5
+   |
+53 |     pub depth: usize,
+   |     ^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct field
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:54:5
+   |
+54 |     pub features: u64,
+   |     ^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:57:1
+   |
+57 | pub struct QueueEvents(u8);
+   | ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:59:5
+   |
+59 |     pub fn bits(self) -> u8 {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:62:5
+   |
+62 |     pub const COMPLETION_AVAILABLE: Self = Self(COMPLETION_AVAILABLE);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:63:5
+   |
+63 |     pub const CAPACITY_AVAILABLE: Self = Self(CAPACITY_AVAILABLE);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:64:5
+   |
+64 |     pub const REMOVED: Self = Self(REMOVED);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated function
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:65:5
+   |
+65 |     pub const fn empty() -> Self {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:68:5
+   |
+68 |     pub fn contains(self, mask: Self) -> bool {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:71:5
+   |
+71 |     pub fn is_empty(self) -> bool {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:76:1
+   |
+76 | pub struct Device<P: Protocol> {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:82:1
+   |
+82 | pub struct Queue<P: Protocol> {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a function
+  --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:90:1
+   |
+90 | pub fn discover<P: Protocol>() -> Result<Vec<Device<P>>, DiscoverError> {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:137:5
+    |
+137 |     pub fn config(&self) -> &P::Config {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:140:5
+    |
+140 |     pub fn open(&self, options: QueueOptions) -> Result<Queue<P>, OpenError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:180:5
+    |
+180 | /     pub fn try_submit(
+181 | |         &self,
+182 | |         mut request: P::Request,
+183 | |         tag: RequestTag,
+184 | |     ) -> Result<RequestId, SubmitError<P::Request>> {
+    | |___________________________________________________^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:219:5
+    |
+219 |     pub fn try_pop_completion(&self) -> Option<Completion<P::Reply>> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:293:5
+    |
+293 |     pub fn cancel(&self, id: RequestId) -> Result<(), CancelError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:303:5
+    |
+303 |     pub fn take_events(&self) -> QueueEvents {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:308:5
+    |
+308 |     pub fn rearm_irq(&self) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:311:5
+    |
+311 |     pub fn bind_irq(&self, line: &IrqLine) -> Result<(), BindError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:126:1
+    |
+126 | pub struct ProducerInterest(u8);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:128:1
+    |
+128 | pub struct ConsumerInterest(u8);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:130:5
+    |
+130 |     pub const SPACE_AVAILABLE: Self = Self(1);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated function
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:131:5
+    |
+131 |     pub const fn empty() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:136:5
+    |
+136 |     pub const DATA_AVAILABLE: Self = Self(1);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated function
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:137:5
+    |
+137 |     pub const fn empty() -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:142:1
+    |
+142 | pub struct ProducerEvents(u8);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:144:1
+    |
+144 | pub struct ConsumerEvents(u8);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:148:13
+    |
+148 |             pub const $ready: Self = Self(1);
+    |             ^^^^^^^^^^^^^^^^^^^^^^
+...
+160 | events!(ProducerEvents, SPACE_AVAILABLE);
+    | ---------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:149:13
+    |
+149 |             pub const CLOSED: Self = Self(2);
+    |             ^^^^^^^^^^^^^^^^^^^^^^
+...
+160 | events!(ProducerEvents, SPACE_AVAILABLE);
+    | ---------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:150:13
+    |
+150 |             pub const RESET: Self = Self(4);
+    |             ^^^^^^^^^^^^^^^^^^^^^
+...
+160 | events!(ProducerEvents, SPACE_AVAILABLE);
+    | ---------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:151:13
+    |
+151 |             pub fn bits(self) -> u8 {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^
+...
+160 | events!(ProducerEvents, SPACE_AVAILABLE);
+    | ---------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:154:13
+    |
+154 |             pub fn contains(self, other: Self) -> bool {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+160 | events!(ProducerEvents, SPACE_AVAILABLE);
+    | ---------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:148:13
+    |
+148 |             pub const $ready: Self = Self(1);
+    |             ^^^^^^^^^^^^^^^^^^^^^^
+...
+161 | events!(ConsumerEvents, DATA_AVAILABLE);
+    | --------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:149:13
+    |
+149 |             pub const CLOSED: Self = Self(2);
+    |             ^^^^^^^^^^^^^^^^^^^^^^
+...
+161 | events!(ConsumerEvents, DATA_AVAILABLE);
+    | --------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for an associated constant
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:150:13
+    |
+150 |             pub const RESET: Self = Self(4);
+    |             ^^^^^^^^^^^^^^^^^^^^^
+...
+161 | events!(ConsumerEvents, DATA_AVAILABLE);
+    | --------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:151:13
+    |
+151 |             pub fn bits(self) -> u8 {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^
+...
+161 | events!(ConsumerEvents, DATA_AVAILABLE);
+    | --------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:154:13
+    |
+154 |             pub fn contains(self, other: Self) -> bool {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+161 | events!(ConsumerEvents, DATA_AVAILABLE);
+    | --------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `events` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:165:13
+    |
+165 |             pub fn bind_irq(&mut self, line: &IrqLine) -> Result<(), BindError> {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+180 | notifications!(Producer, ProducerInterest, ProducerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:168:13
+    |
+168 |             pub fn set_interest(&mut self, interest: $i) -> Result<(), PipeError> {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+180 | notifications!(Producer, ProducerInterest, ProducerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:171:13
+    |
+171 |             pub fn take_events(&mut self) -> $e {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+180 | notifications!(Producer, ProducerInterest, ProducerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:174:13
+    |
+174 |             pub fn rearm_irq(&mut self) -> bool {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+180 | notifications!(Producer, ProducerInterest, ProducerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:165:13
+    |
+165 |             pub fn bind_irq(&mut self, line: &IrqLine) -> Result<(), BindError> {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+181 | notifications!(Consumer, ConsumerInterest, ConsumerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:168:13
+    |
+168 |             pub fn set_interest(&mut self, interest: $i) -> Result<(), PipeError> {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+181 | notifications!(Consumer, ConsumerInterest, ConsumerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:171:13
+    |
+171 |             pub fn take_events(&mut self) -> $e {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+181 | notifications!(Consumer, ConsumerInterest, ConsumerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:174:13
+    |
+174 |             pub fn rearm_irq(&mut self) -> bool {
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+181 | notifications!(Consumer, ConsumerInterest, ConsumerEvents);
+    | ---------------------------------------------------------- in this macro invocation
+    |
+    = note: this warning originates in the macro `notifications` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:224:1
+    |
+224 | pub struct ProducerReservation<'a>(Reservation<'a>);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a struct
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:225:1
+    |
+225 | pub struct ConsumerReservation<'a>(Reservation<'a>);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:227:5
+    |
+227 |     pub fn try_reserve(&mut self, limit: usize) -> Result<ProducerReservation<'_>, PipeError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:235:5
+    |
+235 | /     pub fn try_reserve(
+236 | |         &mut self,
+237 | |         limit: usize,
+238 | |     ) -> Result<Option<ConsumerReservation<'_>>, PipeError> {
+    | |___________________________________________________________^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:243:5
+    |
+243 |     pub fn produce(&mut self, src: &mut VmReader) -> Result<usize, (Error, usize)> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:246:5
+    |
+246 | /     pub fn produce_with<F>(&mut self, transfer: F) -> Result<usize, (Error, usize)>
+247 | |     where
+248 | |         F: for<'b> FnOnce(&mut VmWriter<'b, Infallible>) -> Result<usize, (Error, usize)>,
+    | |__________________________________________________________________________________________^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:261:5
+    |
+261 |     pub fn commit(self, bytes: usize) -> Result<(), PipeError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:266:5
+    |
+266 |     pub fn consume(&mut self, dst: &mut VmWriter) -> Result<usize, (Error, usize)> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:269:5
+    |
+269 | /     pub fn consume_with<F>(&mut self, transfer: F) -> Result<usize, (Error, usize)>
+270 | |     where
+271 | |         F: for<'b> FnOnce(&mut VmReader<'b, Infallible>) -> Result<usize, (Error, usize)>,
+    | |__________________________________________________________________________________________^
+
+warning: missing documentation for a method
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend/pipe.rs:283:5
+    |
+283 |     pub fn commit(self, bytes: usize) -> Result<(), PipeError> {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a type alias
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:337:5
+    |
+337 |     pub type VsockEvent = ::typedio::vsock::VsockEvent<super::Producer, super::Consumer>;
+    |     ^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a type alias
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:338:5
+    |
+338 |     pub type VsockReply = ::typedio::vsock::VsockReply<super::Producer, super::Consumer>;
+    |     ^^^^^^^^^^^^^^^^^^^
+
+warning: missing documentation for a type alias
+   --> ostd/src/../../../kernelet/prototype/libs/typedio/src/frontend.rs:339:5
+    |
+339 |     pub type VsockProtocol = ::typedio::vsock::VsockProtocol<super::Producer, super::Consumer>;
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `ostd` (lib) generated 79 warnings
+    Checking aster-core v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.90s
+warning: struct `PanicGuard` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/vostd/src/panic.rs:32:19
+   |
+32 | pub(crate) struct PanicGuard {
+   |                   ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated items `new` and `forget` are never used
+  --> /home/ym/typedio-work/kernelet/prototype/vostd/src/panic.rs:36:19
+   |
+35 | impl PanicGuard {
+   | --------------- associated items in this implementation
+36 |     pub(crate) fn new() -> Self {
+   |                   ^^^
+...
+39 |     pub(crate) fn forget(self) {
+   |                   ^^^^^^
+
+warning: associated function `into_inner` is never used
+   --> /home/ym/typedio-work/kernelet/prototype/vostd/src/sync/rcu/mod.rs:495:26
+    |
+475 | impl<T: Send + 'static> RcuDrop<T> {
+    | ---------------------------------- associated function in this implementation
+...
+495 |     pub(crate) unsafe fn into_inner(slot: RcuDrop<T>) -> (T, PanicGuard) {
+    |                          ^^^^^^^^^^
+
+warning: function `range_difference` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/vostd/src/util/ops.rs:12:15
+   |
+12 | pub(crate) fn range_difference<T: Ord + Copy>(
+   |               ^^^^^^^^^^^^^^^^
+
+warning: `vostd` (lib) generated 4 warnings
+warning: feature `alloc_error_handler` is declared but not used
+ --> ostd/src/lib.rs:4:12
+  |
+4 | #![feature(alloc_error_handler)]
+  |            ^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default
+
+warning: feature `linkage` is declared but not used
+ --> ostd/src/lib.rs:8:12
+  |
+8 | #![feature(linkage)]
+  |            ^^^^^^^
+
+warning: feature `negative_impls` is declared but not used
+  --> ostd/src/lib.rs:10:12
+   |
+10 | #![feature(negative_impls)]
+   |            ^^^^^^^^^^^^^^
+
+warning: feature `macro_metavar_expr` is declared but not used
+  --> ostd/src/lib.rs:14:62
+   |
+14 | #![cfg_attr(target_arch = "x86_64", feature(iter_advance_by, macro_metavar_expr))]
+   |                                                              ^^^^^^^^^^^^^^^^^^
+
+warning: feature `allocator_api` is declared but not used
+ --> ostd/src/lib.rs:5:12
+  |
+5 | #![feature(allocator_api)]
+  |            ^^^^^^^^^^^^^
+
+warning: feature `btree_cursors` is declared but not used
+ --> ostd/src/lib.rs:6:12
+  |
+6 | #![feature(btree_cursors)]
+  |            ^^^^^^^^^^^^^
+
+warning: feature `core_intrinsics` is declared but not used
+ --> ostd/src/lib.rs:7:12
+  |
+7 | #![feature(core_intrinsics)]
+  |            ^^^^^^^^^^^^^^^
+
+warning: feature `ptr_metadata` is declared but not used
+  --> ostd/src/lib.rs:11:12
+   |
+11 | #![feature(ptr_metadata)]
+   |            ^^^^^^^^^^^^
+
+warning: feature `sync_unsafe_cell` is declared but not used
+  --> ostd/src/lib.rs:12:12
+   |
+12 | #![feature(sync_unsafe_cell)]
+   |            ^^^^^^^^^^^^^^^^
+
+warning: feature `iter_advance_by` is declared but not used
+  --> ostd/src/lib.rs:14:45
+   |
+14 | #![cfg_attr(target_arch = "x86_64", feature(iter_advance_by, macro_metavar_expr))]
+   |                                             ^^^^^^^^^^^^^^^
+
+warning: `ostd` (lib) generated 10 warnings
+warning: feature `allocator_api` is declared but not used
+ --> osdk/deps/heap-allocator/src/lib.rs:3:12
+  |
+3 | #![feature(allocator_api)]
+  |            ^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default
+
+warning: `osdk-heap-allocator` (lib) generated 1 warning
+warning: unnecessary qualification
+   --> kernel/core/comps/console/src/lib.rs:102:6
+    |
+102 | impl core::fmt::Debug for KerneletConsole {
+    |      ^^^^^^^^^^^^^^^^
+    |
+    = note: requested on the command line with `-W unused-qualifications`
+help: remove the unnecessary path segments
+    |
+102 - impl core::fmt::Debug for KerneletConsole {
+102 + impl Debug for KerneletConsole {
+    |
+
+warning: `aster-console` (lib) generated 1 warning (run `cargo fix --lib -p aster-console` to apply 1 suggestion)
+warning: associated function `try_new` is never used
+  --> kernel/core/comps/time/src/rtc/mod.rs:11:8
+   |
+ 8 | pub(crate) trait Driver {
+   |                  ------ associated function in this trait
+...
+11 |     fn try_new() -> Option<Self>
+   |        ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-time` (lib) generated 1 warning
+    Checking aster-core v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core)
+warning: unused import: `thread::kernel_thread::ThreadOptions`
+  --> kernel/core/src/device/registry/block.rs:25:5
+   |
+25 |     thread::kernel_thread::ThreadOptions,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `termio::CFontOp`
+ --> kernel/core/src/device/tty/mod.rs:6:45
+  |
+6 | use self::{line_discipline::LineDiscipline, termio::CFontOp};
+  |                                             ^^^^^^^^^^^^^^^
+
+warning: unused import: `aster_softirq::BottomHalfDisabled`
+ --> kernel/core/src/net/iface/init.rs:9:5
+  |
+9 | use aster_softirq::BottomHalfDisabled;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `prelude::*`
+  --> kernel/core/src/vm/vmar/vmar_impls/fork.rs:13:13
+   |
+13 | use crate::{prelude::*, process::ProcessVm, vm::vmar::VmarHandle};
+   |             ^^^^^^^^^^
+
+warning: unused import: `HasSize`
+  --> kernel/core/src/vm/vmar/vm_mapping.rs:17:48
+   |
+17 |         CachePolicy, Frame, FrameAllocOptions, HasSize, PageFlags, PageProperty, UFrame, VmSpace,
+   |                                                ^^^^^^^
+
+warning: unused import: `ostd::util::id_set::Id`
+  --> kernel/core/src/fs/fs_impls/procfs/stat.rs:13:5
+   |
+13 | use ostd::util::id_set::Id;
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `util::id_set::Id`
+ --> kernel/core/src/syscall/sched_affinity.rs:8:5
+  |
+8 |     util::id_set::Id,
+  |     ^^^^^^^^^^^^^^^^
+
+warning: unused import: `util::id_set::Id`
+ --> kernel/core/src/init.rs:9:24
+  |
+9 | use ostd::{cpu::CpuId, util::id_set::Id};
+  |                        ^^^^^^^^^^^^^^^^
+
+warning: unused import: `util::id_set::Id`
+  --> kernel/core/src/sched/sched_class/mod.rs:22:5
+   |
+22 |     util::id_set::Id,
+   |     ^^^^^^^^^^^^^^^^
+   |
+note: the lint level is defined here
+  --> kernel/core/src/sched/sched_class/mod.rs:5:9
+   |
+ 5 | #![warn(unused)]
+   |         ^^^^^^
+   = note: `#[warn(unused_imports)]` implied by `#[warn(unused)]`
+
+warning: multiple associated constants are never used
+   --> kernel/core/src/device/tty/termio.rs:491:22
+    |
+489 | impl CFontOp {
+    | ------------ associated constants in this implementation
+490 |     // https://elixir.bootlin.com/linux/v6.15/source/include/uapi/linux/kd.h#L177
+491 |     pub(super) const OP_SET: u32 = 0;
+    |                      ^^^^^^
+492 |     pub(super) const OP_GET: u32 = 1;
+    |                      ^^^^^^
+493 |     pub(super) const OP_SET_DEFAULT: u32 = 2;
+    |                      ^^^^^^^^^^^^^^
+494 |     pub(super) const OP_SET_TALL: u32 = 4;
+    |                      ^^^^^^^^^^^
+...
+497 |     pub(super) const MAX_WIDTH: u32 = 64;
+    |                      ^^^^^^^^^
+498 |     pub(super) const MAX_HEIGHT: u32 = 128;
+    |                      ^^^^^^^^^^
+499 |     pub(super) const MAX_CHARCOUNT: u32 = 512;
+    |                      ^^^^^^^^^^^^^
+...
+502 |     pub(super) const NONTALL_VPITCH: u32 = 32;
+    |                      ^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `register_subsystem` is never used
+  --> kernel/core/src/fs/fs_impls/configfs/mod.rs:30:15
+   |
+30 | pub(crate) fn register_subsystem(subsystem: Arc<dyn SysBranchNode>) -> Result<()> {
+   |               ^^^^^^^^^^^^^^^^^^
+
+warning: constant `VMADDR_CID_HOST` is never used
+  --> kernel/core/src/net/socket/vsock/addr.rs:32:18
+   |
+32 | pub(super) const VMADDR_CID_HOST: u32 = 2;
+   |                  ^^^^^^^^^^^^^^^
+
+warning: function `owns` is never used
+   --> kernel/core/src/net/socket/vsock/typedio.rs:128:38
+    |
+128 | pub(in crate::net::socket::vsock) fn owns(cid: u32) -> bool {
+    |                                      ^^^^
+
+warning: feature `array_try_from_fn` is declared but not used
+  --> kernel/core/src/lib.rs:10:12
+   |
+10 | #![feature(array_try_from_fn)]
+   |            ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default
+
+warning: feature `panic_can_unwind` is declared but not used
+  --> kernel/core/src/lib.rs:19:12
+   |
+19 | #![feature(panic_can_unwind)]
+   |            ^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 15 warnings (run `cargo fix --lib -p aster-core` to apply 4 suggestions)
+    Checking asterinas v0.1.0 (/home/ym/typedio-work/asterinas/kernel)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.95s
+cd /home/ym/typedio-work/asterinas && CARGO_TARGET_DIR=/home/ym/typedio-work/kernelet/prototype/.build/cargo RUSTFLAGS="-C relocation-model=pic -C code-model=small -C no-redzone=y -C panic=abort -C force-unwind-tables=no" \
+  KLET_INITRAMFS=/home/ym/typedio-work/kernelet/prototype/.build/asterinas-initramfs.cpio \
+  OSTD_TASK_STACK_SIZE_IN_PAGES=64 \
+  cargo build --offline --locked --profile kernelet -p asterinas-kernelet \
+    --target x86_64-unknown-none -Zbuild-std=core,alloc,compiler_builtins -Zbuild-std-features=compiler-builtins-mem || \
+  { echo "image: the build failed; it is --offline, so if a crate is missing, run make crates (once, with a network)"; exit 1; }
+warning: struct `PanicGuard` is never constructed
+  --> /home/ym/typedio-work/kernelet/prototype/vostd/src/panic.rs:32:19
+   |
+32 | pub(crate) struct PanicGuard {
+   |                   ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated items `new` and `forget` are never used
+  --> /home/ym/typedio-work/kernelet/prototype/vostd/src/panic.rs:36:19
+   |
+35 | impl PanicGuard {
+   | --------------- associated items in this implementation
+36 |     pub(crate) fn new() -> Self {
+   |                   ^^^
+...
+39 |     pub(crate) fn forget(self) {
+   |                   ^^^^^^
+
+warning: associated function `into_inner` is never used
+   --> /home/ym/typedio-work/kernelet/prototype/vostd/src/sync/rcu/mod.rs:495:26
+    |
+475 | impl<T: Send + 'static> RcuDrop<T> {
+    | ---------------------------------- associated function in this implementation
+...
+495 |     pub(crate) unsafe fn into_inner(slot: RcuDrop<T>) -> (T, PanicGuard) {
+    |                          ^^^^^^^^^^
+
+warning: function `range_difference` is never used
+  --> /home/ym/typedio-work/kernelet/prototype/vostd/src/util/ops.rs:12:15
+   |
+12 | pub(crate) fn range_difference<T: Ord + Copy>(
+   |               ^^^^^^^^^^^^^^^^
+
+warning: `vostd` (lib) generated 4 warnings
+warning: feature `alloc_error_handler` is declared but not used
+ --> ostd/src/lib.rs:4:12
+  |
+4 | #![feature(alloc_error_handler)]
+  |            ^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default
+
+warning: feature `linkage` is declared but not used
+ --> ostd/src/lib.rs:8:12
+  |
+8 | #![feature(linkage)]
+  |            ^^^^^^^
+
+warning: feature `negative_impls` is declared but not used
+  --> ostd/src/lib.rs:10:12
+   |
+10 | #![feature(negative_impls)]
+   |            ^^^^^^^^^^^^^^
+
+warning: feature `macro_metavar_expr` is declared but not used
+  --> ostd/src/lib.rs:14:62
+   |
+14 | #![cfg_attr(target_arch = "x86_64", feature(iter_advance_by, macro_metavar_expr))]
+   |                                                              ^^^^^^^^^^^^^^^^^^
+
+warning: feature `allocator_api` is declared but not used
+ --> ostd/src/lib.rs:5:12
+  |
+5 | #![feature(allocator_api)]
+  |            ^^^^^^^^^^^^^
+
+warning: feature `btree_cursors` is declared but not used
+ --> ostd/src/lib.rs:6:12
+  |
+6 | #![feature(btree_cursors)]
+  |            ^^^^^^^^^^^^^
+
+warning: feature `core_intrinsics` is declared but not used
+ --> ostd/src/lib.rs:7:12
+  |
+7 | #![feature(core_intrinsics)]
+  |            ^^^^^^^^^^^^^^^
+
+warning: feature `ptr_metadata` is declared but not used
+  --> ostd/src/lib.rs:11:12
+   |
+11 | #![feature(ptr_metadata)]
+   |            ^^^^^^^^^^^^
+
+warning: feature `sync_unsafe_cell` is declared but not used
+  --> ostd/src/lib.rs:12:12
+   |
+12 | #![feature(sync_unsafe_cell)]
+   |            ^^^^^^^^^^^^^^^^
+
+warning: feature `iter_advance_by` is declared but not used
+  --> ostd/src/lib.rs:14:45
+   |
+14 | #![cfg_attr(target_arch = "x86_64", feature(iter_advance_by, macro_metavar_expr))]
+   |                                             ^^^^^^^^^^^^^^^
+
+warning: `ostd` (lib) generated 10 warnings
+warning: feature `allocator_api` is declared but not used
+ --> osdk/deps/heap-allocator/src/lib.rs:3:12
+  |
+3 | #![feature(allocator_api)]
+  |            ^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default
+
+warning: `osdk-heap-allocator` (lib) generated 1 warning
+warning: unnecessary qualification
+   --> kernel/core/comps/console/src/lib.rs:102:6
+    |
+102 | impl core::fmt::Debug for KerneletConsole {
+    |      ^^^^^^^^^^^^^^^^
+    |
+    = note: requested on the command line with `-W unused-qualifications`
+help: remove the unnecessary path segments
+    |
+102 - impl core::fmt::Debug for KerneletConsole {
+102 + impl Debug for KerneletConsole {
+    |
+
+warning: `aster-console` (lib) generated 1 warning (run `cargo fix --lib -p aster-console` to apply 1 suggestion)
+warning: associated function `try_new` is never used
+  --> kernel/core/comps/time/src/rtc/mod.rs:11:8
+   |
+ 8 | pub(crate) trait Driver {
+   |                  ------ associated function in this trait
+...
+11 |     fn try_new() -> Option<Self>
+   |        ^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aster-time` (lib) generated 1 warning
+   Compiling aster-core v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core)
+warning: unused import: `thread::kernel_thread::ThreadOptions`
+  --> kernel/core/src/device/registry/block.rs:25:5
+   |
+25 |     thread::kernel_thread::ThreadOptions,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `termio::CFontOp`
+ --> kernel/core/src/device/tty/mod.rs:6:45
+  |
+6 | use self::{line_discipline::LineDiscipline, termio::CFontOp};
+  |                                             ^^^^^^^^^^^^^^^
+
+warning: unused import: `aster_softirq::BottomHalfDisabled`
+ --> kernel/core/src/net/iface/init.rs:9:5
+  |
+9 | use aster_softirq::BottomHalfDisabled;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `prelude::*`
+  --> kernel/core/src/vm/vmar/vmar_impls/fork.rs:13:13
+   |
+13 | use crate::{prelude::*, process::ProcessVm, vm::vmar::VmarHandle};
+   |             ^^^^^^^^^^
+
+warning: unused import: `HasSize`
+  --> kernel/core/src/vm/vmar/vm_mapping.rs:17:48
+   |
+17 |         CachePolicy, Frame, FrameAllocOptions, HasSize, PageFlags, PageProperty, UFrame, VmSpace,
+   |                                                ^^^^^^^
+
+warning: unused import: `ostd::util::id_set::Id`
+  --> kernel/core/src/fs/fs_impls/procfs/stat.rs:13:5
+   |
+13 | use ostd::util::id_set::Id;
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `util::id_set::Id`
+ --> kernel/core/src/syscall/sched_affinity.rs:8:5
+  |
+8 |     util::id_set::Id,
+  |     ^^^^^^^^^^^^^^^^
+
+warning: unused import: `util::id_set::Id`
+ --> kernel/core/src/init.rs:9:24
+  |
+9 | use ostd::{cpu::CpuId, util::id_set::Id};
+  |                        ^^^^^^^^^^^^^^^^
+
+warning: unused import: `util::id_set::Id`
+  --> kernel/core/src/sched/sched_class/mod.rs:22:5
+   |
+22 |     util::id_set::Id,
+   |     ^^^^^^^^^^^^^^^^
+   |
+note: the lint level is defined here
+  --> kernel/core/src/sched/sched_class/mod.rs:5:9
+   |
+ 5 | #![warn(unused)]
+   |         ^^^^^^
+   = note: `#[warn(unused_imports)]` implied by `#[warn(unused)]`
+
+warning: multiple associated constants are never used
+   --> kernel/core/src/device/tty/termio.rs:491:22
+    |
+489 | impl CFontOp {
+    | ------------ associated constants in this implementation
+490 |     // https://elixir.bootlin.com/linux/v6.15/source/include/uapi/linux/kd.h#L177
+491 |     pub(super) const OP_SET: u32 = 0;
+    |                      ^^^^^^
+492 |     pub(super) const OP_GET: u32 = 1;
+    |                      ^^^^^^
+493 |     pub(super) const OP_SET_DEFAULT: u32 = 2;
+    |                      ^^^^^^^^^^^^^^
+494 |     pub(super) const OP_SET_TALL: u32 = 4;
+    |                      ^^^^^^^^^^^
+...
+497 |     pub(super) const MAX_WIDTH: u32 = 64;
+    |                      ^^^^^^^^^
+498 |     pub(super) const MAX_HEIGHT: u32 = 128;
+    |                      ^^^^^^^^^^
+499 |     pub(super) const MAX_CHARCOUNT: u32 = 512;
+    |                      ^^^^^^^^^^^^^
+...
+502 |     pub(super) const NONTALL_VPITCH: u32 = 32;
+    |                      ^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `register_subsystem` is never used
+  --> kernel/core/src/fs/fs_impls/configfs/mod.rs:30:15
+   |
+30 | pub(crate) fn register_subsystem(subsystem: Arc<dyn SysBranchNode>) -> Result<()> {
+   |               ^^^^^^^^^^^^^^^^^^
+
+warning: constant `VMADDR_CID_HOST` is never used
+  --> kernel/core/src/net/socket/vsock/addr.rs:32:18
+   |
+32 | pub(super) const VMADDR_CID_HOST: u32 = 2;
+   |                  ^^^^^^^^^^^^^^^
+
+warning: function `owns` is never used
+   --> kernel/core/src/net/socket/vsock/typedio.rs:128:38
+    |
+128 | pub(in crate::net::socket::vsock) fn owns(cid: u32) -> bool {
+    |                                      ^^^^
+
+   Compiling asterinas v0.1.0 (/home/ym/typedio-work/asterinas/kernel)
+warning: feature `array_try_from_fn` is declared but not used
+  --> kernel/core/src/lib.rs:10:12
+   |
+10 | #![feature(array_try_from_fn)]
+   |            ^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default
+
+warning: feature `panic_can_unwind` is declared but not used
+  --> kernel/core/src/lib.rs:19:12
+   |
+19 | #![feature(panic_can_unwind)]
+   |            ^^^^^^^^^^^^^^^^
+
+warning: `aster-core` (lib) generated 15 warnings (run `cargo fix --lib -p aster-core` to apply 4 suggestions)
+   Compiling asterinas-kernelet v0.1.0 (/home/ym/typedio-work/asterinas/kernel/kernelet)
+    Finished `kernelet` profile [optimized] target(s) in 1m 33s
+ld -pie --no-dynamic-linker --no-undefined --gc-sections --exclude-libs ALL \
+  --build-id=none -z text -z noexecstack -z max-page-size=0x1000 \
+  -T linux/endovisor/kernelet.lds -u kernelet_entry_table -o /home/ym/typedio-work/kernelet/prototype/.build/asterinas.image \
+  --whole-archive /home/ym/typedio-work/kernelet/prototype/.build/cargo/x86_64-unknown-none/kernelet/libasterinas_kernelet.a --no-whole-archive
+python3 tools/check-image.py /home/ym/typedio-work/kernelet/prototype/.build/asterinas.image
+image: /home/ym/typedio-work/kernelet/prototype/.build/asterinas.image: ET_DYN, 3 load segments, 15181 RELATIVE relocations, 5645688 bytes
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 0.123s
+
+OK
+cd /home/ym/typedio-work/kernelet/prototype && CARGO_TARGET_DIR=/home/ym/typedio-work/kernelet/prototype/.build/cargo RUSTFLAGS="-C relocation-model=pic -C code-model=small -C no-redzone=y -C panic=abort -C force-unwind-tables=no" \
+  KLET_INITRAMFS=/home/ym/typedio-work/kernelet/prototype/.build/asterinas-initramfs.cpio \
+  OSTD_TASK_STACK_SIZE_IN_PAGES=64 \
+  cargo build --offline --locked --release -p piecheck \
+    --target x86_64-unknown-none -Zbuild-std=core,alloc,compiler_builtins -Zbuild-std-features=compiler-builtins-mem || \
+  { echo "image: the build failed; it is --offline, so if a crate is missing, run make crates (once, with a network)"; exit 1; }
+warning: struct `PanicGuard` is never constructed
+  --> vostd/src/panic.rs:32:19
+   |
+32 | pub(crate) struct PanicGuard {
+   |                   ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated items `new` and `forget` are never used
+  --> vostd/src/panic.rs:36:19
+   |
+35 | impl PanicGuard {
+   | --------------- associated items in this implementation
+36 |     pub(crate) fn new() -> Self {
+   |                   ^^^
+...
+39 |     pub(crate) fn forget(self) {
+   |                   ^^^^^^
+
+warning: associated function `into_inner` is never used
+   --> vostd/src/sync/rcu/mod.rs:495:26
+    |
+475 | impl<T: Send + 'static> RcuDrop<T> {
+    | ---------------------------------- associated function in this implementation
+...
+495 |     pub(crate) unsafe fn into_inner(slot: RcuDrop<T>) -> (T, PanicGuard) {
+    |                          ^^^^^^^^^^
+
+warning: function `range_difference` is never used
+  --> vostd/src/util/ops.rs:12:15
+   |
+12 | pub(crate) fn range_difference<T: Ord + Copy>(
+   |               ^^^^^^^^^^^^^^^^
+
+warning: `vostd` (lib) generated 4 warnings
+    Finished `release` profile [optimized] target(s) in 0.09s
+ld -pie --no-dynamic-linker --no-undefined --gc-sections --exclude-libs ALL \
+  --build-id=none -z text -z noexecstack -z max-page-size=0x1000 \
+  -T linux/endovisor/kernelet.lds -u kernelet_entry_table -o /home/ym/typedio-work/kernelet/prototype/.build/piecheck.image \
+  --whole-archive /home/ym/typedio-work/kernelet/prototype/.build/cargo/x86_64-unknown-none/release/libpiecheck.a --no-whole-archive
+python3 tools/check-image.py /home/ym/typedio-work/kernelet/prototype/.build/piecheck.image
+image: /home/ym/typedio-work/kernelet/prototype/.build/piecheck.image: ET_DYN, 3 load segments, 283 RELATIVE relocations, 127768 bytes

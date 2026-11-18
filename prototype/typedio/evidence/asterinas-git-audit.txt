@@ -1,0 +1,136 @@
+$ git remote -v
+origin	https://github.com/asterinas/asterinas.git (fetch) [blob:none]
+origin	https://github.com/asterinas/asterinas.git (push)
+personal	https://github.com/yanming404/asterinas.git (fetch)
+personal	https://github.com/yanming404/asterinas.git (push)
+
+$ git branch --show-current
+integrate/typedio-vsock
+
+$ git rev-parse HEAD
+48860174799d0796d4aa446c87274ad08a76dc53
+
+$ git reflog --all --format=%H %gs
+48860174799d0796d4aa446c87274ad08a76dc53 commit: Integrate full Asterinas with Kernelet vOSTD and TypedIO Vsock
+48860174799d0796d4aa446c87274ad08a76dc53 commit: Integrate full Asterinas with Kernelet vOSTD and TypedIO Vsock
+e87d8425f987820431bd35068ef2d4489bdcc735 branch: Created from HEAD
+e87d8425f987820431bd35068ef2d4489bdcc735 checkout: moving from e87d8425f987820431bd35068ef2d4489bdcc735 to integrate/typedio-vsock
+e87d8425f987820431bd35068ef2d4489bdcc735 checkout: moving from main to e87d8425f987820431bd35068ef2d4489bdcc735
+e87d8425f987820431bd35068ef2d4489bdcc735 clone: from https://github.com/asterinas/asterinas.git
+e87d8425f987820431bd35068ef2d4489bdcc735 clone: from https://github.com/asterinas/asterinas.git
+e87d8425f987820431bd35068ef2d4489bdcc735 clone: from https://github.com/asterinas/asterinas.git
+
+$ git diff --stat e87d8425f987820431bd35068ef2d4489bdcc735 HEAD
+ Cargo.lock                                         |  113 +-
+ Cargo.toml                                         |    9 +-
+ kernel/Cargo.toml                                  |   12 +-
+ kernel/core/Cargo.toml                             |   13 +-
+ kernel/core/comps/cmdline/Cargo.toml               |    4 +
+ kernel/core/comps/cmdline/src/lib.rs               |    3 +
+ kernel/core/comps/console/Cargo.toml               |    3 +
+ kernel/core/comps/console/src/lib.rs               |   30 +
+ kernel/core/comps/time/Cargo.toml                  |    3 +
+ kernel/core/comps/time/src/rtc/mod.rs              |    8 +-
+ kernel/core/src/arch/x86/mod.rs                    |    1 +
+ kernel/core/src/arch/x86/power_kernelet.rs         |   13 +
+ kernel/core/src/device/misc/mod.rs                 |    2 +
+ kernel/core/src/device/mod.rs                      |    2 +
+ kernel/core/src/device/registry/block.rs           |    3 +
+ kernel/core/src/device/tty/device.rs               |   22 +-
+ kernel/core/src/device/tty/hvc.rs                  |    7 +-
+ kernel/core/src/device/tty/mod.rs                  |    2 +
+ kernel/core/src/fs/fs_impls/mod.rs                 |    2 +
+ kernel/core/src/lib.rs                             |    7 +
+ kernel/core/src/net/iface/init.rs                  |    5 +
+ kernel/core/src/net/socket/vsock/mod.rs            |    5 +-
+ .../core/src/net/socket/vsock/socket_transport.rs  |  183 ++++
+ .../net/socket/vsock/socket_transport_kernelet.rs  |    6 +
+ .../core/src/net/socket/vsock/stream/connected.rs  |    2 +-
+ .../core/src/net/socket/vsock/stream/connecting.rs |    2 +-
+ kernel/core/src/net/socket/vsock/stream/init.rs    |   16 +-
+ kernel/core/src/net/socket/vsock/stream/listen.rs  |    2 +-
+ kernel/core/src/net/socket/vsock/typedio.rs        | 1149 ++++++++++++++++++++
+ kernel/core/src/power.rs                           |    3 +
+ kernel/core/src/thread/kernel_thread.rs            |    8 +-
+ kernel/core/src/thread/mod.rs                      |    3 +
+ kernel/core/src/thread/task.rs                     |    9 +-
+ kernel/core/src/vm/mod.rs                          |    5 +
+ kernel/core/src/vm/vmar/vm_mapping.rs              |    5 +-
+ kernel/core/src/vm/vmar/vmar_impls/access_alien.rs |    1 +
+ kernel/core/src/vm/vmar/vmar_impls/fork.rs         |    1 +
+ kernel/core/src/vm/vmar/vmar_impls/remap.rs        |    1 +
+ kernel/kernelet/Cargo.toml                         |   17 +
+ kernel/kernelet/README.md                          |   11 +
+ kernel/kernelet/build.rs                           |   20 +
+ kernel/kernelet/init.S                             |   19 +
+ kernel/kernelet/mkinitramfs.py                     |   33 +
+ kernel/kernelet/src/lib.rs                         |   12 +
+ kernel/libs/comp-sys/component/Cargo.toml          |    4 +
+ kernel/libs/comp-sys/component/src/lib.rs          |    3 +
+ kernel/src/lib.rs                                  |    4 +
+ osdk/deps/frame-allocator/Cargo.toml               |    3 +
+ osdk/deps/frame-allocator/src/lib.rs               |   18 +
+ osdk/deps/heap-allocator/Cargo.toml                |    3 +
+ osdk/deps/heap-allocator/src/kernelet.rs           |   23 +
+ osdk/deps/heap-allocator/src/lib.rs                |   18 +
+ ostd/Cargo.toml                                    |    4 +
+ ostd/src/lib.rs                                    |   42 +
+ ostd/src/typedio.rs                                |   41 +
+ 55 files changed, 1883 insertions(+), 57 deletions(-)
+
+$ git diff --name-status e87d8425f987820431bd35068ef2d4489bdcc735 HEAD
+M	Cargo.lock
+M	Cargo.toml
+M	kernel/Cargo.toml
+M	kernel/core/Cargo.toml
+M	kernel/core/comps/cmdline/Cargo.toml
+M	kernel/core/comps/cmdline/src/lib.rs
+M	kernel/core/comps/console/Cargo.toml
+M	kernel/core/comps/console/src/lib.rs
+M	kernel/core/comps/time/Cargo.toml
+M	kernel/core/comps/time/src/rtc/mod.rs
+M	kernel/core/src/arch/x86/mod.rs
+A	kernel/core/src/arch/x86/power_kernelet.rs
+M	kernel/core/src/device/misc/mod.rs
+M	kernel/core/src/device/mod.rs
+M	kernel/core/src/device/registry/block.rs
+M	kernel/core/src/device/tty/device.rs
+M	kernel/core/src/device/tty/hvc.rs
+M	kernel/core/src/device/tty/mod.rs
+M	kernel/core/src/fs/fs_impls/mod.rs
+M	kernel/core/src/lib.rs
+M	kernel/core/src/net/iface/init.rs
+M	kernel/core/src/net/socket/vsock/mod.rs
+A	kernel/core/src/net/socket/vsock/socket_transport.rs
+A	kernel/core/src/net/socket/vsock/socket_transport_kernelet.rs
+M	kernel/core/src/net/socket/vsock/stream/connected.rs
+M	kernel/core/src/net/socket/vsock/stream/connecting.rs
+M	kernel/core/src/net/socket/vsock/stream/init.rs
+M	kernel/core/src/net/socket/vsock/stream/listen.rs
+A	kernel/core/src/net/socket/vsock/typedio.rs
+M	kernel/core/src/power.rs
+M	kernel/core/src/thread/kernel_thread.rs
+M	kernel/core/src/thread/mod.rs
+M	kernel/core/src/thread/task.rs
+M	kernel/core/src/vm/mod.rs
+M	kernel/core/src/vm/vmar/vm_mapping.rs
+M	kernel/core/src/vm/vmar/vmar_impls/access_alien.rs
+M	kernel/core/src/vm/vmar/vmar_impls/fork.rs
+M	kernel/core/src/vm/vmar/vmar_impls/remap.rs
+A	kernel/kernelet/Cargo.toml
+A	kernel/kernelet/README.md
+A	kernel/kernelet/build.rs
+A	kernel/kernelet/init.S
+A	kernel/kernelet/mkinitramfs.py
+A	kernel/kernelet/src/lib.rs
+M	kernel/libs/comp-sys/component/Cargo.toml
+M	kernel/libs/comp-sys/component/src/lib.rs
+M	kernel/src/lib.rs
+M	osdk/deps/frame-allocator/Cargo.toml
+M	osdk/deps/frame-allocator/src/lib.rs
+M	osdk/deps/heap-allocator/Cargo.toml
+A	osdk/deps/heap-allocator/src/kernelet.rs
+M	osdk/deps/heap-allocator/src/lib.rs
+M	ostd/Cargo.toml
+M	ostd/src/lib.rs
+A	ostd/src/typedio.rs

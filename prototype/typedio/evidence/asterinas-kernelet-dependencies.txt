@@ -1,0 +1,362 @@
+asterinas-kernelet v0.1.0 (/home/ym/typedio-work/asterinas/kernel/kernelet)
+asterinas v0.1.0 (/home/ym/typedio-work/asterinas/kernel)
+aster-core v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core)
+align_ext v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/align_ext)
+aster-bigtcp v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-bigtcp)
+aster-softirq v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/softirq)
+aster-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-util)
+aster-rights v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-rights)
+bitflags v2.13.0
+typeflags v0.1.0 (proc-macro) (/home/ym/typedio-work/asterinas/kernel/libs/typeflags)
+itertools v0.10.5
+either v1.16.0
+proc-macro2 v1.0.106
+unicode-ident v1.0.24
+quote v1.0.46
+proc-macro2 v1.0.106 (*)
+syn v2.0.118
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+unicode-ident v1.0.24
+typeflags-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/typeflags-util)
+aster-rights-proc v0.1.0 (proc-macro) (/home/ym/typedio-work/asterinas/kernel/libs/aster-rights-proc)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v2.0.118 (*)
+bitvec v1.1.1
+funty v2.0.0
+radium v0.7.0
+tap v1.0.1
+wyz v0.5.1
+tap v1.0.1
+inherit-methods-macro v0.1.0 (proc-macro) (https://github.com/asterinas/inherit-methods-macro?rev=98f7e3e#98f7e3eb)
+darling v0.13.4
+darling_core v0.13.4
+fnv v1.0.7
+ident_case v1.0.1
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+strsim v0.10.0
+syn v1.0.109
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+unicode-ident v1.0.24
+darling_macro v0.13.4 (proc-macro)
+darling_core v0.13.4 (*)
+quote v1.0.46 (*)
+syn v1.0.109 (*)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v1.0.109 (*)
+osdk-heap-allocator v0.19.0 (/home/ym/typedio-work/asterinas/osdk/deps/heap-allocator)
+log v0.4.33
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd)
+align_ext v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/align_ext)
+bitflags v2.13.0
+bitvec v1.1.1 (*)
+gimli v0.28.1
+id-alloc v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/id-alloc)
+bitvec v1.1.1 (*)
+inherit-methods-macro v0.1.0 (proc-macro) (https://github.com/asterinas/inherit-methods-macro?rev=98f7e3e#98f7e3eb) (*)
+log v0.4.33
+num-traits v0.2.19
+autocfg v1.5.1
+ostd-macros v0.19.0 (proc-macro) (/home/ym/typedio-work/asterinas/ostd/libs/ostd-macros)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+rand v0.9.5
+rand_chacha v0.9.0
+ppv-lite86 v0.2.21
+zerocopy v0.8.54
+rand_core v0.9.5
+getrandom v0.3.4
+cfg-if v1.0.4
+libc v0.2.186
+rand_core v0.9.5 (*)
+syn v2.0.118 (*)
+ostd-pod v0.4.0 (/home/ym/typedio-work/asterinas/ostd/libs/ostd-pod)
+ostd-pod-macros v0.4.0 (proc-macro) (/home/ym/typedio-work/asterinas/ostd/libs/ostd-pod/macros)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v2.0.118 (*)
+padding-struct v0.2.0 (proc-macro) (/home/ym/typedio-work/asterinas/ostd/libs/padding-struct)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v2.0.118 (*)
+zerocopy v0.8.54
+zerocopy-derive v0.8.54 (proc-macro)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v2.0.118 (*)
+ostd-test v0.19.0 (/home/ym/typedio-work/asterinas/ostd/libs/ostd-test)
+smallvec v1.15.2
+spin v0.9.9
+lock_api v0.4.14
+scopeguard v1.2.0
+typedio v0.1.0 (/home/ym/typedio-work/kernelet/prototype/libs/typedio)
+typedio-macros v0.1.0 (proc-macro) (/home/ym/typedio-work/kernelet/prototype/libs/typedio-macros)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v2.0.118 (*)
+vostd v0.1.0 (/home/ym/typedio-work/kernelet/prototype/vostd)
+bitvec v1.1.1 (*)
+log v0.4.33
+ostd-macros v0.18.1 (proc-macro) (/home/ym/typedio-work/kernelet/prototype/libs/ostd-macros)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+rand v0.9.5 (*)
+syn v2.0.118 (*)
+ostd-pod v0.4.0 (/home/ym/typedio-work/asterinas/ostd/libs/ostd-pod) (*)
+smallvec v1.15.2
+spin v0.10.1
+lock_api v0.4.14 (*)
+typedio v0.1.0 (/home/ym/typedio-work/kernelet/prototype/libs/typedio) (*)
+zerocopy v0.8.54 (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+ostd-pod v0.4.0 (/home/ym/typedio-work/asterinas/ostd/libs/ostd-pod) (*)
+typeflags-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/typeflags-util)
+zerocopy v0.8.54 (*)
+component v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component)
+component-macro v0.1.0 (proc-macro) (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component-macro)
+itertools v0.10.5 (*)
+json v0.12.4
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v1.0.109 (*)
+toml v0.7.8
+serde v1.0.228
+serde_core v1.0.228
+serde_spanned v0.6.9
+serde v1.0.228 (*)
+toml_datetime v0.6.11
+serde v1.0.228 (*)
+toml_edit v0.19.15
+indexmap v2.14.0
+equivalent v1.0.2
+hashbrown v0.17.1
+serde v1.0.228 (*)
+serde_spanned v0.6.9 (*)
+toml_datetime v0.6.11 (*)
+winnow v0.5.40
+inventory v0.3.24
+kernelet-registry v0.1.0 (/home/ym/typedio-work/kernelet/prototype/libs/guest-registry)
+inventory v0.3.24
+log v0.4.33
+json v0.12.4
+intrusive-collections v0.9.7
+memoffset v0.9.1
+autocfg v1.5.1
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+spin v0.9.9 (*)
+aster-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-util) (*)
+bitflags v2.13.0
+dma-pool v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/dma-pool)
+aster-softirq v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/softirq) (*)
+aster-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-util) (*)
+bitvec v1.1.1 (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+int-to-c-enum v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/int-to-c-enum)
+int-to-c-enum-derive v0.1.0 (proc-macro) (/home/ym/typedio-work/asterinas/ostd/libs/int-to-c-enum/derive)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v2.0.118 (*)
+jhash v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/jhash)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+ostd-pod v0.4.0 (/home/ym/typedio-work/asterinas/ostd/libs/ostd-pod) (*)
+smoltcp v0.11.0 (https://github.com/asterinas/smoltcp?tag=r_2026-08-11_1b7629c#56ab8379)
+bitflags v1.3.2
+byteorder v1.5.0
+cfg-if v1.0.4
+heapless v0.8.0
+hash32 v0.3.1
+byteorder v1.5.0
+stable_deref_trait v1.2.1
+log v0.4.33
+managed v0.8.0
+spin v0.9.9 (*)
+takeable v0.2.2
+zerocopy v0.8.54 (*)
+aster-block v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/block)
+align_ext v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/align_ext)
+aster-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-util) (*)
+component v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component) (*)
+device-id v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/device-id)
+aster-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-util) (*)
+spin v0.9.9 (*)
+dma-pool v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/dma-pool) (*)
+id-alloc v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/id-alloc) (*)
+int-to-c-enum v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/int-to-c-enum) (*)
+io-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/io-util)
+smallvec v1.15.2
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+ostd-pod v0.4.0 (/home/ym/typedio-work/asterinas/ostd/libs/ostd-pod) (*)
+spin v0.9.9 (*)
+zerocopy v0.8.54 (*)
+aster-cmdline v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/cmdline)
+component v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component) (*)
+inventory v0.3.24
+kernelet-registry v0.1.0 (/home/ym/typedio-work/kernelet/prototype/libs/guest-registry) (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+spin v0.9.9 (*)
+aster-console v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/console)
+component v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component) (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+spin v0.9.9 (*)
+aster-device v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/device)
+aster-systree v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/systree)
+aster-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-util) (*)
+bitflags v2.13.0
+component v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component) (*)
+id-alloc v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/id-alloc) (*)
+inherit-methods-macro v0.1.0 (proc-macro) (https://github.com/asterinas/inherit-methods-macro?rev=98f7e3e#98f7e3eb) (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+spin v0.9.9 (*)
+aster-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-util) (*)
+component v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component) (*)
+device-id v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/device-id) (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+spin v0.9.9 (*)
+aster-fuse v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-fuse)
+bitflags v2.13.0
+int-to-c-enum v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/int-to-c-enum) (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+ostd-pod v0.4.0 (/home/ym/typedio-work/asterinas/ostd/libs/ostd-pod) (*)
+zerocopy v0.8.54 (*)
+aster-input v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/input)
+bitflags v2.13.0
+bitvec v1.1.1 (*)
+component v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component) (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+ostd-pod v0.4.0 (/home/ym/typedio-work/asterinas/ostd/libs/ostd-pod) (*)
+spin v0.9.9 (*)
+zerocopy v0.8.54 (*)
+aster-logger v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/logger)
+aster-console v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/console) (*)
+component v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component) (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+owo-colors v4.3.0
+aster-network v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/network)
+aster-bigtcp v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-bigtcp) (*)
+aster-softirq v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/softirq) (*)
+component v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component) (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+spin v0.9.9 (*)
+aster-rights v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-rights) (*)
+aster-rights-proc v0.1.0 (proc-macro) (/home/ym/typedio-work/asterinas/kernel/libs/aster-rights-proc) (*)
+aster-softirq v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/softirq) (*)
+aster-systree v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/systree) (*)
+aster-time v0.1.0 (/home/ym/typedio-work/asterinas/kernel/core/comps/time)
+aster-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-util) (*)
+bitflags v2.13.0
+component v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component) (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+spin v0.9.9 (*)
+aster-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/aster-util) (*)
+atomic-integer-wrapper v0.1.0 (proc-macro) (/home/ym/typedio-work/asterinas/kernel/libs/atomic-integer-wrapper)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v2.0.118 (*)
+bitflags v2.13.0
+bitvec v1.1.1 (*)
+component v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/comp-sys/component) (*)
+const_format v0.2.36
+const_format_proc_macros v0.2.34 (proc-macro)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+unicode-xid v0.2.6
+konst v0.2.20
+konst_macro_rules v0.2.19
+cpio-decoder v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/cpio-decoder)
+int-to-c-enum v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/int-to-c-enum) (*)
+lending-iterator v0.1.7
+extension-traits v1.0.1
+ext-trait v1.0.1
+ext-trait-proc_macros v1.0.1 (proc-macro)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v1.0.109 (*)
+lending-iterator-proc_macros v0.1.7 (proc-macro)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v1.0.109 (*)
+macro_rules_attribute v0.1.3
+macro_rules_attribute-proc_macro v0.1.3 (proc-macro)
+paste v1.0.15 (proc-macro)
+never-say-never v6.6.666
+nougat v0.2.4
+macro_rules_attribute v0.1.3 (*)
+nougat-proc_macros v0.2.4 (proc-macro)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v1.0.109 (*)
+polonius-the-crab v0.2.1
+device-id v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/device-id) (*)
+getset v0.1.7 (proc-macro)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v2.0.118 (*)
+hashbrown v0.14.5
+ahash v0.8.12
+cfg-if v1.0.4
+once_cell v1.21.4
+zerocopy v0.8.54 (*)
+version_check v0.9.5
+allocator-api2 v0.2.21
+serde v1.0.228
+serde_core v1.0.228
+id-alloc v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/id-alloc) (*)
+inherit-methods-macro v0.1.0 (proc-macro) (https://github.com/asterinas/inherit-methods-macro?rev=98f7e3e#98f7e3eb) (*)
+int-to-c-enum v0.1.0 (/home/ym/typedio-work/asterinas/ostd/libs/int-to-c-enum) (*)
+intrusive-collections v0.9.7 (*)
+inventory v0.3.24
+io-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/io-util) (*)
+jhash v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/jhash)
+kernelet-registry v0.1.0 (/home/ym/typedio-work/kernelet/prototype/libs/guest-registry) (*)
+keyable-arc v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/keyable-arc)
+lending-iterator v0.1.7 (*)
+logo-ascii-art v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/logo-ascii-art)
+lru v0.16.4
+hashbrown v0.16.1
+allocator-api2 v0.2.21
+equivalent v1.0.2
+foldhash v0.2.0
+miniz_oxide v0.8.9
+adler2 v2.0.1
+osdk-frame-allocator v0.19.0 (/home/ym/typedio-work/asterinas/osdk/deps/frame-allocator)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+paste v1.0.15 (proc-macro)
+osdk-heap-allocator v0.19.0 (/home/ym/typedio-work/asterinas/osdk/deps/heap-allocator) (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+ostd-pod v0.4.0 (/home/ym/typedio-work/asterinas/ostd/libs/ostd-pod) (*)
+paste v1.0.15 (proc-macro)
+rand v0.9.5
+rand_chacha v0.9.0
+ppv-lite86 v0.2.21
+zerocopy v0.8.54 (*)
+rand_core v0.9.5
+rand_core v0.9.5
+ring-buffer v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/ring-buffer)
+inherit-methods-macro v0.1.0 (proc-macro) (https://github.com/asterinas/inherit-methods-macro?rev=98f7e3e#98f7e3eb) (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+ostd-pod v0.4.0 (/home/ym/typedio-work/asterinas/ostd/libs/ostd-pod) (*)
+short-vis-path v0.1.0 (proc-macro) (/home/ym/typedio-work/asterinas/kernel/libs/short-vis-path)
+proc-macro2 v1.0.106 (*)
+quote v1.0.46 (*)
+syn v2.0.118 (*)
+smallvec v1.15.2
+sparse-id-alloc v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/sparse-id-alloc)
+spin v0.9.9 (*)
+takeable v0.2.2
+time v0.3.53
+deranged v0.5.8
+num-conv v0.2.2
+powerfmt v0.2.0
+time-core v0.1.9
+typeflags v0.1.0 (proc-macro) (/home/ym/typedio-work/asterinas/kernel/libs/typeflags) (*)
+typeflags-util v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/typeflags-util)
+xarray v0.1.0 (/home/ym/typedio-work/asterinas/kernel/libs/xarray)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)
+xmas-elf v0.10.0
+zero v0.1.3
+zerocopy v0.8.54 (*)
+ostd v0.19.0 (/home/ym/typedio-work/asterinas/ostd) (*)

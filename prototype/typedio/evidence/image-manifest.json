@@ -1,0 +1,32 @@
+{
+  "file": "/home/ym/typedio-work/kernelet/prototype/.build/asterinas.image",
+  "bytes": 5645688,
+  "sha256": "79a91363ad54cfc79069c3f4a747735ded0d66b75453a49339e3934bce8ec1c2",
+  "virtual_span": 3364556,
+  "entry_table_offset": "0x2d91c8",
+  "abi_version": 8,
+  "relative_relocations": 15181,
+  "load_segments": [
+    {
+      "flags": 5,
+      "offset": 0,
+      "vaddr": 0,
+      "filesz": 2214460,
+      "memsz": 2214460
+    },
+    {
+      "flags": 4,
+      "offset": 2215936,
+      "vaddr": 2215936,
+      "filesz": 609536,
+      "memsz": 609536
+    },
+    {
+      "flags": 6,
+      "offset": 2826240,
+      "vaddr": 2826240,
+      "filesz": 212312,
+      "memsz": 538316
+    }
+  ]
+}

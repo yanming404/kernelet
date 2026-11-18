@@ -1,0 +1,364 @@
+$ git remote -v
+origin	https://github.com/tatetian/kernelet.git (fetch)
+origin	https://github.com/tatetian/kernelet.git (push)
+personal	https://github.com/yanming404/kernelet.git (fetch)
+personal	https://github.com/yanming404/kernelet.git (push)
+
+$ git branch --show-current
+implement/typedio-vsock
+
+$ git rev-parse HEAD
+647d68a00f3541715be4633e908d1ebb66a8762e
+
+$ git reflog --all --format=%H %gs
+647d68a00f3541715be4633e908d1ebb66a8762e commit: Implement TypedIO Vsock and full Asterinas Kernelet platform ABI 8
+647d68a00f3541715be4633e908d1ebb66a8762e commit: Implement TypedIO Vsock and full Asterinas Kernelet platform ABI 8
+a5ec4b875d0a17890321a362fbc3fd16859b7eb4 branch: Created from HEAD
+a5ec4b875d0a17890321a362fbc3fd16859b7eb4 checkout: moving from design/typed-io to implement/typedio-vsock
+a5ec4b875d0a17890321a362fbc3fd16859b7eb4 clone: from https://github.com/tatetian/kernelet.git
+a5ec4b875d0a17890321a362fbc3fd16859b7eb4 clone: from https://github.com/tatetian/kernelet.git
+
+$ git diff --stat a5ec4b875d0a17890321a362fbc3fd16859b7eb4 HEAD
+ prototype/Cargo.lock                               | 338 +++++++-
+ prototype/Cargo.toml                               |   2 +-
+ prototype/Makefile                                 |  29 +-
+ prototype/host/runtime/holder.c                    |  25 +-
+ prototype/host/runtime/sandbox.c                   |   8 +-
+ prototype/host/runtime/sandbox.h                   |   2 +
+ prototype/libs/guest-registry/Cargo.toml           |  13 +
+ prototype/libs/guest-registry/src/lib.rs           |  31 +
+ prototype/libs/typedio-kernel-macros/Cargo.lock    |  47 ++
+ prototype/libs/typedio-kernel-macros/Cargo.toml    |  14 +
+ prototype/libs/typedio-macros/Cargo.toml           |  17 +
+ prototype/libs/typedio-macros/src/lib.rs           | 232 +++++
+ prototype/libs/typedio/Cargo.toml                  |  15 +
+ prototype/libs/typedio/src/abi.rs                  |  18 +
+ prototype/libs/typedio/src/api.rs                  |  18 +
+ prototype/libs/typedio/src/flow.rs                 | 286 +++++++
+ prototype/libs/typedio/src/frontend.rs             | 347 ++++++++
+ prototype/libs/typedio/src/frontend/pipe.rs        | 286 +++++++
+ prototype/libs/typedio/src/irq.rs                  | 248 ++++++
+ prototype/libs/typedio/src/lib.rs                  |  14 +
+ prototype/libs/typedio/src/lifetime.rs             | 257 ++++++
+ prototype/libs/typedio/src/message.rs              | 547 ++++++++++++
+ prototype/libs/typedio/src/notification.rs         | 170 ++++
+ prototype/libs/typedio/src/pipe.rs                 | 590 +++++++++++++
+ prototype/libs/typedio/src/queue.rs                | 345 ++++++++
+ prototype/libs/typedio/src/resource.rs             | 320 +++++++
+ prototype/libs/typedio/src/schema.rs               | 186 ++++
+ prototype/libs/typedio/src/service.rs              | 103 +++
+ prototype/libs/typedio/src/vsock.rs                |  92 ++
+ prototype/libs/typedio/tests/abi.rs                |  77 ++
+ prototype/libs/typedio/tests/commit_resources.rs   |  52 ++
+ prototype/libs/typedio/tests/concurrency.rs        |  88 ++
+ prototype/libs/typedio/tests/derive.rs             |   6 +
+ prototype/libs/typedio/tests/messages.rs           | 137 +++
+ prototype/libs/typedio/tests/no_allocation.rs      |  46 +
+ prototype/libs/typedio/tests/ui/cell.rs            |   6 +
+ prototype/libs/typedio/tests/ui/cell.stderr        |  21 +
+ .../libs/typedio/tests/ui/copy_is_not_admission.rs |   8 +
+ .../typedio/tests/ui/copy_is_not_admission.stderr  |  26 +
+ prototype/libs/typedio/tests/ui/custom_drop.rs     |   9 +
+ prototype/libs/typedio/tests/ui/custom_drop.stderr |  10 +
+ prototype/libs/typedio/tests/ui/function.rs        |   6 +
+ prototype/libs/typedio/tests/ui/function.stderr    |  21 +
+ .../libs/typedio/tests/ui/inactive_variant.rs      |   7 +
+ .../libs/typedio/tests/ui/inactive_variant.stderr  |  21 +
+ prototype/libs/typedio/tests/ui/maybe_uninit.rs    |   6 +
+ .../libs/typedio/tests/ui/maybe_uninit.stderr      |  21 +
+ prototype/libs/typedio/tests/ui/reference.rs       |   6 +
+ prototype/libs/typedio/tests/ui/reference.stderr   |  19 +
+ prototype/libs/typedio/tests/ui/union.rs           |   7 +
+ prototype/libs/typedio/tests/ui/union.stderr       |   5 +
+ prototype/libs/typedio/tests/ui/vector.rs          |   6 +
+ prototype/libs/typedio/tests/ui/vector.stderr      |  21 +
+ prototype/linux/endovisor/Makefile                 |  16 +-
+ prototype/linux/endovisor/abi_layout.c             |  93 ++
+ prototype/linux/endovisor/carrier.c                | 117 ++-
+ prototype/linux/endovisor/grant.c                  | 101 +++
+ prototype/linux/endovisor/kernelet.h               |  27 +-
+ prototype/linux/endovisor/kernelet.lds             |   8 +-
+ prototype/linux/endovisor/main.c                   |  11 +
+ prototype/linux/endovisor/platform_tls.h           |  37 +
+ prototype/linux/endovisor/sandbox.c                |  27 +-
+ prototype/linux/endovisor/typedio.rs               |  14 +
+ prototype/linux/endovisor/typedio_bounds.h         |  16 +
+ prototype/linux/endovisor/typedio_core.rs          | 279 ++++++
+ prototype/linux/endovisor/typedio_host.c           | 911 ++++++++++++++++++++
+ prototype/linux/endovisor/typedio_host.h           |  52 ++
+ prototype/linux/endovisor/typedio_host_api.rs      | 347 ++++++++
+ prototype/linux/endovisor/typedio_host_socket.rs   | 105 +++
+ prototype/linux/endovisor/typedio_pipe.c           | 347 ++++++++
+ prototype/linux/endovisor/typedio_pipe.h           |  45 +
+ prototype/linux/endovisor/typedio_queue.rs         | 171 ++++
+ prototype/linux/endovisor/typedio_records.h        |  17 +
+ prototype/linux/endovisor/typedio_resources.c      | 485 +++++++++++
+ prototype/linux/endovisor/typedio_resources.h      |  36 +
+ prototype/linux/endovisor/typedio_service.h        |   2 +
+ prototype/linux/endovisor/typedio_socket.c         | 217 +++++
+ prototype/linux/endovisor/typedio_socket.h         |   5 +
+ prototype/linux/endovisor/typedio_vsock.rs         | 843 ++++++++++++++++++
+ prototype/linux/endovisor/typedio_vsock_link.c     |  42 +
+ prototype/linux/endovisor/uapi/endovisor.h         |  16 +-
+ prototype/linux/endovisor/uapi/typedio.h           |  53 ++
+ prototype/tests/asterinas-harness/Cargo.lock       | 121 +++
+ prototype/tests/asterinas-harness/Cargo.toml       |  15 +
+ prototype/tests/asterinas-harness/build.rs         |  14 +
+ prototype/tests/asterinas-harness/src/lib.rs       | 258 ++++++
+ .../net/socket/vsock/socket_transport/checks.rs    | 220 +++++
+ prototype/tests/host-harness/Cargo.lock            |  82 ++
+ prototype/tests/host-harness/Cargo.toml            |  14 +
+ prototype/tests/host-harness/host-file.c           |  38 +
+ prototype/tests/host-harness/main.c                |  52 ++
+ prototype/tests/host-harness/resources.c           |  69 ++
+ prototype/tests/host-harness/shim.c                |  97 +++
+ prototype/tests/host-harness/shim.h                | 161 ++++
+ prototype/tests/host-harness/src/guest.rs          | 405 +++++++++
+ prototype/tests/host-harness/src/lib.rs            | 159 ++++
+ prototype/tests/host-harness/vsock.c               |  29 +
+ prototype/tests/platform-harness/Cargo.lock        | 185 ++++
+ prototype/tests/platform-harness/Cargo.toml        |  18 +
+ .../tests/platform-harness/src/bin/image-abi.rs    | 235 ++++++
+ prototype/tests/platform-harness/src/cpu/mod.rs    |  45 +
+ prototype/tests/platform-harness/src/lib.rs        | 175 ++++
+ prototype/tests/platform-harness/src/mm/mod.rs     |  84 ++
+ prototype/tests/platform-harness/src/sync/mod.rs   | 107 +++
+ prototype/tests/platform-harness/src/tests.rs      | 514 +++++++++++
+ .../tests/platform-harness/tests/guard_lifetime.rs |  54 ++
+ prototype/tests/platform_tls.c                     |  34 +
+ prototype/tests/test_image_contract.py             |  97 +++
+ prototype/tests/typedio_abi.c                      |  23 +
+ prototype/tests/typedio_bounds.c                   |  18 +
+ prototype/tools/typedio-device/Cargo.lock          |  61 ++
+ prototype/tools/typedio-device/Cargo.toml          |   8 +
+ prototype/tools/typedio-device/src/main.rs         | 159 ++++
+ prototype/vostd/Cargo.toml                         |  15 +
+ prototype/vostd/src/abi.rs                         |  19 +-
+ prototype/vostd/src/arch/cpu/context.rs            |  40 +-
+ prototype/vostd/src/arch/cpu/context/user_tls.rs   |  47 ++
+ prototype/vostd/src/arch/cpu/cpuid.rs              |  17 +
+ prototype/vostd/src/arch/cpu/mod.rs                |   1 +
+ prototype/vostd/src/arch/mod.rs                    |  36 +
+ prototype/vostd/src/arch/trap.rs                   |  71 ++
+ prototype/vostd/src/boot/memory_region.rs          |  56 ++
+ prototype/vostd/src/boot/mod.rs                    |  94 ++-
+ prototype/vostd/src/console.rs                     |  10 +
+ prototype/vostd/src/cpu/local.rs                   |  98 ++-
+ prototype/vostd/src/cpu/local/dynamic.rs           | 110 +++
+ prototype/vostd/src/cpu/mod.rs                     |  13 +-
+ prototype/vostd/src/irq/bottom_half.rs             |  80 ++
+ prototype/vostd/src/irq/level.rs                   | 120 +++
+ prototype/vostd/src/irq/line.rs                    | 206 +++++
+ prototype/vostd/src/irq/mod.rs                     |  41 +-
+ prototype/vostd/src/lib.rs                         |  15 +-
+ prototype/vostd/src/log/bridge.rs                  | 112 +++
+ prototype/vostd/src/log/level.rs                   | 211 +++++
+ prototype/vostd/src/log/logger.rs                  | 193 +++++
+ prototype/vostd/src/log/macros.rs                  | 247 ++++++
+ prototype/vostd/src/log/mod.rs                     | 132 +++
+ prototype/vostd/src/mm/dma.rs                      | 224 +++++
+ prototype/vostd/src/mm/fault.rs                    |  30 +
+ prototype/vostd/src/mm/frame.rs                    | 314 ++++---
+ prototype/vostd/src/mm/frame/meta.rs               | 133 +++
+ prototype/vostd/src/mm/heap.rs                     |  15 +-
+ prototype/vostd/src/mm/io.rs                       | 405 ++++++++-
+ prototype/vostd/src/mm/io/util.rs                  | 115 +++
+ prototype/vostd/src/mm/mod.rs                      |  24 +-
+ prototype/vostd/src/mm/tlb.rs                      |  16 +-
+ prototype/vostd/src/mm/vm_space.rs                 |  64 +-
+ prototype/vostd/src/panic.rs                       |  19 +
+ prototype/vostd/src/power.rs                       |  23 +-
+ prototype/vostd/src/sync/mod.rs                    |  26 +-
+ prototype/vostd/src/sync/mutex.rs                  | 168 ++++
+ prototype/vostd/src/sync/rcu/mod.rs                | 545 ++++++++++++
+ prototype/vostd/src/sync/rcu/monitor.rs            | 143 ++++
+ prototype/vostd/src/sync/rcu/non_null/either.rs    | 162 ++++
+ prototype/vostd/src/sync/rcu/non_null/mod.rs       | 203 +++++
+ prototype/vostd/src/sync/rwarc.rs                  | 140 +++
+ prototype/vostd/src/sync/rwlock.rs                 | 424 ++++++++++
+ prototype/vostd/src/sync/rwmutex.rs                | 402 +++++++++
+ prototype/vostd/src/task/preempt/mod.rs            |   2 +-
+ prototype/vostd/src/task/processor.rs              |   7 +-
+ prototype/vostd/src/task/scheduler/mod.rs          |   6 +
+ prototype/vostd/src/timer/mod.rs                   |   2 +-
+ prototype/vostd/src/typedio.rs                     |  19 +
+ prototype/vostd/src/user.rs                        |   3 +
+ prototype/vostd/src/util/either.rs                 |  46 +
+ prototype/vostd/src/util/id_set.rs                 | 938 +++++++++++++++++++++
+ prototype/vostd/src/util/macros.rs                 |  48 ++
+ prototype/vostd/src/util/mod.rs                    |  10 +
+ prototype/vostd/src/util/ops.rs                    | 113 +++
+ prototype/vostd/src/vcpu.rs                        | 118 ++-
+ 170 files changed, 19890 insertions(+), 224 deletions(-)
+
+$ git diff --name-status a5ec4b875d0a17890321a362fbc3fd16859b7eb4 HEAD
+M	prototype/Cargo.lock
+M	prototype/Cargo.toml
+M	prototype/Makefile
+M	prototype/host/runtime/holder.c
+M	prototype/host/runtime/sandbox.c
+M	prototype/host/runtime/sandbox.h
+A	prototype/libs/guest-registry/Cargo.toml
+A	prototype/libs/guest-registry/src/lib.rs
+A	prototype/libs/typedio-kernel-macros/Cargo.lock
+A	prototype/libs/typedio-kernel-macros/Cargo.toml
+A	prototype/libs/typedio-macros/Cargo.toml
+A	prototype/libs/typedio-macros/src/lib.rs
+A	prototype/libs/typedio/Cargo.toml
+A	prototype/libs/typedio/src/abi.rs
+A	prototype/libs/typedio/src/api.rs
+A	prototype/libs/typedio/src/flow.rs
+A	prototype/libs/typedio/src/frontend.rs
+A	prototype/libs/typedio/src/frontend/pipe.rs
+A	prototype/libs/typedio/src/irq.rs
+A	prototype/libs/typedio/src/lib.rs
+A	prototype/libs/typedio/src/lifetime.rs
+A	prototype/libs/typedio/src/message.rs
+A	prototype/libs/typedio/src/notification.rs
+A	prototype/libs/typedio/src/pipe.rs
+A	prototype/libs/typedio/src/queue.rs
+A	prototype/libs/typedio/src/resource.rs
+A	prototype/libs/typedio/src/schema.rs
+A	prototype/libs/typedio/src/service.rs
+A	prototype/libs/typedio/src/vsock.rs
+A	prototype/libs/typedio/tests/abi.rs
+A	prototype/libs/typedio/tests/commit_resources.rs
+A	prototype/libs/typedio/tests/concurrency.rs
+A	prototype/libs/typedio/tests/derive.rs
+A	prototype/libs/typedio/tests/messages.rs
+A	prototype/libs/typedio/tests/no_allocation.rs
+A	prototype/libs/typedio/tests/ui/cell.rs
+A	prototype/libs/typedio/tests/ui/cell.stderr
+A	prototype/libs/typedio/tests/ui/copy_is_not_admission.rs
+A	prototype/libs/typedio/tests/ui/copy_is_not_admission.stderr
+A	prototype/libs/typedio/tests/ui/custom_drop.rs
+A	prototype/libs/typedio/tests/ui/custom_drop.stderr
+A	prototype/libs/typedio/tests/ui/function.rs
+A	prototype/libs/typedio/tests/ui/function.stderr
+A	prototype/libs/typedio/tests/ui/inactive_variant.rs
+A	prototype/libs/typedio/tests/ui/inactive_variant.stderr
+A	prototype/libs/typedio/tests/ui/maybe_uninit.rs
+A	prototype/libs/typedio/tests/ui/maybe_uninit.stderr
+A	prototype/libs/typedio/tests/ui/reference.rs
+A	prototype/libs/typedio/tests/ui/reference.stderr
+A	prototype/libs/typedio/tests/ui/union.rs
+A	prototype/libs/typedio/tests/ui/union.stderr
+A	prototype/libs/typedio/tests/ui/vector.rs
+A	prototype/libs/typedio/tests/ui/vector.stderr
+M	prototype/linux/endovisor/Makefile
+A	prototype/linux/endovisor/abi_layout.c
+M	prototype/linux/endovisor/carrier.c
+A	prototype/linux/endovisor/grant.c
+M	prototype/linux/endovisor/kernelet.h
+M	prototype/linux/endovisor/kernelet.lds
+M	prototype/linux/endovisor/main.c
+A	prototype/linux/endovisor/platform_tls.h
+M	prototype/linux/endovisor/sandbox.c
+A	prototype/linux/endovisor/typedio.rs
+A	prototype/linux/endovisor/typedio_bounds.h
+A	prototype/linux/endovisor/typedio_core.rs
+A	prototype/linux/endovisor/typedio_host.c
+A	prototype/linux/endovisor/typedio_host.h
+A	prototype/linux/endovisor/typedio_host_api.rs
+A	prototype/linux/endovisor/typedio_host_socket.rs
+A	prototype/linux/endovisor/typedio_pipe.c
+A	prototype/linux/endovisor/typedio_pipe.h
+A	prototype/linux/endovisor/typedio_queue.rs
+A	prototype/linux/endovisor/typedio_records.h
+A	prototype/linux/endovisor/typedio_resources.c
+A	prototype/linux/endovisor/typedio_resources.h
+A	prototype/linux/endovisor/typedio_service.h
+A	prototype/linux/endovisor/typedio_socket.c
+A	prototype/linux/endovisor/typedio_socket.h
+A	prototype/linux/endovisor/typedio_vsock.rs
+A	prototype/linux/endovisor/typedio_vsock_link.c
+M	prototype/linux/endovisor/uapi/endovisor.h
+A	prototype/linux/endovisor/uapi/typedio.h
+A	prototype/tests/asterinas-harness/Cargo.lock
+A	prototype/tests/asterinas-harness/Cargo.toml
+A	prototype/tests/asterinas-harness/build.rs
+A	prototype/tests/asterinas-harness/src/lib.rs
+A	prototype/tests/asterinas-harness/src/net/socket/vsock/socket_transport/checks.rs
+A	prototype/tests/host-harness/Cargo.lock
+A	prototype/tests/host-harness/Cargo.toml
+A	prototype/tests/host-harness/host-file.c
+A	prototype/tests/host-harness/main.c
+A	prototype/tests/host-harness/resources.c
+A	prototype/tests/host-harness/shim.c
+A	prototype/tests/host-harness/shim.h
+A	prototype/tests/host-harness/src/guest.rs
+A	prototype/tests/host-harness/src/lib.rs
+A	prototype/tests/host-harness/vsock.c
+A	prototype/tests/platform-harness/Cargo.lock
+A	prototype/tests/platform-harness/Cargo.toml
+A	prototype/tests/platform-harness/src/bin/image-abi.rs
+A	prototype/tests/platform-harness/src/cpu/mod.rs
+A	prototype/tests/platform-harness/src/lib.rs
+A	prototype/tests/platform-harness/src/mm/mod.rs
+A	prototype/tests/platform-harness/src/sync/mod.rs
+A	prototype/tests/platform-harness/src/tests.rs
+A	prototype/tests/platform-harness/tests/guard_lifetime.rs
+A	prototype/tests/platform_tls.c
+A	prototype/tests/test_image_contract.py
+A	prototype/tests/typedio_abi.c
+A	prototype/tests/typedio_bounds.c
+A	prototype/tools/typedio-device/Cargo.lock
+A	prototype/tools/typedio-device/Cargo.toml
+A	prototype/tools/typedio-device/src/main.rs
+M	prototype/vostd/Cargo.toml
+M	prototype/vostd/src/abi.rs
+M	prototype/vostd/src/arch/cpu/context.rs
+A	prototype/vostd/src/arch/cpu/context/user_tls.rs
+A	prototype/vostd/src/arch/cpu/cpuid.rs
+M	prototype/vostd/src/arch/cpu/mod.rs
+M	prototype/vostd/src/arch/mod.rs
+M	prototype/vostd/src/arch/trap.rs
+A	prototype/vostd/src/boot/memory_region.rs
+M	prototype/vostd/src/boot/mod.rs
+M	prototype/vostd/src/console.rs
+M	prototype/vostd/src/cpu/local.rs
+A	prototype/vostd/src/cpu/local/dynamic.rs
+M	prototype/vostd/src/cpu/mod.rs
+A	prototype/vostd/src/irq/bottom_half.rs
+A	prototype/vostd/src/irq/level.rs
+A	prototype/vostd/src/irq/line.rs
+M	prototype/vostd/src/irq/mod.rs
+M	prototype/vostd/src/lib.rs
+A	prototype/vostd/src/log/bridge.rs
+A	prototype/vostd/src/log/level.rs
+A	prototype/vostd/src/log/logger.rs
+A	prototype/vostd/src/log/macros.rs
+A	prototype/vostd/src/log/mod.rs
+A	prototype/vostd/src/mm/dma.rs
+A	prototype/vostd/src/mm/fault.rs
+M	prototype/vostd/src/mm/frame.rs
+A	prototype/vostd/src/mm/frame/meta.rs
+M	prototype/vostd/src/mm/heap.rs
+M	prototype/vostd/src/mm/io.rs
+A	prototype/vostd/src/mm/io/util.rs
+M	prototype/vostd/src/mm/mod.rs
+M	prototype/vostd/src/mm/tlb.rs
+M	prototype/vostd/src/mm/vm_space.rs
+M	prototype/vostd/src/panic.rs
+M	prototype/vostd/src/power.rs
+M	prototype/vostd/src/sync/mod.rs
+A	prototype/vostd/src/sync/mutex.rs
+A	prototype/vostd/src/sync/rcu/mod.rs
+A	prototype/vostd/src/sync/rcu/monitor.rs
+A	prototype/vostd/src/sync/rcu/non_null/either.rs
+A	prototype/vostd/src/sync/rcu/non_null/mod.rs
+A	prototype/vostd/src/sync/rwarc.rs
+A	prototype/vostd/src/sync/rwlock.rs
+A	prototype/vostd/src/sync/rwmutex.rs
+M	prototype/vostd/src/task/preempt/mod.rs
+M	prototype/vostd/src/task/processor.rs
+M	prototype/vostd/src/task/scheduler/mod.rs
+M	prototype/vostd/src/timer/mod.rs
+A	prototype/vostd/src/typedio.rs
+M	prototype/vostd/src/user.rs
+A	prototype/vostd/src/util/either.rs
+A	prototype/vostd/src/util/id_set.rs
+A	prototype/vostd/src/util/macros.rs
+A	prototype/vostd/src/util/mod.rs
+A	prototype/vostd/src/util/ops.rs
+M	prototype/vostd/src/vcpu.rs

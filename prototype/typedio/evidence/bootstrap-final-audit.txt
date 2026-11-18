@@ -1,0 +1,28 @@
+/home/ym/typedio-work/kernelet/prototype/vostd/src/lib.rs:80: abi::init_tables(boot, svc);
+/home/ym/typedio-work/kernelet/prototype/vostd/src/lib.rs:92: boot::register_image_components();
+/home/ym/typedio-work/kernelet/prototype/vostd/src/lib.rs:57: fn __ostd_main() -> !;
+/home/ym/typedio-work/kernelet/prototype/vostd/src/lib.rs:118: __ostd_main()
+/home/ym/typedio-work/kernelet/prototype/vostd/src/arch/cpu/context.rs:223: crate::task::scheduler::preempt_at_user_boundary();
+/home/ym/typedio-work/kernelet/prototype/vostd/src/arch/cpu/context.rs:225: hooks.pre_user_run(&guard);
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:1874: static s64 klet_tls_scalar(struct klet_carrier *c, u64 *value, u64 *scalar,
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:1886: !klet_tls_scalar_in_stack((unsigned long)value,
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:1915: if (klet_tls_scalar(c, value, &scalar, false))
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:1950: return klet_tls_scalar(c, value, &scalar, true);
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:1907: static s64 klet_do_user_tls(struct klet_carrier *c, u64 which, u64 operation, u64 *value)
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:2032: args->ret = klet_do_user_tls(c, args->a0, args->a1, (u64 *)args->a2);
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:1931: current->thread.fsbase = scalar;
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:1938: current->thread.gsbase = scalar;
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:2316: static u64 klet_svc_user_run(struct klet_user_ctx *ctx)
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:2366: .user_run = klet_svc_user_run,
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:731: static void klet_ctx_to_regs(struct klet_carrier *c, struct pt_regs *regs)
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:1150: klet_ctx_to_regs(c, regs);
+/home/ym/typedio-work/kernelet/prototype/linux/endovisor/carrier.c:1277: klet_ctx_to_regs(c, regs);
+/home/ym/typedio-work/asterinas/kernel/core/src/thread/mod.rs:43: thread_local.supp_user_context().before_schedule(irq_guard);
+/home/ym/typedio-work/asterinas/kernel/core/src/thread/task.rs:150: fn pre_user_run(&self, guard: &DisabledLocalIrqGuard) {
+/home/ym/typedio-work/asterinas/kernel/core/src/thread/task.rs:153: .before_user_exec(guard);
+/home/ym/typedio-work/asterinas/kernel/core/src/process/posix_thread/thread_local.rs:285: self.fs_base.before_schedule(guard);
+/home/ym/typedio-work/asterinas/kernel/core/src/process/posix_thread/thread_local.rs:286: self.gs_base.before_schedule(guard);
+/home/ym/typedio-work/asterinas/kernel/core/src/process/posix_thread/thread_local.rs:294: self.fs_base.before_user_exec(guard);
+/home/ym/typedio-work/asterinas/kernel/core/src/process/posix_thread/thread_local.rs:295: self.gs_base.before_user_exec(guard);
+/home/ym/typedio-work/asterinas/ostd/src/lib.rs:252: pub use virtual_ostd::*;
+/home/ym/typedio-work/asterinas/kernel/src/lib.rs:27: aster_core::boot();

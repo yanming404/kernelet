@@ -1,0 +1,2369 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 22a572cd..d3f89c59 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -92 +92 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -111 +111 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -120,0 +121 @@ dependencies = [
++ "kernelet-registry",
+@@ -122 +123 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -131 +132 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -172,0 +174 @@ dependencies = [
++ "kernelet-registry",
+@@ -190 +192 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -211 +213 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -229 +231 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -243 +245 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -267 +269 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -279 +281 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -322 +324 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -337 +339 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -352 +354 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -392 +394 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -405 +407 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -418 +420 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -432 +434 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -477 +479 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -494,0 +497,7 @@ dependencies = [
++[[package]]
++name = "asterinas-kernelet"
++version = "0.1.0"
++dependencies = [
++ "asterinas",
++]
++
+@@ -610,0 +620 @@ dependencies = [
++ "kernelet-registry",
+@@ -780 +790 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -995 +1005 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -1111,0 +1122,7 @@ checksum = "078e285eafdfb6c4b434e0d31e8cfcb5115b651496faca5749b88fafd4f23bfd"
++[[package]]
++name = "kernelet-registry"
++version = "0.1.0"
++dependencies = [
++ "inventory",
++]
++
+@@ -1137 +1154 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -1422 +1439 @@ dependencies = [
+- "ostd-macros",
++ "ostd-macros 0.19.0",
+@@ -1428 +1445 @@ dependencies = [
+- "spin",
++ "spin 0.9.9",
+@@ -1429,0 +1447 @@ dependencies = [
++ "typedio",
+@@ -1431,0 +1450 @@ dependencies = [
++ "vostd",
+@@ -1436,0 +1456,10 @@ dependencies = [
++[[package]]
++name = "ostd-macros"
++version = "0.18.1"
++dependencies = [
++ "proc-macro2",
++ "quote",
++ "rand",
++ "syn 2.0.118",
++]
++
+@@ -1818,0 +1848,9 @@ dependencies = [
++[[package]]
++name = "spin"
++version = "0.10.1"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "023a211cb3138dbc438680b32560ad89f699977624c9f8dbb95a47d5b4c07dd3"
++dependencies = [
++ "lock_api",
++]
++
+@@ -1957,0 +1996,16 @@ dependencies = [
++[[package]]
++name = "typedio"
++version = "0.1.0"
++dependencies = [
++ "typedio-macros",
++]
++
++[[package]]
++name = "typedio-macros"
++version = "0.1.0"
++dependencies = [
++ "proc-macro2",
++ "quote",
++ "syn 2.0.118",
++]
++
+@@ -2101,0 +2156,13 @@ checksum = "af8ca9a5d4debca0633e697c88269395493cebf2e10db21ca2dbde37c1356452"
++[[package]]
++name = "vostd"
++version = "0.1.0"
++dependencies = [
++ "bitvec",
++ "log",
++ "ostd-macros 0.18.1",
++ "ostd-pod",
++ "smallvec",
++ "spin 0.10.1",
++ "typedio",
++]
++
+diff --git a/Cargo.toml b/Cargo.toml
+index e1ab7e8e..ad46f964 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -29,0 +30 @@ members = [
++    "kernel/kernelet",
+@@ -154 +155 @@ edition = "2024"
+-ostd = { path = "ostd", version = "0.19.0" }
++ostd = { path = "ostd", version = "0.19.0", default-features = false }
+@@ -307,0 +309,6 @@ panic = "unwind"
++[profile.kernelet]
++inherits = "release"
++panic = "abort"
++opt-level = "s"
++codegen-units = 1
++
+diff --git a/kernel/Cargo.toml b/kernel/Cargo.toml
+index 0b09fed8..a995ecbb 100644
+--- a/kernel/Cargo.toml
++++ b/kernel/Cargo.toml
+@@ -13,3 +13,3 @@ ostd.workspace = true
+-aster-drm.workspace = true
+-aster-simpledrm.workspace = true
+-aster-uart.workspace = true
++aster-drm = {workspace=true,optional=true}
++aster-simpledrm = {workspace=true,optional=true}
++aster-uart = {workspace=true,optional=true}
+@@ -18 +18 @@ aster-uart.workspace = true
+-aster-i8042.workspace = true
++aster-i8042 = {workspace=true,optional=true}
+@@ -21 +21,3 @@ aster-i8042.workspace = true
+-default = ["cvm_guest"]
++hardware = ["aster-core/hardware", "dep:aster-drm", "dep:aster-simpledrm", "dep:aster-uart", "dep:aster-i8042"]
++kernelet = ["aster-core/kernelet", "ostd/kernelet"]
++default = ["cvm_guest", "hardware"]
+diff --git a/kernel/core/Cargo.toml b/kernel/core/Cargo.toml
+index ccda2552..e740df29 100644
+--- a/kernel/core/Cargo.toml
++++ b/kernel/core/Cargo.toml
+@@ -15 +15 @@ aster-device.workspace = true
+-aster-framebuffer.workspace = true
++aster-framebuffer = {workspace=true,optional=true}
+@@ -20 +20 @@ aster-network.workspace = true
+-aster-nvme.workspace = true
++aster-nvme = {workspace=true,optional=true}
+@@ -27 +27 @@ aster-util.workspace = true
+-aster-virtio.workspace = true
++aster-virtio = {workspace=true,optional=true}
+@@ -39,0 +40 @@ inventory.workspace = true
++kernelet-registry = { path = "../../../kernelet/prototype/libs/guest-registry", optional = true }
+@@ -79 +80,5 @@ loongArch64.workspace = true
+-default = ["cvm_guest"]
++hardware = ["dep:aster-framebuffer", "dep:aster-nvme", "dep:aster-virtio"]
++kernelet = ["ostd/kernelet", "typedio", "osdk-frame-allocator/kernelet", "osdk-heap-allocator/kernelet", "aster-console/kernelet", "aster-time/kernelet", "component/kernelet", "aster-cmdline/kernelet", "dep:kernelet-registry"]
++typedio = ["ostd/typedio"]
++typedio-polling = ["typedio"]
++default = ["cvm_guest", "hardware"]
+diff --git a/kernel/core/comps/cmdline/Cargo.toml b/kernel/core/comps/cmdline/Cargo.toml
+index 06c9136b..85af8bda 100644
+--- a/kernel/core/comps/cmdline/Cargo.toml
++++ b/kernel/core/comps/cmdline/Cargo.toml
+@@ -12,0 +13,4 @@ spin.workspace = true
++kernelet-registry = { path = "../../../../../kernelet/prototype/libs/guest-registry", optional = true }
++
++[features]
++kernelet = ["dep:kernelet-registry"]
+diff --git a/kernel/core/comps/cmdline/src/lib.rs b/kernel/core/comps/cmdline/src/lib.rs
+index a6d5cecc..22559103 100644
+--- a/kernel/core/comps/cmdline/src/lib.rs
++++ b/kernel/core/comps/cmdline/src/lib.rs
+@@ -72,0 +73 @@ pub use dispatch::KernelParam;
++#[cfg(not(feature = "kernelet"))]
+@@ -73,0 +75,2 @@ pub use inventory::submit;
++#[cfg(feature = "kernelet")]
++pub use kernelet_registry::submit;
+diff --git a/kernel/core/comps/console/Cargo.toml b/kernel/core/comps/console/Cargo.toml
+index 3d9b5771..4a952ee3 100644
+--- a/kernel/core/comps/console/Cargo.toml
++++ b/kernel/core/comps/console/Cargo.toml
+@@ -14,0 +15,3 @@ workspace = true
++
++[features]
++kernelet = ["ostd/kernelet"]
+diff --git a/kernel/core/comps/console/src/lib.rs b/kernel/core/comps/console/src/lib.rs
+index b156b305..2cd2ba0f 100644
+--- a/kernel/core/comps/console/src/lib.rs
++++ b/kernel/core/comps/console/src/lib.rs
+@@ -61,0 +62,7 @@ fn component_init() -> Result<(), ComponentInitError> {
++    #[cfg(feature = "kernelet")]
++    register_device(
++        String::from(KERNELET_CONSOLE_NAME),
++        Arc::new(KerneletConsole {
++            receive: Once::new(),
++        }),
++    );
+@@ -76,0 +84,23 @@ impl Component {
++
++#[cfg(feature = "kernelet")]
++pub const KERNELET_CONSOLE_NAME: &str = "Kernelet-Console";
++#[cfg(feature = "kernelet")]
++struct KerneletConsole {
++    receive: Once<&'static ConsoleCallback>,
++}
++#[cfg(feature = "kernelet")]
++impl AnyConsoleDevice for KerneletConsole {
++    fn send(&self, buf: &[u8]) {
++        ostd::console::write_bytes(buf);
++    }
++    fn register_callback(&self, callback: &'static ConsoleCallback) {
++        self.receive.call_once(|| callback);
++    }
++}
++
++#[cfg(feature = "kernelet")]
++impl core::fmt::Debug for KerneletConsole {
++    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
++        f.write_str("KerneletHostConsole")
++    }
++}
+diff --git a/kernel/core/comps/time/Cargo.toml b/kernel/core/comps/time/Cargo.toml
+index 8ffe53ad..671e1dae 100644
+--- a/kernel/core/comps/time/Cargo.toml
++++ b/kernel/core/comps/time/Cargo.toml
+@@ -29,0 +30,3 @@ workspace = true
++
++[features]
++kernelet = ["ostd/kernelet"]
+diff --git a/kernel/core/comps/time/src/rtc/mod.rs b/kernel/core/comps/time/src/rtc/mod.rs
+index 3822a657..0be7eb32 100644
+--- a/kernel/core/comps/time/src/rtc/mod.rs
++++ b/kernel/core/comps/time/src/rtc/mod.rs
+@@ -37 +37 @@ macro_rules! declare_rtc_drivers {
+-#[cfg(target_arch = "x86_64")]
++#[cfg(all(target_arch = "x86_64", not(feature = "kernelet")))]
+@@ -41 +41 @@ mod goldfish;
+-#[cfg(target_arch = "x86_64")]
++#[cfg(all(target_arch = "x86_64", not(feature = "kernelet")))]
+@@ -51,2 +51,2 @@ declare_rtc_drivers! {
+-    #[cfg(target_arch = "x86_64")] kvmclock::RtcKvmClock,
+-    #[cfg(target_arch = "x86_64")] cmos::RtcCmos,
++    #[cfg(all(target_arch = "x86_64",not(feature="kernelet")))] kvmclock::RtcKvmClock,
++    #[cfg(all(target_arch = "x86_64",not(feature="kernelet")))] cmos::RtcCmos,
+diff --git a/kernel/core/src/arch/x86/mod.rs b/kernel/core/src/arch/x86/mod.rs
+index 518c7313..7bf36adf 100644
+--- a/kernel/core/src/arch/x86/mod.rs
++++ b/kernel/core/src/arch/x86/mod.rs
+@@ -3,0 +4 @@ pub(crate) mod cpu;
++#[cfg_attr(feature = "kernelet", path = "power_kernelet.rs")]
+diff --git a/kernel/core/src/arch/x86/power_kernelet.rs b/kernel/core/src/arch/x86/power_kernelet.rs
+new file mode 100644
+index 00000000..007b4f80
+--- /dev/null
++++ b/kernel/core/src/arch/x86/power_kernelet.rs
+@@ -0,0 +1,13 @@
++// SPDX-License-Identifier: MPL-2.0
++//! Power requests stop only the owning sandbox; never touch host ACPI/I/O ports.
++crate::register_restart_handler!(ostd::arch::power::try_restart, crate::power::Priority::HIGH);
++crate::register_poweroff_handler!(
++    ostd::arch::power::try_poweroff,
++    crate::power::Priority::HIGH
++);
++pub(super) fn init() {
++    assert!(
++        ostd::abi::platform_initialized(),
++        "Kernelet power initialized before Host Services"
++    );
++}
+diff --git a/kernel/core/src/device/misc/mod.rs b/kernel/core/src/device/misc/mod.rs
+index aa0e0e62..5b172398 100644
+--- a/kernel/core/src/device/misc/mod.rs
++++ b/kernel/core/src/device/misc/mod.rs
+@@ -11,0 +12 @@ use super::registry::char::{MajorIdOwner, acquire_major};
++#[cfg(not(feature = "kernelet"))]
+@@ -20,0 +22 @@ pub(super) fn init_in_first_kthread() {
++    #[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/core/src/device/mod.rs b/kernel/core/src/device/mod.rs
+index e62d157f..e6119c58 100644
+--- a/kernel/core/src/device/mod.rs
++++ b/kernel/core/src/device/mod.rs
+@@ -3,0 +4 @@ mod evdev;
++#[cfg(not(feature = "kernelet"))]
+@@ -62,0 +64 @@ pub(crate) fn init_in_first_kthread() {
++    #[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/core/src/device/registry/block.rs b/kernel/core/src/device/registry/block.rs
+index 88919b0e..efce8411 100644
+--- a/kernel/core/src/device/registry/block.rs
++++ b/kernel/core/src/device/registry/block.rs
+@@ -5,0 +6 @@ use aster_block::{BLOCK_SIZE, BlockDevice, SECTOR_SIZE, bio::BioStatus};
++#[cfg(not(feature = "kernelet"))]
+@@ -6,0 +8 @@ use aster_nvme::NvmeBlockDevice;
++#[cfg(not(feature = "kernelet"))]
+@@ -27,0 +30 @@ pub(super) fn init_in_first_kthread() {
++    #[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/core/src/device/tty/device.rs b/kernel/core/src/device/tty/device.rs
+index fde1ff6f..fc01268b 100644
+--- a/kernel/core/src/device/tty/device.rs
++++ b/kernel/core/src/device/tty/device.rs
+@@ -11,0 +12,2 @@ use spin::Once;
++#[cfg(not(feature = "kernelet"))]
++use super::vt::active_vt;
+@@ -16 +18 @@ use crate::{
+-        tty::{hvc::hvc0_device, serial::serial0_device, vt::active_vt},
++        tty::{hvc::hvc0_device, serial::serial0_device},
+@@ -43 +45,4 @@ impl Device for Tty0Device {
+-        active_vt().open()
++        #[cfg(not(feature = "kernelet"))]
++        return active_vt().open();
++        #[cfg(feature = "kernelet")]
++        return_errno_with_message!(Errno::ENODEV, "no hardware virtual terminal on Kernelet");
+@@ -96 +101,5 @@ impl SystemConsole {
+-                .unwrap_or("tty0");
++                .unwrap_or(if cfg!(feature = "kernelet") {
++                    "hvc0"
++                } else {
++                    "tty0"
++                });
+@@ -109 +118,6 @@ impl SystemConsole {
+-                Arc::new(Tty0Device) as _
++                #[cfg(not(feature = "kernelet"))]
++                return Arc::new(Tty0Device) as _;
++                #[cfg(feature = "kernelet")]
++                return hvc0_device()
++                    .expect("Kernelet host console was not registered")
++                    .clone() as _;
+diff --git a/kernel/core/src/device/tty/hvc.rs b/kernel/core/src/device/tty/hvc.rs
+index eac91f07..54bb88cc 100644
+--- a/kernel/core/src/device/tty/hvc.rs
++++ b/kernel/core/src/device/tty/hvc.rs
+@@ -71 +71 @@ pub(super) fn init_in_first_process() -> Result<()> {
+-        .find(|(name, _)| name.as_str() == aster_virtio::device::console::DEVICE_NAME)
++        .find(|(name, _)| name.as_str() == CONSOLE_NAME)
+@@ -93,0 +94,5 @@ pub(super) fn init_in_first_process() -> Result<()> {
++
++#[cfg(not(feature = "kernelet"))]
++const CONSOLE_NAME: &str = aster_virtio::device::console::DEVICE_NAME;
++#[cfg(feature = "kernelet")]
++const CONSOLE_NAME: &str = aster_console::KERNELET_CONSOLE_NAME;
+diff --git a/kernel/core/src/device/tty/mod.rs b/kernel/core/src/device/tty/mod.rs
+index 92d9792e..d4903f06 100644
+--- a/kernel/core/src/device/tty/mod.rs
++++ b/kernel/core/src/device/tty/mod.rs
+@@ -31,0 +32 @@ pub(super) mod termio;
++#[cfg(not(feature = "kernelet"))]
+@@ -41,0 +43 @@ pub(super) fn init_in_first_process() -> Result<()> {
++    #[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/core/src/fs/fs_impls/mod.rs b/kernel/core/src/fs/fs_impls/mod.rs
+index a831272c..e6510ecc 100644
+--- a/kernel/core/src/fs/fs_impls/mod.rs
++++ b/kernel/core/src/fs/fs_impls/mod.rs
+@@ -18,0 +19 @@ pub(crate) mod tmpfs;
++#[cfg(not(feature = "kernelet"))]
+@@ -34,0 +36 @@ pub(super) fn init() {
++    #[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/core/src/lib.rs b/kernel/core/src/lib.rs
+index 71f2aa0b..4c5e9656 100644
+--- a/kernel/core/src/lib.rs
++++ b/kernel/core/src/lib.rs
+@@ -25,0 +26,7 @@ extern crate alloc;
++#[cfg(all(
++    feature = "kernelet",
++    any(feature = "hardware", feature = "cvm_guest", feature = "pvh_boot")
++))]
++compile_error!(
++    "the Kernelet platform requires --no-default-features and excludes physical/CVM boot features"
++);
+diff --git a/kernel/core/src/net/iface/init.rs b/kernel/core/src/net/iface/init.rs
+index 5e8ac771..e2c3f395 100644
+--- a/kernel/core/src/net/iface/init.rs
++++ b/kernel/core/src/net/iface/init.rs
+@@ -16,0 +17 @@ static IFACES: Once<Vec<Arc<Iface>>> = Once::new();
++#[cfg(not(feature = "kernelet"))]
+@@ -25,0 +27 @@ pub(in crate::net) fn iter_all_ifaces() -> Iter<'static, Arc<Iface>> {
++#[cfg(not(feature = "kernelet"))]
+@@ -35,0 +38 @@ pub(in crate::net) fn init() {
++        #[cfg(not(feature = "kernelet"))]
+@@ -42,0 +46 @@ pub(in crate::net) fn init() {
++    #[cfg(not(feature = "kernelet"))]
+@@ -98,0 +103 @@ fn new_loopback() -> Arc<Iface> {
++#[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/core/src/net/socket/vsock/mod.rs b/kernel/core/src/net/socket/vsock/mod.rs
+index ba5981d6..b1a842d8 100644
+--- a/kernel/core/src/net/socket/vsock/mod.rs
++++ b/kernel/core/src/net/socket/vsock/mod.rs
+@@ -18,0 +19,2 @@ mod addr;
++#[cfg_attr(feature = "kernelet", path = "socket_transport_kernelet.rs")]
++mod socket_transport;
+@@ -19,0 +22 @@ mod stream;
++#[cfg(not(feature = "kernelet"))]
+@@ -26 +29 @@ pub(in crate::net) fn init() {
+-    transport::init();
++    socket_transport::init();
+diff --git a/kernel/core/src/net/socket/vsock/socket_transport.rs b/kernel/core/src/net/socket/vsock/socket_transport.rs
+new file mode 100644
+index 00000000..004f1026
+--- /dev/null
++++ b/kernel/core/src/net/socket/vsock/socket_transport.rs
+@@ -0,0 +1,183 @@
++// SPDX-License-Identifier: MPL-2.0
++//! Socket-facing transport selection. Both implementations feed the existing
++//! connecting/listening/connected stream states and their signal-aware waits.
++use super::{addr::VsockSocketAddr, transport as virtio};
++use crate::{
++    events::IoEvents,
++    net::socket::util::{RecvFlags, SendFlags, SockShutdownCmd},
++    prelude::*,
++    process::signal::Pollee,
++    util::{MultiRead, MultiWrite},
++};
++#[cfg(feature = "typedio")]
++#[path = "typedio.rs"]
++mod typedio;
++
++pub(super) enum BoundPort {
++    Virtio(virtio::BoundPort),
++    #[cfg(feature = "typedio")]
++    Typedio(typedio::BoundPort),
++}
++pub(super) enum Connection {
++    Virtio(virtio::Connection),
++    #[cfg(feature = "typedio")]
++    Typedio(typedio::Connection),
++}
++pub(super) enum Listener {
++    Virtio(virtio::Listener),
++    #[cfg(feature = "typedio")]
++    Typedio(typedio::Listener),
++}
++pub(super) enum ConnectResult {
++    Connecting(Connection),
++    Connected(Connection),
++    Failed(BoundPort, Error),
++}
++impl BoundPort {
++    pub(super) fn new_exclusive(address: VsockSocketAddr) -> Result<Self> {
++        #[cfg(feature = "typedio")]
++        if typedio::owns(address.cid) {
++            return typedio::BoundPort::new_exclusive(address).map(Self::Typedio);
++        }
++        virtio::BoundPort::new_exclusive(address).map(Self::Virtio)
++    }
++    pub(super) fn new_ephemeral() -> Result<Self> {
++        #[cfg(feature = "typedio")]
++        if typedio::owns(super::addr::VMADDR_CID_ANY) {
++            return typedio::BoundPort::new_ephemeral().map(Self::Typedio);
++        }
++        virtio::BoundPort::new_ephemeral().map(Self::Virtio)
++    }
++    pub(super) fn connect(
++        self,
++        address: VsockSocketAddr,
++        pollee: &Pollee,
++    ) -> Result<Connection, (Error, Self)> {
++        match self {
++            Self::Virtio(port) => port
++                .connect(address, pollee)
++                .map(Connection::Virtio)
++                .map_err(|(e, p)| (e, Self::Virtio(p))),
++            #[cfg(feature = "typedio")]
++            Self::Typedio(port) => port
++                .connect(address, pollee)
++                .map(Connection::Typedio)
++                .map_err(|(e, p)| (e, Self::Typedio(p))),
++        }
++    }
++    pub(super) fn listen(self, backlog: usize, pollee: &Pollee) -> Result<Listener, (Error, Self)> {
++        match self {
++            Self::Virtio(port) => port
++                .listen(backlog, pollee)
++                .map(Listener::Virtio)
++                .map_err(|(e, p)| (e, Self::Virtio(p))),
++            #[cfg(feature = "typedio")]
++            Self::Typedio(port) => port
++                .listen(backlog, pollee)
++                .map(Listener::Typedio)
++                .map_err(|(e, p)| (e, Self::Typedio(p))),
++        }
++    }
++    pub(super) fn local_addr(&self) -> VsockSocketAddr {
++        match self {
++            Self::Virtio(p) => p.local_addr(),
++            #[cfg(feature = "typedio")]
++            Self::Typedio(p) => p.local_addr(),
++        }
++    }
++    pub(super) fn permits_peer(&self, cid: u32) -> bool {
++        match self {
++            Self::Virtio(_) => cid == super::addr::VMADDR_CID_HOST,
++            #[cfg(feature = "typedio")]
++            Self::Typedio(p) => p.permits_peer(cid),
++        }
++    }
++}
++macro_rules! connection_delegate {($name:ident($($arg:ident:$ty:ty),*)->$result:ty)=>{pub(super) fn $name(&self,$($arg:$ty),*)->$result {match self{Self::Virtio(c)=>c.$name($($arg),*),#[cfg(feature="typedio")]Self::Typedio(c)=>c.$name($($arg),*)}}};}
++impl Connection {
++    connection_delegate!(local_addr()->VsockSocketAddr);
++    connection_delegate!(remote_addr()->VsockSocketAddr);
++    connection_delegate!(pollee()->&Pollee);
++    connection_delegate!(check_io_events()->IoEvents);
++    connection_delegate!(test_and_clear_error()->Result<()>);
++    connection_delegate!(has_connect_result()->bool);
++    connection_delegate!(shutdown(command:SockShutdownCmd)->Result<()>);
++    pub(super) fn try_send(
++        &mut self,
++        reader: &mut dyn MultiRead,
++        flags: SendFlags,
++    ) -> Result<usize> {
++        match self {
++            Self::Virtio(c) => c.try_send(reader, flags),
++            #[cfg(feature = "typedio")]
++            Self::Typedio(c) => c.try_send(reader, flags),
++        }
++    }
++    pub(super) fn try_recv(
++        &mut self,
++        writer: &mut dyn MultiWrite,
++        flags: RecvFlags,
++    ) -> Result<usize> {
++        match self {
++            Self::Virtio(c) => c.try_recv(writer, flags),
++            #[cfg(feature = "typedio")]
++            Self::Typedio(c) => c.try_recv(writer, flags),
++        }
++    }
++    pub(super) fn finish_connect(self) -> ConnectResult {
++        match self {
++            Self::Virtio(c) => match c.finish_connect() {
++                virtio::ConnectResult::Connecting(c) => ConnectResult::Connecting(Self::Virtio(c)),
++                virtio::ConnectResult::Connected(c) => ConnectResult::Connected(Self::Virtio(c)),
++                virtio::ConnectResult::Failed(p, e) => {
++                    ConnectResult::Failed(BoundPort::Virtio(p), e)
++                }
++            },
++            #[cfg(feature = "typedio")]
++            Self::Typedio(c) => match c.finish_connect() {
++                typedio::ConnectResult::Connecting(c) => {
++                    ConnectResult::Connecting(Self::Typedio(c))
++                }
++                typedio::ConnectResult::Connected(c) => ConnectResult::Connected(Self::Typedio(c)),
++                typedio::ConnectResult::Failed(p, e) => {
++                    ConnectResult::Failed(BoundPort::Typedio(p), e)
++                }
++            },
++        }
++    }
++}
++impl Listener {
++    pub(super) fn try_accept(&self) -> Result<Connection> {
++        match self {
++            Self::Virtio(l) => l.try_accept().map(Connection::Virtio),
++            #[cfg(feature = "typedio")]
++            Self::Typedio(l) => l.try_accept().map(Connection::Typedio),
++        }
++    }
++    pub(super) fn set_backlog(&self, n: usize) {
++        match self {
++            Self::Virtio(l) => l.set_backlog(n),
++            #[cfg(feature = "typedio")]
++            Self::Typedio(l) => l.set_backlog(n),
++        }
++    }
++    pub(super) fn local_addr(&self) -> VsockSocketAddr {
++        match self {
++            Self::Virtio(l) => l.local_addr(),
++            #[cfg(feature = "typedio")]
++            Self::Typedio(l) => l.local_addr(),
++        }
++    }
++    pub(super) fn check_io_events(&self) -> IoEvents {
++        match self {
++            Self::Virtio(l) => l.check_io_events(),
++            #[cfg(feature = "typedio")]
++            Self::Typedio(l) => l.check_io_events(),
++        }
++    }
++}
++pub(super) fn init() {
++    virtio::init();
++    #[cfg(feature = "typedio")]
++    typedio::init();
++}
+diff --git a/kernel/core/src/net/socket/vsock/socket_transport_kernelet.rs b/kernel/core/src/net/socket/vsock/socket_transport_kernelet.rs
+new file mode 100644
+index 00000000..4c6ce1b0
+--- /dev/null
++++ b/kernel/core/src/net/socket/vsock/socket_transport_kernelet.rs
+@@ -0,0 +1,6 @@
++// SPDX-License-Identifier: MPL-2.0
++//! A Kernelet has no hardware VirtIO Vsock device. Preserve the Socket-facing
++//! states while selecting the real TypedIO implementation exclusively.
++#[path = "typedio.rs"]
++mod typedio;
++pub(super) use typedio::{BoundPort, ConnectResult, Connection, Listener, init};
+diff --git a/kernel/core/src/net/socket/vsock/stream/connected.rs b/kernel/core/src/net/socket/vsock/stream/connected.rs
+index 87961146..612c10e9 100644
+--- a/kernel/core/src/net/socket/vsock/stream/connected.rs
++++ b/kernel/core/src/net/socket/vsock/stream/connected.rs
+@@ -7 +7 @@ use crate::{
+-        vsock::{addr::VsockSocketAddr, transport::Connection},
++        vsock::{addr::VsockSocketAddr, socket_transport::Connection},
+diff --git a/kernel/core/src/net/socket/vsock/stream/connecting.rs b/kernel/core/src/net/socket/vsock/stream/connecting.rs
+index 767266b5..faf35b14 100644
+--- a/kernel/core/src/net/socket/vsock/stream/connecting.rs
++++ b/kernel/core/src/net/socket/vsock/stream/connecting.rs
+@@ -6,0 +7 @@ use crate::{
++        socket_transport::{BoundPort, ConnectResult, Connection},
+@@ -8 +8,0 @@ use crate::{
+-        transport::{BoundPort, ConnectResult, Connection},
+diff --git a/kernel/core/src/net/socket/vsock/stream/init.rs b/kernel/core/src/net/socket/vsock/stream/init.rs
+index 66754580..6f36a77b 100644
+--- a/kernel/core/src/net/socket/vsock/stream/init.rs
++++ b/kernel/core/src/net/socket/vsock/stream/init.rs
+@@ -8 +8,2 @@ use crate::{
+-            addr::{VMADDR_CID_HOST, VMADDR_PORT_ANY, VsockSocketAddr},
++            addr::{VMADDR_PORT_ANY, VsockSocketAddr},
++            socket_transport::BoundPort,
+@@ -10 +10,0 @@ use crate::{
+-            transport::BoundPort,
+@@ -76,6 +75,0 @@ impl InitStream {
+-        if remote_addr.cid != VMADDR_CID_HOST {
+-            return Err((
+-                Error::with_message(Errno::ENETUNREACH, "only the host vsock CID is supported"),
+-                self,
+-            ));
+-        }
+@@ -97,0 +92,6 @@ impl InitStream {
++        if !bound_port.permits_peer(remote_addr.cid) {
++            return Err((
++                Error::with_message(Errno::ENETUNREACH, "the peer CID is not authorized"),
++                Self::new_bound(bound_port),
++            ));
++        }
+diff --git a/kernel/core/src/net/socket/vsock/stream/listen.rs b/kernel/core/src/net/socket/vsock/stream/listen.rs
+index 881d3039..e1a12472 100644
+--- a/kernel/core/src/net/socket/vsock/stream/listen.rs
++++ b/kernel/core/src/net/socket/vsock/stream/listen.rs
+@@ -6,0 +7 @@ use crate::{
++        socket_transport::{BoundPort, Listener},
+@@ -8 +8,0 @@ use crate::{
+-        transport::{BoundPort, Listener},
+diff --git a/kernel/core/src/net/socket/vsock/typedio.rs b/kernel/core/src/net/socket/vsock/typedio.rs
+new file mode 100644
+index 00000000..5fd482e1
+--- /dev/null
++++ b/kernel/core/src/net/socket/vsock/typedio.rs
+@@ -0,0 +1,1149 @@
++// SPDX-License-Identifier: MPL-2.0
++//! TypedIO driver feeding the existing Vsock socket stream states. The
++//! default path uses interest-gated IRQs; unbound polling is an explicit feature.
++//! No socket-state lock is held while copying application memory.
++use core::{
++    sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering},
++    time::Duration,
++};
++
++use aster_softirq::{BottomHalfDisabled, Taskless};
++use ostd::{
++    irq::IrqLine,
++    typedio::{
++        self, Consumer, ConsumerEvents, ConsumerInterest, PipeError, Producer, ProducerEvents,
++        ProducerInterest, Queue, QueueEvents, QueueOptions, RequestTag, vsock::*,
++    },
++};
++use spin::Once;
++
++use super::super::addr::{VMADDR_CID_ANY, VMADDR_PORT_ANY, VsockSocketAddr};
++use crate::{
++    events::IoEvents,
++    net::socket::util::{RecvFlags, SendFlags, SockShutdownCmd},
++    prelude::*,
++    process::signal::Pollee,
++    time::{
++        Timer,
++        clocks::JIFFIES_TIMER_MANAGER,
++        timer::{Timeout, TimerGuard},
++    },
++    util::{MultiRead, MultiWrite},
++};
++
++type Key = (u32, u64, u32, u64);
++const CONTROL_LIMIT: usize = 64;
++#[cfg(feature = "typedio-polling")]
++const POLL_PERIOD: Duration = Duration::from_millis(1);
++static DEVICES: Once<Vec<Arc<Space>>> = Once::new();
++struct Registry {
++    ports: BTreeMap<u32, usize>,
++    next_port: u32,
++    connections: BTreeMap<Key, Weak<Conn>>,
++    listeners: BTreeMap<u32, Weak<ListenerInner>>,
++    controls: BTreeMap<u64, VsockControlMessage>,
++    pending: VecDeque<(u64, VsockControlMessage)>,
++}
++struct Space {
++    cid: u32,
++    config: VsockConfig,
++    control: Queue<VsockProtocol>,
++    receive: Queue<VsockProtocol>,
++    registry: SpinLock<Registry, BottomHalfDisabled>,
++    next_tag: AtomicU64,
++    next_attempt: AtomicU64,
++    posted: AtomicUsize,
++    removed: AtomicBool,
++    busy: AtomicBool,
++    work: Once<Arc<Taskless>>,
++    irq: Once<IrqLine>,
++    #[cfg(feature = "typedio-polling")]
++    timer: Once<Arc<Timer>>,
++}
++struct PortLease {
++    space: Arc<Space>,
++    port: u32,
++}
++#[derive(Clone)]
++pub(in crate::net::socket::vsock) struct BoundPort {
++    lease: Arc<PortLease>,
++}
++impl Debug for BoundPort {
++    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
++        f.debug_struct("TypedIoPort")
++            .field("cid", &self.lease.space.cid)
++            .field("port", &self.lease.port)
++            .finish()
++    }
++}
++#[derive(Clone, Copy, PartialEq, Eq)]
++enum Phase {
++    Connecting,
++    Connected,
++    Failed,
++    Closed,
++}
++struct ConnState {
++    phase: Phase,
++    error: Option<Error>,
++    tx: Option<Producer>,
++    rx: Option<Consumer>,
++    tx_ready: bool,
++    rx_ready: bool,
++    local_read: bool,
++    local_write: bool,
++    peer_read: bool,
++    peer_write: bool,
++    timer: Option<Arc<Timer>>,
++}
++struct Conn {
++    timeout: AtomicBool,
++    bound: BoundPort,
++    key: Key,
++    pollee: Pollee,
++    state: SpinLock<ConnState, BottomHalfDisabled>,
++    listener: Option<Weak<ListenerInner>>,
++}
++pub(in crate::net::socket::vsock) struct Connection {
++    inner: Option<Arc<Conn>>,
++}
++pub(in crate::net::socket::vsock) enum ConnectResult {
++    Connecting(Connection),
++    Connected(Connection),
++    Failed(BoundPort, Error),
++}
++struct Pending {
++    backlog: usize,
++    connections: VecDeque<Arc<Conn>>,
++}
++struct ListenerInner {
++    bound: BoundPort,
++    pollee: Pollee,
++    pending: SpinLock<Pending, BottomHalfDisabled>,
++}
++pub(in crate::net::socket::vsock) struct Listener {
++    inner: Arc<ListenerInner>,
++}
++
++pub(in crate::net::socket::vsock) fn owns(cid: u32) -> bool {
++    DEVICES.get().is_some_and(|spaces| {
++        spaces
++            .iter()
++            .any(|s| !s.removed.load(Ordering::Acquire) && (cid == VMADDR_CID_ANY || cid == s.cid))
++    })
++}
++fn select(cid: u32) -> Result<Arc<Space>> {
++    DEVICES
++        .get()
++        .and_then(|s| {
++            s.iter().find(|s| {
++                !s.removed.load(Ordering::Acquire) && (cid == VMADDR_CID_ANY || cid == s.cid)
++            })
++        })
++        .cloned()
++        .ok_or_else(|| {
++            Error::with_message(Errno::EADDRNOTAVAIL, "no TypedIO attachment owns this CID")
++        })
++}
++fn identity(counter: &AtomicU64) -> Result<u64> {
++    counter
++        .try_update(Ordering::Relaxed, Ordering::Relaxed, |v| v.checked_add(1))
++        .map_err(|_| Error::with_message(Errno::EOVERFLOW, "TypedIO identities exhausted"))
++}
++fn address(a: VsockSocketAddr) -> Address {
++    Address {
++        cid: ContextId(a.cid as u64),
++        port: Port(a.port),
++    }
++}
++fn key(flow: Flow, attempt: AttemptId) -> Key {
++    (
++        flow.destination.port.0,
++        flow.source.cid.0,
++        flow.source.port.0,
++        attempt.0,
++    )
++}
++fn io_error(error: PipeError) -> Error {
++    Error::with_message(
++        match error {
++            PipeError::WouldBlock | PipeError::Busy => Errno::EAGAIN,
++            PipeError::Closed | PipeError::Reset => Errno::EPIPE,
++            _ => Errno::EIO,
++        },
++        "TypedIO pipe operation failed",
++    )
++}
++fn partial(result: Result<usize, (ostd::Error, usize)>) -> Result<usize> {
++    match result {
++        Ok(n) => Ok(n),
++        Err((_, n)) if n != 0 => Ok(n),
++        Err((error, _)) => Err(error.into()),
++    }
++}
++
++impl BoundPort {
++    pub(in crate::net::socket::vsock) fn new_exclusive(addr: VsockSocketAddr) -> Result<Self> {
++        let space = select(addr.cid)?;
++        let mut registry = space.registry.lock();
++        if registry.ports.len() >= 128 {
++            return_errno_with_message!(Errno::ENOBUFS, "TypedIO bound-port quota exhausted")
++        }
++        let port = if addr.port == VMADDR_PORT_ANY {
++            let mut port = registry.next_port;
++            let mut found = None;
++            for _ in 0..129 {
++                if port != VMADDR_PORT_ANY && !registry.ports.contains_key(&port) {
++                    found = Some(port);
++                    break;
++                }
++                port = if port >= u32::MAX - 1 {
++                    49152
++                } else {
++                    port + 1
++                };
++            }
++            let port = found.ok_or_else(|| {
++                Error::with_message(Errno::EADDRINUSE, "no ephemeral port is available")
++            })?;
++            registry.next_port = if port >= u32::MAX - 1 {
++                49152
++            } else {
++                port + 1
++            };
++            port
++        } else {
++            addr.port
++        };
++        if port < space.config.port_min.0 || port > space.config.port_max.0 {
++            return_errno_with_message!(Errno::EACCES, "port is outside attachment policy")
++        }
++        if registry.ports.insert(port, 1).is_some() {
++            return_errno_with_message!(Errno::EADDRINUSE, "vsock port is already bound")
++        }
++        drop(registry);
++        Ok(Self {
++            lease: Arc::new(PortLease { space, port }),
++        })
++    }
++    pub(in crate::net::socket::vsock) fn new_ephemeral() -> Result<Self> {
++        Self::new_exclusive(VsockSocketAddr {
++            cid: VMADDR_CID_ANY,
++            port: VMADDR_PORT_ANY,
++        })
++    }
++    pub(in crate::net::socket::vsock) fn local_addr(&self) -> VsockSocketAddr {
++        VsockSocketAddr {
++            cid: self.lease.space.cid,
++            port: self.lease.port,
++        }
++    }
++    pub(in crate::net::socket::vsock) fn permits_peer(&self, cid: u32) -> bool {
++        self.lease
++            .space
++            .config
++            .peer_cids
++            .iter()
++            .any(|peer| peer.0 == cid as u64)
++    }
++    pub(in crate::net::socket::vsock) fn connect(
++        self,
++        remote: VsockSocketAddr,
++        pollee: &Pollee,
++    ) -> Result<Connection, (Error, Self)> {
++        if !self.permits_peer(remote.cid) {
++            return Err((
++                Error::with_message(Errno::ENETUNREACH, "peer CID is not authorized"),
++                self,
++            ));
++        }
++        let space = self.lease.space.clone();
++        let attempt = match identity(&space.next_attempt) {
++            Ok(n) => AttemptId(n),
++            Err(e) => return Err((e, self)),
++        };
++        let flow = Flow {
++            source: address(self.local_addr()),
++            destination: address(remote),
++        };
++        let incoming = flow.reversed();
++        let conn = Conn::new(self, key(incoming, attempt), pollee.clone(), None);
++        {
++            let mut r = space.registry.lock();
++            r.connections.retain(|_, c| {
++                c.upgrade().is_some_and(|c| {
++                    matches!(c.state.lock().phase, Phase::Connecting | Phase::Connected)
++                })
++            });
++            if r.connections.len() >= space.config.max_flows as usize {
++                return Err((
++                    Error::with_message(Errno::ENOBUFS, "flow quota exhausted"),
++                    conn.bound.clone(),
++                ));
++            }
++            r.connections.insert(conn.key, Arc::downgrade(&conn));
++        }
++        if let Err(e) = space.send(VsockControlMessage {
++            flow,
++            attempt,
++            kind: VsockControlKind::ConnectOffer,
++        }) {
++            space.registry.lock().connections.remove(&conn.key);
++            return Err((e, conn.bound.clone()));
++        }
++        conn.arm_timeout();
++        Ok(Connection { inner: Some(conn) })
++    }
++    pub(in crate::net::socket::vsock) fn listen(
++        self,
++        backlog: usize,
++        pollee: &Pollee,
++    ) -> Result<Listener, (Error, Self)> {
++        let space = self.lease.space.clone();
++        let port = self.lease.port;
++        if space.removed.load(Ordering::Acquire) {
++            return Err((
++                Error::with_message(Errno::ENODEV, "TypedIO attachment removed"),
++                self,
++            ));
++        }
++        let inner = Arc::new(ListenerInner {
++            bound: self,
++            pollee: pollee.clone(),
++            pending: SpinLock::new(Pending {
++                backlog: backlog.min(space.config.max_flows as usize),
++                connections: VecDeque::with_capacity(space.config.max_flows as usize),
++            }),
++        });
++        let mut registry = space.registry.lock();
++        if registry
++            .listeners
++            .get(&port)
++            .is_some_and(|l| l.strong_count() != 0)
++        {
++            return Err((
++                Error::with_message(Errno::EADDRINUSE, "listener already exists"),
++                inner.bound.clone(),
++            ));
++        }
++        registry.listeners.insert(port, Arc::downgrade(&inner));
++        drop(registry);
++        Ok(Listener { inner })
++    }
++}
++impl Drop for PortLease {
++    fn drop(&mut self) {
++        self.space.registry.lock().ports.remove(&self.port);
++    }
++}
++
++impl Conn {
++    fn new(
++        bound: BoundPort,
++        key: Key,
++        pollee: Pollee,
++        listener: Option<Weak<ListenerInner>>,
++    ) -> Arc<Self> {
++        Arc::new(Self {
++            timeout: AtomicBool::new(false),
++            bound,
++            key,
++            pollee,
++            state: SpinLock::new(ConnState {
++                phase: Phase::Connecting,
++                error: None,
++                tx: None,
++                rx: None,
++                tx_ready: false,
++                rx_ready: false,
++                local_read: false,
++                local_write: false,
++                peer_read: false,
++                peer_write: false,
++                timer: None,
++            }),
++            listener,
++        })
++    }
++    fn flow(&self) -> Flow {
++        Flow {
++            source: address(self.bound.local_addr()),
++            destination: Address {
++                cid: ContextId(self.key.1),
++                port: Port(self.key.2),
++            },
++        }
++    }
++    fn control(&self, kind: VsockControlKind) -> Result<()> {
++        self.bound.lease.space.send(VsockControlMessage {
++            flow: self.flow(),
++            attempt: AttemptId(self.key.3),
++            kind,
++        })
++    }
++    fn fail(&self, error: Option<Error>) {
++        let mut s = self.state.lock();
++        let connecting = s.phase == Phase::Connecting;
++        s.phase = if connecting {
++            Phase::Failed
++        } else {
++            Phase::Closed
++        };
++        s.error = error;
++        s.peer_read = true;
++        s.peer_write = true;
++        s.timer = None;
++        let tx = s.tx.take();
++        let rx = s.rx.take();
++        drop(s);
++        drop(tx);
++        drop(rx);
++        self.pollee
++            .notify(IoEvents::IN | IoEvents::OUT | IoEvents::ERR | IoEvents::RDHUP | IoEvents::HUP);
++        if let Some(listener) = self.listener.as_ref().and_then(Weak::upgrade) {
++            listener.pollee.notify(IoEvents::IN)
++        }
++    }
++    fn arm_timeout(self: &Arc<Self>) {
++        let weak = Arc::downgrade(self);
++        let timer =
++            JIFFIES_TIMER_MANAGER
++                .get()
++                .unwrap()
++                .create_timer(move |_guard: TimerGuard<'_>| {
++                    if let Some(c) = weak.upgrade() {
++                        c.timeout.store(true, Ordering::Release);
++                        c.bound.lease.space.schedule();
++                    }
++                });
++        timer
++            .lock()
++            .set_timeout(Timeout::After(Duration::from_secs(2)));
++        let mut s = self.state.lock();
++        if s.phase == Phase::Connecting {
++            s.timer = Some(timer);
++        }
++    }
++    fn refresh(&self) {
++        let mut s = self.state.lock();
++        let mut notify = IoEvents::empty();
++        if let Some(tx) = s.tx.as_mut() {
++            let events = tx.take_events();
++            if !tx.rearm_irq() {
++                self.bound.lease.space.schedule();
++            }
++            if events.contains(ProducerEvents::SPACE_AVAILABLE) {
++                s.tx_ready = true;
++                notify |= IoEvents::OUT
++            }
++            if events.contains(ProducerEvents::CLOSED) {
++                s.peer_read = true;
++                notify |= IoEvents::OUT | IoEvents::HUP
++            }
++            if events.contains(ProducerEvents::RESET) {
++                drop(s);
++                self.fail(None);
++                return;
++            }
++        }
++        if let Some(rx) = s.rx.as_mut() {
++            let events = rx.take_events();
++            if !rx.rearm_irq() {
++                self.bound.lease.space.schedule();
++            }
++            if events.contains(ConsumerEvents::DATA_AVAILABLE) {
++                s.rx_ready = true;
++                notify |= IoEvents::IN
++            }
++            if events.contains(ConsumerEvents::CLOSED) {
++                s.peer_write = true;
++                notify |= IoEvents::IN | IoEvents::RDHUP
++            }
++            if events.contains(ConsumerEvents::RESET) {
++                drop(s);
++                self.fail(None);
++                return;
++            }
++        }
++        drop(s);
++        if !notify.is_empty() {
++            self.pollee.notify(notify)
++        }
++    }
++}
++impl Connection {
++    fn conn(&self) -> &Arc<Conn> {
++        self.inner.as_ref().unwrap()
++    }
++    pub(in crate::net::socket::vsock) fn local_addr(&self) -> VsockSocketAddr {
++        self.conn().bound.local_addr()
++    }
++    pub(in crate::net::socket::vsock) fn remote_addr(&self) -> VsockSocketAddr {
++        VsockSocketAddr {
++            cid: self.conn().key.1 as u32,
++            port: self.conn().key.2,
++        }
++    }
++    pub(in crate::net::socket::vsock) fn pollee(&self) -> &Pollee {
++        &self.conn().pollee
++    }
++    pub(in crate::net::socket::vsock) fn test_and_clear_error(&self) -> Result<()> {
++        self.conn().state.lock().error.take().map_or(Ok(()), Err)
++    }
++    pub(in crate::net::socket::vsock) fn has_connect_result(&self) -> bool {
++        self.conn().state.lock().phase != Phase::Connecting
++    }
++    pub(in crate::net::socket::vsock) fn finish_connect(mut self) -> ConnectResult {
++        let conn = self.inner.take().unwrap();
++        let phase = conn.state.lock().phase;
++        if phase == Phase::Failed {
++            match Arc::try_unwrap(conn) {
++                Ok(c) => {
++                    let error = c.state.lock().error.take().unwrap_or_else(|| {
++                        Error::with_message(Errno::ECONNRESET, "vsock connection failed")
++                    });
++                    ConnectResult::Failed(c.bound, error)
++                }
++                Err(c) => {
++                    self.inner = Some(c);
++                    ConnectResult::Connecting(self)
++                }
++            }
++        } else {
++            self.inner = Some(conn);
++            if phase == Phase::Connecting {
++                ConnectResult::Connecting(self)
++            } else {
++                ConnectResult::Connected(self)
++            }
++        }
++    }
++    pub(in crate::net::socket::vsock) fn check_io_events(&self) -> IoEvents {
++        let s = self.conn().state.lock();
++        let mut e = IoEvents::empty();
++        if s.rx_ready || s.peer_write || s.local_read {
++            e |= IoEvents::IN
++        }
++        if s.peer_write || s.local_read {
++            e |= IoEvents::RDHUP
++        }
++        if !s.local_write && (s.tx_ready || s.peer_read) {
++            e |= IoEvents::OUT
++        }
++        if (s.local_read && s.local_write) || (s.local_write && s.peer_write) {
++            e |= IoEvents::HUP
++        }
++        if s.error.is_some() {
++            e |= IoEvents::ERR
++        }
++        e
++    }
++    pub(in crate::net::socket::vsock) fn try_send(
++        &mut self,
++        reader: &mut dyn MultiRead,
++        _flags: SendFlags,
++    ) -> Result<usize> {
++        if reader.sum_lens() == 0 {
++            return Ok(0);
++        }
++        let conn = self.conn();
++        let mut s = conn.state.lock();
++        if let Some(error) = s.error.take() {
++            return Err(error);
++        }
++        if s.local_write || s.peer_read || s.phase != Phase::Connected {
++            return_errno_with_message!(Errno::EPIPE, "vsock is closed for writing")
++        }
++        let mut tx =
++            s.tx.take()
++                .ok_or_else(|| Error::with_message(Errno::EAGAIN, "producer is occupied"))?;
++        s.tx_ready = false;
++        drop(s);
++        conn.pollee.invalidate();
++        let result = (|| {
++            let mut r = tx
++                .try_reserve(reader.sum_lens().min(65536))
++                .map_err(io_error)?;
++            let result = r.produce_with(|dst| reader.read(dst));
++            let n = match &result {
++                Ok(n) | Err((_, n)) => *n,
++            };
++            r.commit(n).map_err(io_error)?;
++            partial(result)
++        })();
++        let mut s = conn.state.lock();
++        if !s.local_write && s.phase == Phase::Connected {
++            s.tx = Some(tx)
++        }
++        drop(s);
++        conn.pollee.invalidate();
++        conn.bound.lease.space.schedule();
++        result
++    }
++    pub(in crate::net::socket::vsock) fn try_recv(
++        &mut self,
++        writer: &mut dyn MultiWrite,
++        flags: RecvFlags,
++    ) -> Result<usize> {
++        if writer.sum_lens() == 0 {
++            return Ok(0);
++        }
++        let conn = self.conn();
++        let mut s = conn.state.lock();
++        if s.local_read {
++            return Ok(0);
++        }
++        if let Some(error) = s.error.take() {
++            return Err(error);
++        }
++        if s.phase == Phase::Closed {
++            return Ok(0);
++        }
++        let mut rx =
++            s.rx.take()
++                .ok_or_else(|| Error::with_message(Errno::EAGAIN, "consumer is occupied"))?;
++        s.rx_ready = false;
++        drop(s);
++        conn.pollee.invalidate();
++        let consume = flags.receive_behavior().will_consume_data();
++        let result = (|| {
++            let Some(mut r) = rx
++                .try_reserve(writer.sum_lens().min(65536))
++                .map_err(io_error)?
++            else {
++                return Ok(0);
++            };
++            let result = r.consume_with(|src| writer.write(src));
++            let n = match &result {
++                Ok(n) | Err((_, n)) => *n,
++            };
++            if let Err(error) = r.commit(if consume { n } else { 0 }) {
++                if n != 0 {
++                    return Ok(n);
++                }
++                return Err(io_error(error));
++            }
++            partial(result)
++        })();
++        let mut s = conn.state.lock();
++        if !s.local_read && s.phase == Phase::Connected {
++            s.rx = Some(rx)
++        }
++        drop(s);
++        conn.pollee.invalidate();
++        conn.bound.lease.space.schedule();
++        result
++    }
++    pub(in crate::net::socket::vsock) fn shutdown(&self, cmd: SockShutdownCmd) -> Result<()> {
++        let conn = self.conn();
++        let mut s = conn.state.lock();
++        let read = cmd.shut_read() && !s.local_read;
++        let write = cmd.shut_write() && !s.local_write;
++        if !read && !write {
++            return Ok(());
++        }
++        let direction = if read && write {
++            ShutdownDirection::Both
++        } else if read {
++            ShutdownDirection::Receive
++        } else {
++            ShutdownDirection::Send
++        };
++        if read {
++            s.local_read = true;
++        }
++        if write {
++            s.local_write = true;
++        }
++        let tx = if write { s.tx.take() } else { None };
++        let rx = if read { s.rx.take() } else { None };
++        drop(s);
++        drop(tx);
++        drop(rx);
++        conn.pollee
++            .notify(IoEvents::IN | IoEvents::OUT | IoEvents::RDHUP | IoEvents::HUP);
++        conn.control(VsockControlKind::Shutdown(direction))
++    }
++}
++impl Drop for Connection {
++    fn drop(&mut self) {
++        if let Some(conn) = self.inner.take() {
++            let connecting = conn.state.lock().phase == Phase::Connecting;
++            let _ = conn.control(if connecting {
++                VsockControlKind::Reset
++            } else {
++                VsockControlKind::Shutdown(ShutdownDirection::Both)
++            });
++            conn.bound
++                .lease
++                .space
++                .registry
++                .lock()
++                .connections
++                .remove(&conn.key);
++            conn.fail(None);
++        }
++    }
++}
++impl Listener {
++    pub(in crate::net::socket::vsock) fn try_accept(&self) -> Result<Connection> {
++        if self.inner.bound.lease.space.removed.load(Ordering::Acquire) {
++            return_errno_with_message!(Errno::ENODEV, "TypedIO attachment removed")
++        }
++        let mut p = self.inner.pending.lock();
++        p.connections
++            .retain(|c| matches!(c.state.lock().phase, Phase::Connecting | Phase::Connected));
++        let index = p
++            .connections
++            .iter()
++            .position(|c| c.state.lock().phase == Phase::Connected)
++            .ok_or_else(|| Error::with_message(Errno::EAGAIN, "no established vsock connection"))?;
++        let c = p.connections.remove(index).unwrap();
++        drop(p);
++        self.inner.pollee.invalidate();
++        Ok(Connection { inner: Some(c) })
++    }
++    pub(in crate::net::socket::vsock) fn set_backlog(&self, n: usize) {
++        self.inner.pending.lock().backlog =
++            n.min(self.inner.bound.lease.space.config.max_flows as usize)
++    }
++    pub(in crate::net::socket::vsock) fn local_addr(&self) -> VsockSocketAddr {
++        self.inner.bound.local_addr()
++    }
++    pub(in crate::net::socket::vsock) fn check_io_events(&self) -> IoEvents {
++        if self.inner.bound.lease.space.removed.load(Ordering::Acquire) {
++            return IoEvents::ERR | IoEvents::HUP;
++        }
++        if self
++            .inner
++            .pending
++            .lock()
++            .connections
++            .iter()
++            .any(|c| c.state.lock().phase == Phase::Connected)
++        {
++            IoEvents::IN
++        } else {
++            IoEvents::empty()
++        }
++    }
++}
++impl Drop for Listener {
++    fn drop(&mut self) {
++        self.inner
++            .bound
++            .lease
++            .space
++            .registry
++            .lock()
++            .listeners
++            .remove(&self.inner.bound.lease.port);
++        let pending = core::mem::take(&mut self.inner.pending.lock().connections);
++        for c in pending {
++            let _ = c.control(VsockControlKind::Reset);
++            c.bound
++                .lease
++                .space
++                .registry
++                .lock()
++                .connections
++                .remove(&c.key);
++            c.fail(None);
++        }
++    }
++}
++
++impl Space {
++    fn schedule(&self) {
++        if let Some(work) = self.work.get() {
++            work.schedule()
++        }
++    }
++    fn send(&self, message: VsockControlMessage) -> Result<()> {
++        if self.removed.load(Ordering::Acquire) {
++            return_errno_with_message!(Errno::ENODEV, "TypedIO attachment was removed")
++        }
++        let tag = identity(&self.next_tag)?;
++        let mut r = self.registry.lock();
++        if r.controls.len() >= CONTROL_LIMIT {
++            return_errno_with_message!(Errno::EAGAIN, "control queue is full")
++        }
++        r.controls.insert(tag, message);
++        r.pending.push_back((tag, message));
++        drop(r);
++        self.schedule();
++        Ok(())
++    }
++    fn event(&self, event: VsockEvent) {
++        match event {
++            VsockEvent::Control(message) => {
++                if message.flow.destination.cid.0 != self.cid as u64 {
++                    return;
++                }
++                if message.kind == VsockControlKind::ConnectOffer {
++                    self.offer(message);
++                    return;
++                }
++                let conn = self
++                    .registry
++                    .lock()
++                    .connections
++                    .get(&key(message.flow, message.attempt))
++                    .and_then(Weak::upgrade);
++                let Some(conn) = conn else { return };
++                match message.kind {
++                    VsockControlKind::Reset => {
++                        let connecting = conn.state.lock().phase == Phase::Connecting;
++                        conn.fail(connecting.then(|| {
++                            Error::with_message(Errno::ECONNRESET, "peer rejected vsock connection")
++                        }));
++                    }
++                    VsockControlKind::Shutdown(direction) => {
++                        let mut s = conn.state.lock();
++                        if matches!(direction, ShutdownDirection::Send | ShutdownDirection::Both) {
++                            s.peer_write = true
++                        }
++                        if matches!(
++                            direction,
++                            ShutdownDirection::Receive | ShutdownDirection::Both
++                        ) {
++                            s.peer_read = true
++                        }
++                        drop(s);
++                        conn.pollee
++                            .notify(IoEvents::IN | IoEvents::OUT | IoEvents::RDHUP | IoEvents::HUP)
++                    }
++                    _ => (),
++                }
++            }
++            VsockEvent::Established {
++                flow,
++                attempt,
++                mut tx,
++                mut rx,
++            } => {
++                if let Some(irq) = self.irq.get() {
++                    if tx.bind_irq(irq).is_err() || rx.bind_irq(irq).is_err() {
++                        let _ = self.send(VsockControlMessage {
++                            flow: flow.reversed(),
++                            attempt,
++                            kind: VsockControlKind::Reset,
++                        });
++                        return;
++                    }
++                }
++                let _ = tx.set_interest(ProducerInterest::SPACE_AVAILABLE);
++                let _ = rx.set_interest(ConsumerInterest::DATA_AVAILABLE);
++                let conn = self
++                    .registry
++                    .lock()
++                    .connections
++                    .get(&key(flow, attempt))
++                    .and_then(Weak::upgrade);
++                if let Some(conn) = conn {
++                    let mut s = conn.state.lock();
++                    if s.phase == Phase::Connecting && flow.destination.cid.0 == self.cid as u64 {
++                        s.tx = Some(tx);
++                        s.rx = Some(rx);
++                        s.phase = Phase::Connected;
++                        s.timer = None;
++                        drop(s);
++                        conn.refresh();
++                        conn.pollee.notify(IoEvents::OUT);
++                        if let Some(listener) = conn.listener.as_ref().and_then(Weak::upgrade) {
++                            listener.pollee.notify(IoEvents::IN)
++                        }
++                        return;
++                    }
++                }
++                let _ = self.send(VsockControlMessage {
++                    flow: flow.reversed(),
++                    attempt,
++                    kind: VsockControlKind::Reset,
++                });
++            }
++        }
++    }
++    fn offer(&self, message: VsockControlMessage) {
++        let listener = self
++            .registry
++            .lock()
++            .listeners
++            .get(&message.flow.destination.port.0)
++            .and_then(Weak::upgrade);
++        let Some(listener) = listener else {
++            let _ = self.send(VsockControlMessage {
++                flow: message.flow.reversed(),
++                attempt: message.attempt,
++                kind: VsockControlKind::Reset,
++            });
++            return;
++        };
++        let mut pending = listener.pending.lock();
++        pending
++            .connections
++            .retain(|c| matches!(c.state.lock().phase, Phase::Connecting | Phase::Connected));
++        if pending.connections.len() >= pending.backlog {
++            drop(pending);
++            let _ = self.send(VsockControlMessage {
++                flow: message.flow.reversed(),
++                attempt: message.attempt,
++                kind: VsockControlKind::Reset,
++            });
++            return;
++        }
++        let conn = Conn::new(
++            listener.bound.clone(),
++            key(message.flow, message.attempt),
++            Pollee::new(),
++            Some(Arc::downgrade(&listener)),
++        );
++        pending.connections.push_back(conn.clone());
++        drop(pending);
++        self.registry
++            .lock()
++            .connections
++            .insert(conn.key, Arc::downgrade(&conn));
++        if self
++            .send(VsockControlMessage {
++                flow: message.flow.reversed(),
++                attempt: message.attempt,
++                kind: VsockControlKind::ConnectAccept,
++            })
++            .is_err()
++        {
++            conn.fail(Some(Error::with_message(
++                Errno::ENOBUFS,
++                "control admission failed",
++            )));
++        } else {
++            conn.arm_timeout();
++        }
++    }
++    fn service(&self) {
++        if self.busy.swap(true, Ordering::Acquire) {
++            return;
++        }
++        struct Guard<'a>(&'a AtomicBool);
++        impl Drop for Guard<'_> {
++            fn drop(&mut self) {
++                self.0.store(false, Ordering::Release)
++            }
++        }
++        let _guard = Guard(&self.busy);
++        let events = self.receive.take_events() | self.control.take_events();
++        if events.contains(QueueEvents::REMOVED) {
++            self.removed.store(true, Ordering::Release);
++        }
++        for _ in 0..64 {
++            let Some(completion) = self.control.try_pop_completion() else {
++                break;
++            };
++            let message = self.registry.lock().controls.remove(&completion.tag.0);
++            if completion.result.is_err() {
++                if let Some(message) = message {
++                    let incoming = message.flow.reversed();
++                    if let Some(conn) = self
++                        .registry
++                        .lock()
++                        .connections
++                        .get(&key(incoming, message.attempt))
++                        .and_then(Weak::upgrade)
++                    {
++                        conn.fail(Some(Error::with_message(
++                            Errno::ECONNRESET,
++                            "vsock control failed",
++                        )));
++                    }
++                }
++            }
++        }
++        for _ in 0..64 {
++            let Some(completion) = self.receive.try_pop_completion() else {
++                break;
++            };
++            self.posted.fetch_sub(1, Ordering::Relaxed);
++            if let Ok(VsockReply::Event(event)) = completion.result {
++                self.event(event)
++            }
++        }
++        if !self.removed.load(Ordering::Acquire) {
++            for _ in 0..CONTROL_LIMIT {
++                let item = self.registry.lock().pending.pop_front();
++                let Some((tag, message)) = item else { break };
++                match self
++                    .control
++                    .try_submit(VsockRequest::SendControl(message), RequestTag(tag))
++                {
++                    Ok(_) => (),
++                    Err(error) => {
++                        self.registry.lock().pending.push_front((tag, message));
++                        if !matches!(error.reason, typedio::SubmitReason::WouldBlock) {
++                            self.removed.store(true, Ordering::Release);
++                        }
++                        break;
++                    }
++                }
++            }
++            while self.posted.load(Ordering::Relaxed) < 8 {
++                let Ok(tag) = identity(&self.next_tag) else {
++                    break;
++                };
++                if self
++                    .receive
++                    .try_submit(VsockRequest::ReceiveEvent, RequestTag(tag))
++                    .is_err()
++                {
++                    break;
++                }
++                self.posted.fetch_add(1, Ordering::Relaxed);
++            }
++        }
++        let listeners: Vec<_> = self
++            .registry
++            .lock()
++            .listeners
++            .values()
++            .filter_map(Weak::upgrade)
++            .collect();
++        for listener in &listeners {
++            listener
++                .pending
++                .lock()
++                .connections
++                .retain(|c| matches!(c.state.lock().phase, Phase::Connecting | Phase::Connected));
++        }
++        self.registry.lock().connections.retain(|_, c| {
++            c.upgrade().is_some_and(|c| {
++                matches!(c.state.lock().phase, Phase::Connecting | Phase::Connected)
++            })
++        });
++        let connections: Vec<_> = self
++            .registry
++            .lock()
++            .connections
++            .values()
++            .filter_map(Weak::upgrade)
++            .collect();
++        for c in connections {
++            if c.timeout.swap(false, Ordering::AcqRel) && c.state.lock().phase == Phase::Connecting
++            {
++                c.fail(Some(Error::with_message(
++                    Errno::ETIMEDOUT,
++                    "vsock connect timed out",
++                )));
++                let _ = c.control(VsockControlKind::Reset);
++            }
++            if self.removed.load(Ordering::Acquire) {
++                c.fail(Some(Error::with_message(
++                    Errno::ENODEV,
++                    "TypedIO attachment removed",
++                )))
++            } else {
++                c.refresh()
++            }
++        }
++        if self.removed.load(Ordering::Acquire) {
++            for listener in listeners {
++                listener.pending.lock().connections.clear();
++                listener
++                    .pollee
++                    .notify(IoEvents::IN | IoEvents::ERR | IoEvents::HUP);
++            }
++        }
++        let more = !self.receive.rearm_irq() | !self.control.rearm_irq();
++        if more && !self.removed.load(Ordering::Acquire) {
++            self.schedule()
++        }
++    }
++}
++pub(in crate::net::socket::vsock) fn init() {
++    let devices = match typedio::discover::<VsockProtocol>() {
++        Ok(d) => d,
++        Err(_) => return,
++    };
++    let mut spaces = Vec::new();
++    for device in devices {
++        let Ok(cid) = u32::try_from(device.config().cid.0) else {
++            continue;
++        };
++        let Ok(control) = device.open(QueueOptions {
++            depth: 8,
++            features: 0,
++        }) else {
++            continue;
++        };
++        let Ok(receive) = device.open(QueueOptions {
++            depth: 8,
++            features: 0,
++        }) else {
++            continue;
++        };
++        let space = Arc::new(Space {
++            cid,
++            config: device.config().clone(),
++            control,
++            receive,
++            registry: SpinLock::new(Registry {
++                ports: BTreeMap::new(),
++                next_port: 49152,
++                connections: BTreeMap::new(),
++                listeners: BTreeMap::new(),
++                controls: BTreeMap::new(),
++                pending: VecDeque::with_capacity(CONTROL_LIMIT),
++            }),
++            next_tag: AtomicU64::new(1),
++            next_attempt: AtomicU64::new(1),
++            posted: AtomicUsize::new(0),
++            removed: AtomicBool::new(false),
++            busy: AtomicBool::new(false),
++            work: Once::new(),
++            irq: Once::new(),
++            #[cfg(feature = "typedio-polling")]
++            timer: Once::new(),
++        });
++        let weak = Arc::downgrade(&space);
++        space.work.call_once(|| {
++            Taskless::new(move || {
++                if let Some(space) = weak.upgrade() {
++                    space.service()
++                }
++            })
++        });
++        #[cfg(not(feature = "typedio-polling"))]
++        {
++            let Ok(mut irq) = IrqLine::alloc() else {
++                continue;
++            };
++            let weak = Arc::downgrade(&space);
++            irq.on_active(move |_| {
++                if let Some(space) = weak.upgrade() {
++                    space.schedule();
++                }
++            });
++            if space.control.bind_irq(&irq).is_err() || space.receive.bind_irq(&irq).is_err() {
++                continue;
++            }
++            space.irq.call_once(|| irq);
++        }
++        #[cfg(feature = "typedio-polling")]
++        {
++            let weak = Arc::downgrade(&space);
++            let timer = JIFFIES_TIMER_MANAGER.get().unwrap().create_timer(
++                move |mut guard: TimerGuard<'_>| {
++                    if let Some(space) = weak.upgrade() {
++                        space.schedule();
++                        if !space.removed.load(Ordering::Acquire) {
++                            guard.set_timeout(Timeout::After(POLL_PERIOD));
++                        }
++                    }
++                },
++            );
++            timer.lock().set_timeout(Timeout::After(POLL_PERIOD));
++            space.timer.call_once(|| timer);
++        }
++        space.schedule();
++        spaces.push(space);
++    }
++    DEVICES.call_once(|| spaces);
++}
+diff --git a/kernel/core/src/power.rs b/kernel/core/src/power.rs
+index 673e81fe..5eeec2cf 100644
+--- a/kernel/core/src/power.rs
++++ b/kernel/core/src/power.rs
+@@ -116,0 +117 @@ inventory::collect!(PoweroffHandler);
++#[cfg(not(feature = "kernelet"))]
+@@ -117,0 +119,2 @@ pub use inventory::submit;
++#[cfg(feature = "kernelet")]
++pub use kernelet_registry::submit;
+diff --git a/kernel/core/src/thread/kernel_thread.rs b/kernel/core/src/thread/kernel_thread.rs
+index 69b1cd8f..7ce92b3a 100644
+--- a/kernel/core/src/thread/kernel_thread.rs
++++ b/kernel/core/src/thread/kernel_thread.rs
+@@ -8 +8,3 @@ use ostd::{
+-use super::{AsThread, Thread, oops};
++#[cfg(not(feature = "kernelet"))]
++use super::oops;
++use super::{AsThread, Thread};
+@@ -101,0 +104 @@ impl ThreadOptions {
++            #[cfg(not(feature = "kernelet"))]
+@@ -102,0 +106,3 @@ impl ThreadOptions {
++            // Preserve the Kernelet whole-instance panic policy.
++            #[cfg(feature = "kernelet")]
++            task_fn();
+diff --git a/kernel/core/src/thread/mod.rs b/kernel/core/src/thread/mod.rs
+index e09dfd94..87be7a9e 100644
+--- a/kernel/core/src/thread/mod.rs
++++ b/kernel/core/src/thread/mod.rs
+@@ -21,0 +22,3 @@ pub(crate) mod kernel_thread;
++// Kernelet keeps its existing panic=abort, whole-instance stop policy. The
++// hardware OSTD unwinder is not installed on a switched Linux carrier stack.
++#[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/core/src/thread/task.rs b/kernel/core/src/thread/task.rs
+index 8c188022..2ed97a4f 100644
+--- a/kernel/core/src/thread/task.rs
++++ b/kernel/core/src/thread/task.rs
+@@ -12 +12,3 @@ use ostd::{
+-use super::{Thread, oops};
++use super::Thread;
++#[cfg(not(feature = "kernelet"))]
++use super::oops;
+@@ -129,0 +132 @@ pub(crate) fn create_new_user_task(
++        #[cfg(not(feature = "kernelet"))]
+@@ -130,0 +134,4 @@ pub(crate) fn create_new_user_task(
++        // The virtual platform panic handler stops this instance. There is no
++        // pretend catch/unwind across Host services or coroutine stack switches.
++        #[cfg(feature = "kernelet")]
++        user_task_func();
+diff --git a/kernel/core/src/vm/mod.rs b/kernel/core/src/vm/mod.rs
+index f0985cd6..4bd19be1 100644
+--- a/kernel/core/src/vm/mod.rs
++++ b/kernel/core/src/vm/mod.rs
+@@ -11,0 +12 @@
++#[cfg(not(feature = "kernelet"))]
+@@ -12,0 +14 @@ use osdk_frame_allocator::FrameAllocator;
++#[cfg(not(feature = "kernelet"))]
+@@ -18,0 +21 @@ pub mod vmar;
++#[cfg(not(feature = "kernelet"))]
+@@ -21,0 +25 @@ static FRAME_ALLOCATOR: FrameAllocator = FrameAllocator;
++#[cfg(not(feature = "kernelet"))]
+@@ -24,0 +29 @@ static HEAP_ALLOCATOR: HeapAllocator = HeapAllocator;
++#[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/core/src/vm/vmar/vm_mapping.rs b/kernel/core/src/vm/vmar/vm_mapping.rs
+index fe7ed787..5feda9f1 100644
+--- a/kernel/core/src/vm/vmar/vm_mapping.rs
++++ b/kernel/core/src/vm/vmar/vm_mapping.rs
+@@ -12,0 +13,2 @@ use aster_util::printer::VmPrinter;
++#[cfg(not(feature = "kernelet"))]
++use ostd::io::IoMem;
+@@ -14 +15,0 @@ use ostd::{
+-    io::IoMem,
+@@ -527,0 +529 @@ impl VmMapping {
++                #[cfg(not(feature = "kernelet"))]
+@@ -1162,0 +1165 @@ impl MapHandle<'_, '_, '_> {
++    #[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/core/src/vm/vmar/vmar_impls/access_alien.rs b/kernel/core/src/vm/vmar/vmar_impls/access_alien.rs
+index 6fa576b0..a65394bf 100644
+--- a/kernel/core/src/vm/vmar/vmar_impls/access_alien.rs
++++ b/kernel/core/src/vm/vmar/vmar_impls/access_alien.rs
+@@ -161,0 +162 @@ impl Vmar {
++                        #[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/core/src/vm/vmar/vmar_impls/fork.rs b/kernel/core/src/vm/vmar/vmar_impls/fork.rs
+index 4adb0c1f..c1c50171 100644
+--- a/kernel/core/src/vm/vmar/vmar_impls/fork.rs
++++ b/kernel/core/src/vm/vmar/vmar_impls/fork.rs
+@@ -109,0 +110 @@ fn cow_copy_pt(src: &mut CursorMut<'_>, dst: &mut CursorMut<'_>, size: usize) ->
++            #[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/core/src/vm/vmar/vmar_impls/remap.rs b/kernel/core/src/vm/vmar/vmar_impls/remap.rs
+index 841e15a4..41f16216 100644
+--- a/kernel/core/src/vm/vmar/vmar_impls/remap.rs
++++ b/kernel/core/src/vm/vmar/vmar_impls/remap.rs
+@@ -265,0 +266 @@ impl Vmar {
++                #[cfg(not(feature = "kernelet"))]
+diff --git a/kernel/kernelet/Cargo.toml b/kernel/kernelet/Cargo.toml
+new file mode 100644
+index 00000000..9ebdc119
+--- /dev/null
++++ b/kernel/kernelet/Cargo.toml
+@@ -0,0 +1,17 @@
++[package]
++name = "asterinas-kernelet"
++version = "0.1.0"
++edition = "2021"
++license = "MPL-2.0"
++publish = false
++build = "build.rs"
++
++[lib]
++name = "asterinas_kernelet"
++crate-type = ["staticlib"]
++
++[dependencies]
++asterinas = { path = "..", default-features = false, features = ["kernelet"] }
++
++[lints]
++workspace = true
+diff --git a/kernel/kernelet/README.md b/kernel/kernelet/README.md
+new file mode 100644
+index 00000000..c5f99bda
+--- /dev/null
++++ b/kernel/kernelet/README.md
+@@ -0,0 +1,11 @@
++# Full Asterinas on Kernelet
++
++Build from the sibling Kernelet checkout using `make -C prototype KLET_KERNEL=asterinas image` after sourcing the task-local tool environment. This links the original Asterinas assembler and `aster_core::boot`, not a replacement test kernel. Both repositories must be checked out as sibling directories named `asterinas` and `kernelet`.
++
++The default archive contains a real minimal static ELF `/init` that prints to the console and waits for signals. It is bootstrap userspace, not a Linux distribution or a communication test. Set the absolute `KLET_INITRAMFS` Make variable to another real CPIO or gzip CPIO archive for subsequent functional experiments. The final combined image must still fit the unchanged 16 MiB loader limit.
++
++Only the Kernelet platform and TypedIO transport are selected. Physical ACPI, PCI, VirtIO, framebuffer, CMOS and host power-control paths are excluded; filesystem, process, syscall, scheduler, loopback and TypedIO socket initialization use their original component stages and order. The host console currently supports output only. Wall time starts from the upstream fallback RTC epoch, while monotonic time uses the authenticated host TSC frequency.
++
++Component, kernel-parameter and instance-power registrations are explicitly constructed on the BSP after Host Services and memory initialization and before command-line processing. The function table is private relocated data. The ELF loader does not execute code at registration time or accept automatic ELF constructors. Component initialization still occurs at its original Bootstrap/Kthread/Process stages.
++
++The final build uses panic=abort. Fatal panics terminate the instance; they do not unwind through Linux Host Services. QEMU/KVM startup, first userspace execution, multiprocessor IRQ/TLS/futex behavior and real TypedIO communication require later runtime verification and have not been demonstrated by compilation or native fixtures.
+diff --git a/kernel/kernelet/build.rs b/kernel/kernelet/build.rs
+new file mode 100644
+index 00000000..63d83c47
+--- /dev/null
++++ b/kernel/kernelet/build.rs
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: MPL-2.0
++
++use std::{env, path::PathBuf};
++
++fn main() {
++    println!("cargo:rerun-if-env-changed=KLET_INITRAMFS");
++    let archive = PathBuf::from(
++        env::var_os("KLET_INITRAMFS")
++            .expect("set KLET_INITRAMFS to a real CPIO archive; see kernel/kernelet/README.md"),
++    )
++    .canonicalize()
++    .expect("KLET_INITRAMFS must be readable");
++    let size = std::fs::metadata(&archive).unwrap().len();
++    assert!(size >= 110, "initramfs is too small for a newc archive");
++    println!("cargo:rerun-if-changed={}", archive.display());
++    println!(
++        "cargo:rustc-env=KERNELET_INITRAMFS_PATH={}",
++        archive.display()
++    );
++}
+diff --git a/kernel/kernelet/init.S b/kernel/kernelet/init.S
+new file mode 100644
+index 00000000..2cffa56f
+--- /dev/null
++++ b/kernel/kernelet/init.S
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: MPL-2.0
++// A real minimal PID 1 for bootstrap validation; no benchmark is run here.
++.section .text
++.global _start
++_start:
++    mov $1, %eax
++    mov $1, %edi
++    lea message(%rip), %rsi
++    mov $message_end-message, %edx
++    syscall
++1:
++    mov $34, %eax
++    syscall
++    jmp 1b
++.section .rodata
++message:
++    .ascii "Asterinas Kernelet: userspace init reached; waiting for signals.\n"
++message_end:
++.section .note.GNU-stack,"",@progbits
+diff --git a/kernel/kernelet/mkinitramfs.py b/kernel/kernelet/mkinitramfs.py
+new file mode 100644
+index 00000000..af42b71d
+--- /dev/null
++++ b/kernel/kernelet/mkinitramfs.py
+@@ -0,0 +1,33 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: MPL-2.0
++"""Pack a real init ELF in a deterministic uncompressed newc archive."""
++import pathlib
++import struct
++import sys
++
++
++def pack(init, output):
++    elf = pathlib.Path(init).read_bytes()
++    if elf[:5] != b'\x7fELF\x02' or struct.unpack_from('<H', elf, 18)[0] != 62:
++        raise ValueError('init must be an x86-64 ELF executable')
++    archive = bytearray()
++    for ino, (name, mode, data) in enumerate([
++        ('dev', 0o040755, b''),
++        ('proc', 0o040555, b''),
++        ('sys', 0o040555, b''),
++        ('tmp', 0o041777, b''),
++        ('init', 0o100755, elf),
++        ('TRAILER!!!', 0, b''),
++    ], 1):
++        encoded = name.encode() + b'\0'
++        fields = (ino, mode, 0, 0, 1, 0, len(data), 0, 0, 0, 0, len(encoded), 0)
++        archive += b'070701' + ''.join(f'{n:08x}' for n in fields).encode()
++        archive += encoded
++        archive += bytes(-len(archive) % 4)
++        archive += data
++        archive += bytes(-len(archive) % 4)
++    pathlib.Path(output).write_bytes(archive)
++
++
++if __name__ == '__main__':
++    pack(*sys.argv[1:])
+diff --git a/kernel/kernelet/src/lib.rs b/kernel/kernelet/src/lib.rs
+new file mode 100644
+index 00000000..10c3270a
+--- /dev/null
++++ b/kernel/kernelet/src/lib.rs
+@@ -0,0 +1,12 @@
++// SPDX-License-Identifier: MPL-2.0
++//! Full Asterinas image assembler for the Kernelet platform.
++#![no_std]
++
++// Link the original #[ostd::main] entry and its complete kernel dependency graph.
++extern crate asterinas as _;
++
++/// Supplies the immutable archive consumed by the normal Asterinas init path.
++#[no_mangle]
++pub fn __kernelet_initramfs() -> &'static [u8] {
++    include_bytes!(env!("KERNELET_INITRAMFS_PATH"))
++}
+diff --git a/kernel/libs/comp-sys/component/Cargo.toml b/kernel/libs/comp-sys/component/Cargo.toml
+index f3180c4a..2595c6eb 100644
+--- a/kernel/libs/comp-sys/component/Cargo.toml
++++ b/kernel/libs/comp-sys/component/Cargo.toml
+@@ -11,0 +12,4 @@ component-macro = { path = "../component-macro" }
++kernelet-registry = { path = "../../../../../kernelet/prototype/libs/guest-registry", optional = true }
++
++[features]
++kernelet = ["dep:kernelet-registry"]
+diff --git a/kernel/libs/comp-sys/component/src/lib.rs b/kernel/libs/comp-sys/component/src/lib.rs
+index a97dc474..62fda670 100644
+--- a/kernel/libs/comp-sys/component/src/lib.rs
++++ b/kernel/libs/comp-sys/component/src/lib.rs
+@@ -19,0 +20 @@ pub use component_macro::*;
++#[cfg(not(feature = "kernelet"))]
+@@ -20,0 +22,2 @@ pub use inventory::submit;
++#[cfg(feature = "kernelet")]
++pub use kernelet_registry::submit;
+diff --git a/kernel/src/lib.rs b/kernel/src/lib.rs
+index 734d0497..74474646 100644
+--- a/kernel/src/lib.rs
++++ b/kernel/src/lib.rs
+@@ -14,0 +15 @@
++#[cfg(not(feature = "kernelet"))]
+@@ -16,0 +18 @@ extern crate aster_drm as _;
++#[cfg(not(feature = "kernelet"))]
+@@ -17,0 +20 @@ extern crate aster_i8042 as _;
++#[cfg(not(feature = "kernelet"))]
+@@ -18,0 +22 @@ extern crate aster_simpledrm as _;
++#[cfg(not(feature = "kernelet"))]
+diff --git a/osdk/deps/frame-allocator/Cargo.toml b/osdk/deps/frame-allocator/Cargo.toml
+index e0acef48..dc28c32e 100644
+--- a/osdk/deps/frame-allocator/Cargo.toml
++++ b/osdk/deps/frame-allocator/Cargo.toml
+@@ -15,0 +16,3 @@ workspace = true
++
++[features]
++kernelet = ["ostd/kernelet"]
+diff --git a/osdk/deps/frame-allocator/src/lib.rs b/osdk/deps/frame-allocator/src/lib.rs
+index bd414894..985000ca 100644
+--- a/osdk/deps/frame-allocator/src/lib.rs
++++ b/osdk/deps/frame-allocator/src/lib.rs
+@@ -30,0 +31 @@ extern crate alloc;
++#[cfg(not(feature = "kernelet"))]
+@@ -32,0 +34 @@ use core::alloc::Layout;
++#[cfg(not(feature = "kernelet"))]
+@@ -38,0 +41 @@ use ostd::{
++#[cfg(not(feature = "kernelet"))]
+@@ -39,0 +43 @@ mod cache;
++#[cfg(not(feature = "kernelet"))]
+@@ -40,0 +45 @@ mod chunk;
++#[cfg(not(feature = "kernelet"))]
+@@ -41,0 +47 @@ mod pools;
++#[cfg(not(feature = "kernelet"))]
+@@ -42,0 +49 @@ mod set;
++#[cfg(not(feature = "kernelet"))]
+@@ -45,0 +53 @@ mod smp_counter;
++#[cfg(not(feature = "kernelet"))]
+@@ -47,0 +56 @@ mod test;
++#[cfg(not(feature = "kernelet"))]
+@@ -53,0 +63 @@ fast_smp_counter! {
++#[cfg(not(feature = "kernelet"))]
+@@ -62,0 +73 @@ pub fn load_total_free_size() -> usize {
++#[cfg(not(feature = "kernelet"))]
+@@ -64,0 +76 @@ pub struct FrameAllocator;
++#[cfg(not(feature = "kernelet"))]
+@@ -86,0 +99,6 @@ impl GlobalFrameAllocator for FrameAllocator {
++
++/// Only sandbox-owned Grant frames count as physical memory on this platform.
++#[cfg(feature = "kernelet")]
++pub fn load_total_free_size() -> usize {
++    ostd::mm::frame::allocator::free_bytes()
++}
+diff --git a/osdk/deps/heap-allocator/Cargo.toml b/osdk/deps/heap-allocator/Cargo.toml
+index dacae781..99658b46 100644
+--- a/osdk/deps/heap-allocator/Cargo.toml
++++ b/osdk/deps/heap-allocator/Cargo.toml
+@@ -15,0 +16,3 @@ workspace = true
++
++[features]
++kernelet = ["ostd/kernelet"]
+diff --git a/osdk/deps/heap-allocator/src/kernelet.rs b/osdk/deps/heap-allocator/src/kernelet.rs
+new file mode 100644
+index 00000000..109080e7
+--- /dev/null
++++ b/osdk/deps/heap-allocator/src/kernelet.rs
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: MPL-2.0
++//! Host heap is the only global allocator on the Kernelet platform.
++//! This adapter supplies the per-vCPU counters used by the complete safe kernel.
++use core::ops::Deref;
++use ostd::{
++    cpu::{CpuId, local::DynamicCpuLocal},
++    prelude::Result,
++};
++pub struct CpuLocalBox<T>(DynamicCpuLocal<T>);
++impl<T> Deref for CpuLocalBox<T> {
++    type Target = DynamicCpuLocal<T>;
++    fn deref(&self) -> &Self::Target {
++        &self.0
++    }
++}
++pub fn alloc_cpu_local<T>(init: impl FnMut(CpuId) -> T) -> Result<CpuLocalBox<T>> {
++    DynamicCpuLocal::try_new(init).map(CpuLocalBox)
++}
++/// Platform kernel-heap usage: requested live Host heap bytes, not slab pages.
++/// Host allocator overhead is excluded. No second guest slab allocator exists.
++pub fn load_total_slab_size() -> usize {
++    ostd::mm::heap::allocated_bytes()
++}
+diff --git a/osdk/deps/heap-allocator/src/lib.rs b/osdk/deps/heap-allocator/src/lib.rs
+index 7f9c12bf..62d5f0c7 100644
+--- a/osdk/deps/heap-allocator/src/lib.rs
++++ b/osdk/deps/heap-allocator/src/lib.rs
+@@ -8,0 +9 @@ extern crate alloc;
++#[cfg(not(feature = "kernelet"))]
+@@ -10,0 +12 @@ use core::sync::atomic::AtomicIsize;
++#[cfg(not(feature = "kernelet"))]
+@@ -13,0 +16 @@ use ostd::cpu_local;
++#[cfg(not(feature = "kernelet"))]
+@@ -19,0 +23 @@ macro_rules! __log_prefix {
++#[cfg(not(feature = "kernelet"))]
+@@ -20,0 +25 @@ mod allocator;
++#[cfg(not(feature = "kernelet"))]
+@@ -21,0 +27 @@ mod cpu_local_allocator;
++#[cfg(not(feature = "kernelet"))]
+@@ -22,0 +29 @@ mod slab_cache;
++#[cfg(not(feature = "kernelet"))]
+@@ -24,0 +32 @@ mod slab_counter;
++#[cfg(not(feature = "kernelet"))]
+@@ -26,0 +35 @@ mod test;
++#[cfg(not(feature = "kernelet"))]
+@@ -27,0 +37 @@ pub use allocator::{HeapAllocator, type_from_layout};
++#[cfg(not(feature = "kernelet"))]
+@@ -29,0 +40 @@ pub use cpu_local_allocator::{CpuLocalBox, alloc_cpu_local};
++#[cfg(not(feature = "kernelet"))]
+@@ -34,0 +46 @@ cpu_local! {
++#[cfg(not(feature = "kernelet"))]
+@@ -38,0 +51 @@ pub(crate) static TOTAL_SLAB_ALLOCATED: slab_counter::SlabCounter =
++#[cfg(not(feature = "kernelet"))]
+@@ -41,0 +55,5 @@ pub fn load_total_slab_size() -> usize {
++
++#[cfg(feature = "kernelet")]
++mod kernelet;
++#[cfg(feature = "kernelet")]
++pub use kernelet::{CpuLocalBox, alloc_cpu_local, load_total_slab_size};
+diff --git a/ostd/Cargo.toml b/ostd/Cargo.toml
+index 7d459cc0..54df6cb1 100644
+--- a/ostd/Cargo.toml
++++ b/ostd/Cargo.toml
+@@ -18,0 +19,2 @@ targets = ["x86_64-unknown-none"]
++virtual-ostd = { package = "vostd", path = "../../kernelet/prototype/vostd", optional = true, features = ["asterinas"] }
++typedio = {path="../../kernelet/prototype/libs/typedio",optional=true}
+@@ -72,0 +75,2 @@ unwinding = { workspace = true, features = ["fde-static"] }
++kernelet = ["dep:virtual-ostd", "typedio"]
++typedio = ["dep:typedio"]
+diff --git a/ostd/src/lib.rs b/ostd/src/lib.rs
+index 56da3038..c73334c0 100644
+--- a/ostd/src/lib.rs
++++ b/ostd/src/lib.rs
+@@ -19,0 +20,2 @@
++// Hardware and virtual platforms are mutually exclusive in one OSTD crate.
++#[cfg(not(feature = "kernelet"))]
+@@ -21,0 +24 @@ extern crate alloc;
++#[cfg(not(feature = "kernelet"))]
+@@ -24,0 +28 @@ extern crate ostd_pod;
++#[cfg(not(feature = "kernelet"))]
+@@ -34,0 +39 @@ macro_rules! __log_prefix {
++#[cfg(not(feature = "kernelet"))]
+@@ -36,0 +42 @@ pub mod arch;
++#[cfg(not(feature = "kernelet"))]
+@@ -37,0 +44 @@ pub mod boot;
++#[cfg(not(feature = "kernelet"))]
+@@ -38,0 +46 @@ pub mod bus;
++#[cfg(not(feature = "kernelet"))]
+@@ -39,0 +48 @@ pub mod console;
++#[cfg(not(feature = "kernelet"))]
+@@ -40,0 +50 @@ pub mod cpu;
++#[cfg(not(feature = "kernelet"))]
+@@ -41,0 +52 @@ mod error;
++#[cfg(not(feature = "kernelet"))]
+@@ -42,0 +54 @@ pub mod io;
++#[cfg(not(feature = "kernelet"))]
+@@ -43,0 +56 @@ pub mod irq;
++#[cfg(not(feature = "kernelet"))]
+@@ -44,0 +58 @@ pub mod log;
++#[cfg(not(feature = "kernelet"))]
+@@ -45,0 +60 @@ pub mod mm;
++#[cfg(not(feature = "kernelet"))]
+@@ -46,0 +62 @@ pub mod panic;
++#[cfg(not(feature = "kernelet"))]
+@@ -47,0 +64 @@ pub mod power;
++#[cfg(not(feature = "kernelet"))]
+@@ -48,0 +66 @@ pub mod prelude;
++#[cfg(not(feature = "kernelet"))]
+@@ -49,0 +68 @@ pub mod smp;
++#[cfg(not(feature = "kernelet"))]
+@@ -50,0 +70 @@ pub mod sync;
++#[cfg(not(feature = "kernelet"))]
+@@ -51,0 +72 @@ pub mod task;
++#[cfg(not(feature = "kernelet"))]
+@@ -52,0 +74,4 @@ pub mod timer;
++#[cfg(feature = "typedio")]
++#[cfg(not(feature = "kernelet"))]
++pub mod typedio;
++#[cfg(not(feature = "kernelet"))]
+@@ -53,0 +79 @@ pub mod user;
++#[cfg(not(feature = "kernelet"))]
+@@ -56,0 +83 @@ pub mod util;
++#[cfg(not(feature = "kernelet"))]
+@@ -59,0 +87 @@ pub mod vm;
++#[cfg(not(feature = "kernelet"))]
+@@ -61,0 +90 @@ mod coverage;
++#[cfg(not(feature = "kernelet"))]
+@@ -63,0 +93 @@ use core::sync::atomic::{AtomicBool, Ordering};
++#[cfg(not(feature = "kernelet"))]
+@@ -68,0 +99 @@ pub use ostd_macros::{
++#[cfg(not(feature = "kernelet"))]
+@@ -82,0 +114 @@ pub use self::{error::Error, prelude::Result};
++#[cfg(not(feature = "kernelet"))]
+@@ -149,0 +182 @@ unsafe fn init() {
++#[cfg(not(feature = "kernelet"))]
+@@ -154,0 +188 @@ pub(crate) static IN_BOOTSTRAP_CONTEXT: AtomicBool = AtomicBool::new(true);
++#[cfg(not(feature = "kernelet"))]
+@@ -168,0 +203 @@ fn invoke_ffi_init_funcs() {
++#[cfg(not(feature = "kernelet"))]
+@@ -177,0 +213 @@ mod feature_validation {
++#[cfg(not(feature = "kernelet"))]
+@@ -200,0 +237 @@ mod test {
++#[cfg(not(feature = "kernelet"))]
+@@ -210,0 +248,5 @@ pub mod ktest {
++
++#[cfg(feature = "kernelet")]
++pub use ostd_macros::early_cmdline_parser;
++#[cfg(feature = "kernelet")]
++pub use virtual_ostd::*;
+diff --git a/ostd/src/typedio.rs b/ostd/src/typedio.rs
+new file mode 100644
+index 00000000..1d066417
+--- /dev/null
++++ b/ostd/src/typedio.rs
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: MPL-2.0
++//! Shared TypedIO endpoints and the trusted platform installation boundary.
++use ::typedio::{notification::Binding, service::Call};
++
++use crate::irq::IrqLine;
++#[path = "../../../kernelet/prototype/libs/typedio/src/frontend.rs"]
++mod common;
++pub use common::*;
++type HostService = unsafe extern "C" fn(*mut Call) -> i64;
++type IrqRoute = fn(&IrqLine) -> Result<Binding, BindError>;
++struct Hooks {
++    service: HostService,
++    irq_route: Option<IrqRoute>,
++}
++static HOOKS: spin::Once<Hooks> = spin::Once::new();
++/// Installs the TypedIO transport supplied by a trusted Kernelet boot adapter.
++/// Hardware OSTD leaves this absent and discovers no TypedIO attachments.
++///
++/// # Safety
++/// Call once in bootstrap, before other CPUs or TypedIO callers start. Verify
++/// image/service ABI versions first. The entry must authenticate the caller,
++/// retain all imported backing and return only reservation memory mapped into
++/// this kernel's untyped domain. IRQ routes must identify this line's fixed
++/// vCPU/non-reused generation and connect its local dispatch to virtual upcalls.
++/// None selects the explicitly enabled unbound polling transport policy.
++pub unsafe fn install_host_service(service: HostService, irq_route: Option<IrqRoute>) {
++    HOOKS.call_once(|| Hooks { service, irq_route });
++}
++fn invoke(call: &mut Call) -> i64 {
++    match HOOKS.get() {
++        Some(h) => unsafe { (h.service)(call) },
++        None => -19,
++    }
++}
++fn irq_route(line: &IrqLine) -> Result<Binding, BindError> {
++    let route = HOOKS
++        .get()
++        .and_then(|hooks| hooks.irq_route)
++        .ok_or(BindError(-19))?;
++    route(line)
++}

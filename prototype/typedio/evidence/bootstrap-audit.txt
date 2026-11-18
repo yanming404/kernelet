@@ -1,0 +1,75 @@
+Asterinas hook search
+$ rg -n install_host_service ostd kernel
+ostd/src/typedio.rs:26:pub unsafe fn install_host_service(service: HostService, irq_route: Option<IrqRoute>) {
+
+Asterinas hardware boot chain
+$ rg -n start_kernel|crate::init\(\)|__ostd_main|activate_kernel_page_table ostd/src/boot/mod.rs ostd/src/lib.rs kernel/src/lib.rs
+ostd/src/boot/mod.rs:183:pub(crate) unsafe fn start_kernel() -> ! {
+ostd/src/boot/mod.rs:187:        fn __ostd_main() -> !;
+ostd/src/boot/mod.rs:191:    unsafe { crate::init() };
+ostd/src/boot/mod.rs:195:    unsafe { __ostd_main() };
+ostd/src/lib.rs:121:    unsafe { mm::kspace::activate_kernel_page_table() };
+
+Asterinas link model
+$ rg -n Asterinas does not support PIC|relocation-model=static osdk/src/commands/build/mod.rs
+221:    // Asterinas does not support PIC yet.
+224:        "-C relocation-model=static",
+
+Asterinas linker
+$ rg -n ENTRY|KERNEL_VMA|init_array osdk/src/base_crate/x86_64.ld.template
+1:ENTRY(__multiboot_boot)
+18:KERNEL_VMA = 0xffffffff80000000;
+51:    . = KERNEL_LMA + KERNEL_VMA;
+57:    .multiboot_header       : AT(ADDR(.multiboot_header) - KERNEL_VMA) {
+60:    .multiboot2_header      : AT(ADDR(.multiboot2_header) - KERNEL_VMA) {
+65:    .note.Xen               : AT(ADDR(.note.Xen) - KERNEL_VMA) {
+87:        __ap_boot_start = LOADADDR(.ap_boot) + KERNEL_VMA;
+96:    . = LOADADDR(.ap_boot) + SIZEOF(.ap_boot) + KERNEL_VMA;
+98:    .text                   : AT(ADDR(.text) - KERNEL_VMA) {
+109:    .ex_table               : AT(ADDR(.ex_table) - KERNEL_VMA) {
+117:    .ktest_array            : AT(ADDR(.ktest_array) - KERNEL_VMA) {
+125:    .init_array             : AT(ADDR(.init_array) - KERNEL_VMA) {
+126:        __sinit_array = .;
+127:        KEEP(*(SORT(.init_array .init_array.*)))
+128:        __einit_array = .;
+133:    .sensitive_io_ports     : AT(ADDR(.sensitive_io_ports) - KERNEL_VMA) {
+139:    .rodata                 : AT(ADDR(.rodata) - KERNEL_VMA) {
+143:    .eh_frame_hdr           : AT(ADDR(.eh_frame_hdr) - KERNEL_VMA) {
+147:    .eh_frame               : AT(ADDR(.eh_frame) - KERNEL_VMA) {
+151:    .gcc_except_table       : AT(ADDR(.gcc_except_table) - KERNEL_VMA) {
+157:    .data                   : AT(ADDR(.data) - KERNEL_VMA) {
+169:    .cpu_local_tss          : AT(ADDR(.cpu_local_tss) - KERNEL_VMA) {
+172:    .cpu_local              : AT(ADDR(.cpu_local) - KERNEL_VMA) {
+177:    .bss                    : AT(ADDR(.bss) - KERNEL_VMA) {
+
+Kernelet entry and services
+$ rg -n klet_coro_main|entry->kernelet_entry|typedio = klet_svc_typedio prototype/linux/endovisor/carrier.c
+45: *    klet_evict_leave, the same for the yield and exit stubs; klet_coro_main,
+660:void klet_coro_main(struct klet_carrier *c)
+665:		inst->entry->kernelet_entry(&inst->boot, &klet_services);
+2283:	.typedio = klet_svc_typedio,
+
+vOSTD init and typedio service
+$ rg -n kernelet_entry|init_tables|__ostd_main|svc\(\).typedio prototype/vostd/src/lib.rs prototype/vostd/src/typedio.rs prototype/vostd/src/abi.rs
+prototype/vostd/src/abi.rs:11://!   single symbol `kernelet_entry_table`;
+prototype/vostd/src/abi.rs:223:    /// Initialises the instance and runs `__ostd_main`, on virtual CPU 0.
+prototype/vostd/src/abi.rs:224:    pub kernelet_entry: unsafe extern "C" fn(boot: *const BootArgs, svc: *const Services),
+prototype/vostd/src/abi.rs:303:pub static kernelet_entry_table: EntryTable = EntryTable {
+prototype/vostd/src/abi.rs:305:    kernelet_entry: crate::kernelet_entry,
+prototype/vostd/src/abi.rs:316:/// Records the tables handed to [`crate::kernelet_entry`].
+prototype/vostd/src/abi.rs:321:pub(crate) unsafe fn init_tables(boot: *const BootArgs, svc: *const Services) {
+prototype/vostd/src/abi.rs:345:    // SAFETY: `init_tables` stored a pointer to a table that outlives us.
+prototype/vostd/src/typedio.rs:11:    unsafe { (crate::abi::svc().typedio)(call) }
+prototype/vostd/src/lib.rs:55:    fn __ostd_main() -> !;
+prototype/vostd/src/lib.rs:74:pub(crate) unsafe extern "C" fn kernelet_entry(
+prototype/vostd/src/lib.rs:78:    abi::init_tables(boot, svc);
+prototype/vostd/src/lib.rs:116:    __ostd_main()
+prototype/vostd/src/lib.rs:124:/// The caller must have entered the image at `kernelet_entry` on vCPU 0 first.
+
+Image restrictions
+$ rg -n ENTRY|unsupported|16 MiB prototype/linux/endovisor/kernelet.lds
+9:ENTRY(kernelet_entry_table)
+41:    /* Keep unsupported sections so that garbage collection cannot hide them. */
+42:    .unsupported : {
+48:    ASSERT(SIZEOF(.unsupported) == 0, "kernelet images do not support TLS or constructors")
+49:    ASSERT(. <= 0x1000000, "kernelet image exceeds the 16 MiB virtual span limit")

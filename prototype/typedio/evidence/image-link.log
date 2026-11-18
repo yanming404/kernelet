@@ -1,0 +1,46 @@
+make: Entering directory '/home/ym/typedio-work/kernelet/prototype'
+crates: downloading what the local registry lacks (once; needs the network)
+ Downloading crates ...
+  Downloaded winapi-util v0.1.11
+  Downloaded windows-link v0.2.1
+  Downloaded zerocopy-derive v0.8.57
+  Downloaded windows-sys v0.61.2
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded addr2line v0.27.0
+  Downloaded miniz_oxide v0.9.1
+  Downloaded memchr v2.7.6
+  Downloaded object v0.39.1
+cd /home/ym/typedio-work/kernelet/prototype && CARGO_TARGET_DIR=/home/ym/typedio-work/kernelet/prototype/.build/cargo RUSTFLAGS="-C relocation-model=pic -C code-model=small -C no-redzone=y -C panic=abort -C force-unwind-tables=no" \
+  OSTD_TASK_STACK_SIZE_IN_PAGES=64 \
+  cargo build --offline --release -p piecheck \
+    --target x86_64-unknown-none -Zbuild-std=core,alloc,compiler_builtins -Zbuild-std-features=compiler-builtins-mem || \
+  { echo "image: the build failed; it is --offline, so if a crate is missing, run make crates (once, with a network)"; exit 1; }
+   Compiling proc-macro2 v1.0.107
+   Compiling libc v0.2.189
+   Compiling quote v1.0.47
+   Compiling getrandom v0.3.4
+   Compiling zerocopy v0.8.57
+   Compiling unicode-ident v1.0.26
+   Compiling cfg-if v1.0.5
+   Compiling compiler_builtins v0.1.160 (/home/ym/typedio-work/.rustup/toolchains/nightly-2026-07-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/compiler-builtins/compiler-builtins)
+   Compiling core v0.0.0 (/home/ym/typedio-work/.rustup/toolchains/nightly-2026-07-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core)
+   Compiling syn v2.0.119
+   Compiling rand_core v0.9.5
+   Compiling ppv-lite86 v0.2.21
+   Compiling rand_chacha v0.9.0
+   Compiling rand v0.9.5
+   Compiling typedio-macros v0.1.0 (/home/ym/typedio-work/kernelet/prototype/libs/typedio-macros)
+   Compiling ostd-macros v0.18.1 (/home/ym/typedio-work/kernelet/prototype/libs/ostd-macros)
+   Compiling alloc v0.0.0 (/home/ym/typedio-work/.rustup/toolchains/nightly-2026-07-21-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc)
+   Compiling typedio v0.1.0 (/home/ym/typedio-work/kernelet/prototype/libs/typedio)
+   Compiling vostd v0.1.0 (/home/ym/typedio-work/kernelet/prototype/vostd)
+   Compiling piecheck v0.1.0 (/home/ym/typedio-work/kernelet/prototype/kernels/pie)
+    Finished `release` profile [optimized] target(s) in 17.75s
+ld -pie --no-dynamic-linker --no-undefined --gc-sections --exclude-libs ALL \
+  --build-id=none -z text -z noexecstack -z max-page-size=0x1000 \
+  -T linux/endovisor/kernelet.lds -u kernelet_entry_table -o /home/ym/typedio-work/kernelet/prototype/.build/piecheck.image \
+  --whole-archive /home/ym/typedio-work/kernelet/prototype/.build/cargo/x86_64-unknown-none/release/libpiecheck.a --no-whole-archive
+python3 tools/check-image.py /home/ym/typedio-work/kernelet/prototype/.build/piecheck.image
+image: /home/ym/typedio-work/kernelet/prototype/.build/piecheck.image: ET_DYN, 3 load segments, 253 RELATIVE relocations, 113200 bytes
+make: Leaving directory '/home/ym/typedio-work/kernelet/prototype'

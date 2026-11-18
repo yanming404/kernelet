@@ -1,0 +1,118 @@
+   Compiling proc-macro2 v1.0.107
+    Checking unicode-ident v1.0.26
+    Checking quote v1.0.47
+    Checking syn v2.0.119
+    Checking typedio-macros v0.1.0 (/home/ym/typedio-work/kernelet/prototype/libs/typedio-macros)
+    Checking typedio v0.1.0 (/home/ym/typedio-work/kernelet/prototype/libs/typedio)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.19s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running unittests src/lib.rs (target/debug/deps/typedio-faf37229c72d0e0b)
+
+running 30 tests
+test flow::tests::address_reuse_waits_for_queued_work_and_late_controls_are_stale ... ok
+test flow::tests::handshake_uses_only_offer_accept_and_established ... ok
+test flow::tests::reset_racing_pipe_preparation_prevents_publication ... ok
+test irq::tests::coalesced_irq_does_not_erase_independent_pending_sources ... ok
+test irq::tests::instance_detachment_removes_routes_without_guest_callbacks ... ok
+test irq::tests::stale_binding_and_source_cannot_reach_replacement ... ok
+test lifetime::tests::death_and_quarantine_do_not_release_active_backing ... ok
+test lifetime::tests::death_requires_both_eviction_and_mapping_teardown ... ok
+test lifetime::tests::final_completion_waits_for_access ... ok
+test lifetime::tests::quota_rejection_changes_neither_account ... ok
+test notification::tests::interest_install_checks_level_but_rearm_does_not ... ok
+test notification::tests::publish_during_drain_and_empty_rearm_gap ... ok
+test notification::tests::shared_line_keeps_sources_independent ... ok
+test notification::tests::terminal_survives_interest_removal_and_unbind ... ok
+test pipe::tests::active_payload_access_cannot_be_finalized_or_reused ... ok
+test pipe::tests::cancelled_consume_is_peek_and_partial_commit_retains_suffix ... ok
+test pipe::tests::close_fences_active_production_and_preserves_published_data ... ok
+test pipe::tests::forgotten_reservation_blocks_reuse_and_transfer_but_not_reset ... ok
+test pipe::tests::partial_progress_wraparound_and_eof ... ok
+test pipe::tests::progress_and_authority_cannot_be_forged ... ok
+test pipe::tests::zero_byte_cancel_restores_readiness_and_interest_is_independent ... ok
+test queue::tests::cancel_and_remove_do_not_complete_active_work ... ok
+test queue::tests::completions_are_out_of_order_and_once_only ... ok
+test queue::tests::credits_duplicate_tags_and_unread_completions ... ok
+test queue::tests::request_sequence_and_generation_never_wrap ... ok
+test resource::tests::endpoint_capture_rollback_preserves_original_owner ... ok
+test resource::tests::overflowed_ranges_are_rejected_before_any_reference ... ok
+test resource::tests::partial_capture_failure_rolls_back_prior_retention ... ok
+test resource::tests::retained_backing_outlives_death_and_stale_generation ... ok
+test schema::tests::sha256_known_vectors_and_block_boundary ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/abi.rs (target/debug/deps/abi-ef9b911bd4e771c3)
+
+running 1 test
+test actual_c_and_rust_records_have_identical_layout ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/concurrency.rs (target/debug/deps/concurrency-bcac33149e4988e9)
+
+running 2 tests
+test detach_racing_irq_publication_never_leaves_a_dead_instance_route ... ok
+test publication_racing_interest_installation_is_always_discoverable ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/derive.rs (target/debug/deps/derive-867042d21991953c)
+
+running 1 test
+    Checking typedio-tests v0.0.0 (/home/ym/typedio-work/kernelet/prototype/target/tests/trybuild/typedio)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+
+
+test tests/ui/cell.rs ... ok
+test tests/ui/copy_is_not_admission.rs ... ok
+test tests/ui/custom_drop.rs ... ok
+test tests/ui/function.rs ... ok
+test tests/ui/inactive_variant.rs ... ok
+test tests/ui/maybe_uninit.rs ... ok
+test tests/ui/reference.rs ... ok
+test tests/ui/union.rs ... ok
+test tests/ui/vector.rs ... ok
+
+
+test rejected_message_types ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.30s
+
+     Running tests/messages.rs (target/debug/deps/messages-fe5f9b65d11bcd5a)
+
+running 6 tests
+test bounded_vec_transfers_only_live_elements ... ok
+test invalid_bytes_cannot_construct_invalid_rust_values ... ok
+test nested_variants_roundtrip_and_padding_is_omitted ... ok
+test packed_noncopy_fields_use_aligned_snapshots_without_native_padding ... ok
+test schema_covers_types_names_widths_and_bounds ... ok
+test pointer_is_an_opaque_address_even_for_non_message_pointee ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/no_allocation.rs (target/debug/deps/no_allocation-91c412541dde1d87)
+
+running 1 test
+test queue_admission_completion_cancel_and_drain_allocate_nothing ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests typedio
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+TypedIO range checks: PASS
+make: Entering directory '/home/ym/typedio-work/linux-6.12'
+  CC [M]  /home/ym/typedio-work/kernelet/prototype/linux/endovisor/sandbox.o
+  RUSTC [M] /home/ym/typedio-work/kernelet/prototype/linux/endovisor/typedio_core.o
+  CC [M]  /home/ym/typedio-work/kernelet/prototype/linux/endovisor/typedio_pipe.o
+  LD [M]  /home/ym/typedio-work/kernelet/prototype/linux/endovisor/endovisor.o
+  MODPOST /home/ym/typedio-work/kernelet/prototype/linux/endovisor/Module.symvers
+  LD [M]  /home/ym/typedio-work/kernelet/prototype/linux/endovisor/endovisor.ko
+make: Leaving directory '/home/ym/typedio-work/linux-6.12'
+0000000000008327 T klet_tio_pipe_core_reserve
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.14s
