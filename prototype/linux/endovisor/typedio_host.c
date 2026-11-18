@@ -400,6 +400,11 @@ static void tio_remove_work(struct work_struct *work)
     down_write(&device->dispatch_gate);
     if (device->backend->remove)
         device->backend->remove(device->context);
+    // The backend's Reset is visible before generic role closure can publish
+    // EOF. Revoked capabilities and outstanding accesses remain independently
+    // retained throughout this ordering.
+    klet_tio_resource_revoke(device->generation);
+    klet_tio_resource_notify_all();
     up_write(&device->dispatch_gate);
     tio_device_put(device);
 }
@@ -473,7 +478,7 @@ static void tio_device_remove(struct tio_device *device)
         tio_queue_put(queues[i]);
     }
     tio_host_wake_device(device);
-    klet_tio_resource_revoke(device->generation);
+    klet_tio_resource_invalidate(device->generation);
     klet_tio_resource_notify_all();
     refcount_inc(&device->refs);
     queue_work(tio_workers, &device->removal);

@@ -262,6 +262,19 @@ void klet_tio_resource_revoke(u64 owner)
     }
     spin_unlock_irqrestore(&resource_lock, flags);
 }
+void klet_tio_resource_invalidate(u64 owner)
+{
+    unsigned long flags;
+    unsigned int i;
+    // Stop admission and access immediately. Backend removal must publish its
+    // terminal policy before role closure can expose a graceful pipe EOF.
+    spin_lock_irqsave(&resource_lock, flags);
+    if (owner_find(owner)) owner_find(owner)->alive = false;
+    for (i = 0; i < RESOURCE_SLOTS; i++)
+        if (resources[i].pipe && resources[i].owner == owner)
+            resources[i].revoked = true;
+    spin_unlock_irqrestore(&resource_lock, flags);
+}
 void klet_tio_resource_evicted(u64 owner)
 {
     unsigned long flags;

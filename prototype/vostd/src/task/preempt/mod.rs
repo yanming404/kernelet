@@ -22,6 +22,10 @@ pub fn halt_cpu() {
 
     if !cpu_local::need_preempt() {
         crate::vcpu::idle(0);
+        // The Host idle service publishes a tick before returning. Consume
+        // pending IRQs before another idle call, which otherwise sees that
+        // pending bit and returns immediately without sleeping.
+        crate::vcpu::deliver_if_pending();
     }
 
     super::scheduler::preempt_at_user_boundary();

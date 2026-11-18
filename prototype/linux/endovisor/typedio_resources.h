@@ -31,6 +31,7 @@ int klet_tio_transfer_commit(struct klet_tio_transfer *transaction);
 void klet_tio_transfer_rollback(struct klet_tio_transfer *transaction);
 void klet_tio_endpoint_drop(struct klet_tio_endpoint endpoint, u64 owner);
 void klet_tio_resource_revoke(u64 owner);
+void klet_tio_resource_invalidate(u64 owner);
 void klet_tio_resource_evicted(u64 owner);
 s64 klet_tio_resource_service(u64 owner, struct klet_tio_call *call);
 #endif

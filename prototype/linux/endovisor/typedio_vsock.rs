@@ -408,14 +408,19 @@ impl State {
         for i in 0..FLOWS {
             if self.flows[i].as_ref().map_or(false, |f| {
                 (f.a == index
+                    && f.shut[0] != 3
                     && self.contexts[index]
                         .as_ref()
                         .map_or(false, |c| c.generation == f.owners[0]))
                     || (f.b == index
+                        && f.shut[1] != 3
                         && self.contexts[index]
                             .as_ref()
                             .map_or(false, |c| c.generation == f.owners[1]))
             }) {
+                // A fully shut down endpoint has already published graceful
+                // closure. Its later context destruction must not replace
+                // that EOF with Reset while the surviving peer drains it.
                 self.reset(i)
             }
         }

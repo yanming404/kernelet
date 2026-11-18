@@ -5,6 +5,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p .build/typedio-host-harness
+# Rust resolves the nested #[path] through this otherwise empty directory.
+# Git does not retain empty directories in a fresh checkout.
+mkdir -p tests/host-harness/src/mm
 cargo build --locked --manifest-path tests/host-harness/Cargo.toml
 cargo build --locked --manifest-path tests/asterinas-harness/Cargo.toml
 common=(tests/host-harness/shim.c linux/endovisor/typedio_host.c linux/endovisor/typedio_pipe.c linux/endovisor/typedio_resources.c linux/endovisor/typedio_vsock_link.c linux/endovisor/typedio_socket.c)
